@@ -72,6 +72,7 @@ class BdvHandle implements Bdv
 			final List< ? extends SourceAndConverter< ? > > sources,
 			final int numTimepoints )
 	{
+		boolean initTransform;
 		if ( bdv == null )
 		{
 			final Cache cache = new Cache.Dummy();
@@ -85,27 +86,29 @@ class BdvHandle implements Bdv
 					frameTitle,
 					progressWriter,
 					viewerOptions );
+			final ViewerPanel viewer = bdv.getViewer();
 
 			// this triggers repaint when PlaceHolderSources are toggled
-			bdv.getViewer().getVisibilityAndGrouping().addUpdateListener(
+			viewer.getVisibilityAndGrouping().addUpdateListener(
 					new VisibilityAndGrouping.UpdateListener()
 					{
 						@Override
 						public void visibilityChanged( final Event e )
 						{
 							if ( hasPlaceHolderSources )
-								bdv.getViewer().getDisplay().repaint();
+								viewer.getDisplay().repaint();
 						}
 					} );
 
-			bdv.getViewer().setDisplayMode( DisplayMode.FUSED );
+			viewer.setDisplayMode( DisplayMode.FUSED );
 			bdv.getViewerFrame().setVisible( true );
-			InitializeViewerState.initTransform( bdv.getViewer() );
+			initTransform = !sources.isEmpty();
 		}
 		else
 		{
 			final SetupAssignments setupAssignments = bdv.getSetupAssignments();
 			final ViewerPanel viewer = bdv.getViewer();
+			initTransform = ( viewer.getState().numSources() == 0 ) && !sources.isEmpty();
 
 			if ( converterSetups != null )
 				for ( final ConverterSetup setup : converterSetups )
@@ -117,7 +120,13 @@ class BdvHandle implements Bdv
 			if ( sources != null )
 				for ( final SourceAndConverter< ? > soc : sources )
 					viewer.addSource( soc );
+
+				InitializeViewerState.initTransform( bdv.getViewer() );
+
 		}
+
+		if ( initTransform )
+			InitializeViewerState.initTransform( bdv.getViewer() );
 
 		updateHasPlaceHolderSources();
 		updateNumTimepoints();
