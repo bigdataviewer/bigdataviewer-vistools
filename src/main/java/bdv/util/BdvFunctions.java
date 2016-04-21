@@ -22,6 +22,12 @@ import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.util.Util;
 
+/**
+ * all show methods return a {@link Bdv} which can be used to add more stuff to the same window
+ *
+ *
+ * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
+ */
 public class BdvFunctions
 {
 	public static < T > BdvStackSource< T > show(
@@ -54,7 +60,7 @@ public class BdvFunctions
 			final BdvOptions options )
 	{
 		final BdvHandle handle = ( bdv == null )
-				? new BdvHandle( options )
+				? new BdvHandleFrame( options )
 				: bdv.getBdvHandle();
 		final AffineTransform3D sourceTransform = options.values.getSourceTransform();
 		final T type = Util.getTypeFromInterval( img );
@@ -166,7 +172,7 @@ public class BdvFunctions
 			final BdvOptions options )
 	{
 		final BdvHandle handle = ( bdv == null )
-				? new BdvHandle( options )
+				? new BdvHandleFrame( options )
 				: bdv.getBdvHandle();
 		final AffineTransform3D sourceTransform = options.values.getSourceTransform();
 
@@ -224,7 +230,7 @@ public class BdvFunctions
 			final BdvOptions options )
 	{
 		final BdvHandle handle = ( bdv == null )
-				? new BdvHandle( options )
+				? new BdvHandleFrame( options )
 				: bdv.getBdvHandle();
 		final AffineTransform3D sourceTransform = options.values.getSourceTransform();
 
@@ -259,7 +265,7 @@ public class BdvFunctions
 			final BdvOptions options )
 	{
 		final BdvHandle handle = ( bdv == null )
-				? new BdvHandle( options )
+				? new BdvHandleFrame( options )
 				: bdv.getBdvHandle();
 		final AffineTransform3D sourceTransform = options.values.getSourceTransform();
 
@@ -287,34 +293,13 @@ public class BdvFunctions
 		return bdvSource;
 	}
 
-	// TODO: remove!
-	// TODO: remove!
-	// TODO: remove!
-	// TODO: remove!
-	// TODO: remove!
-	// TODO: remove!
-	// TODO: remove!
-	// TODO: remove!
-	// TODO: remove!
-	// TODO: remove!
-	// TODO: remove!
-	// TODO: remove!
-	// TODO: remove!
-	public static AffineTransform3D calibrationTransform3D( final double[] calibration )
-	{
-		final AffineTransform3D transform = new AffineTransform3D();
-		transform.set(
-				calibration[ 0 ], 0, 0, 0,
-				0, calibration[ 1 ], 0, 0,
-				0, 0, calibration[ 2 ], 0, 0 );
-		return transform;
-	}
-
+	// TODO: move to BdvFunctionUtils
 	public static int getUnusedSetupId( final BigDataViewer bdv )
 	{
 		return getUnusedSetupId( bdv.getSetupAssignments() );
 	}
 
+	// TODO: move to BdvFunctionUtild
 	public static int getUnusedSetupId( final SetupAssignments setupAssignments )
 	{
 		int maxId = 0;

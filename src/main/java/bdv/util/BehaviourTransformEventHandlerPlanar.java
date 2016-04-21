@@ -10,6 +10,7 @@ import org.scijava.ui.behaviour.ScrollBehaviour;
 import org.scijava.ui.behaviour.io.InputTriggerConfig;
 
 import bdv.BehaviourTransformEventHandler;
+import bdv.BehaviourTransformEventHandlerFactory;
 import bdv.viewer.TriggerBehaviourBindings;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.ui.TransformEventHandler;
@@ -29,10 +30,11 @@ public class BehaviourTransformEventHandlerPlanar implements BehaviourTransformE
 		return new BehaviourTransformEventHandlerPlanarFactory();
 	}
 
-	public static class BehaviourTransformEventHandlerPlanarFactory implements TransformEventHandlerFactory< AffineTransform3D >
+	public static class BehaviourTransformEventHandlerPlanarFactory implements BehaviourTransformEventHandlerFactory< AffineTransform3D >
 	{
 		private InputTriggerConfig config = new InputTriggerConfig();
 
+		@Override
 		public void setConfig( final InputTriggerConfig config )
 		{
 			this.config = config;

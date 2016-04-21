@@ -1,64 +1,37 @@
 package bdv.util;
 
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import bdv.BigDataViewer;
-import bdv.export.ProgressWriter;
-import bdv.export.ProgressWriterConsole;
-import bdv.img.cache.Cache;
 import bdv.tools.InitializeViewerState;
 import bdv.tools.brightness.ConverterSetup;
 import bdv.tools.brightness.SetupAssignments;
-import bdv.viewer.DisplayMode;
 import bdv.viewer.SourceAndConverter;
-import bdv.viewer.ViewerFrame;
 import bdv.viewer.ViewerOptions;
 import bdv.viewer.ViewerPanel;
-import bdv.viewer.VisibilityAndGrouping;
-import bdv.viewer.VisibilityAndGrouping.Event;
-import bdv.viewer.state.SourceState;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.ui.OverlayRenderer;
 import net.imglib2.ui.TransformListener;
 
-class BdvHandle implements Bdv
+abstract class BdvHandle implements Bdv
 {
-	private BigDataViewer bdv;
+	protected ViewerPanel viewer;
 
-	private final ArrayList< BdvSource > bdvSources;
+	protected SetupAssignments setupAssignments;
 
-	private final String frameTitle;
+	protected final ArrayList< BdvSource > bdvSources;
 
-	private final ViewerOptions viewerOptions;
+	protected final ViewerOptions viewerOptions;
 
-	private boolean hasPlaceHolderSources;
+	protected boolean hasPlaceHolderSources;
 
-	private final int origNumTimepoints;
+	protected final int origNumTimepoints;
 
 	public BdvHandle( final BdvOptions options )
 	{
-		frameTitle = options.values.getFrameTitle();
 		viewerOptions = options.values.getViewerOptions();
-		bdv = null;
 		bdvSources = new ArrayList<>();
 		origNumTimepoints = 1;
-	}
-
-	public int getUnusedSetupId()
-	{
-		return ( bdv == null ) ? 0 : BdvFunctions.getUnusedSetupId( bdv );
-	}
-
-	public BigDataViewer getBigDataViewer()
-	{
-		return bdv;
-	}
-
-	public ViewerPanel getViewerPanel()
-	{
-		return ( bdv == null ) ? null : bdv.getViewer();
 	}
 
 	@Override
@@ -67,48 +40,38 @@ class BdvHandle implements Bdv
 		return this;
 	}
 
+	public ViewerPanel getViewerPanel()
+	{
+		return viewer;
+	}
+
+	public SetupAssignments getSetupAssignments()
+	{
+		return setupAssignments;
+	}
+
+	public int getUnusedSetupId()
+	{
+		return ( setupAssignments == null ) ? 0 : BdvFunctions.getUnusedSetupId( setupAssignments );
+	}
+
+	abstract void createViewer(
+			final List< ? extends ConverterSetup > converterSetups,
+			final List< ? extends SourceAndConverter< ? > > sources,
+			final int numTimepoints );
+
 	void add(
 			final List< ? extends ConverterSetup > converterSetups,
 			final List< ? extends SourceAndConverter< ? > > sources,
 			final int numTimepoints )
 	{
-		boolean initTransform;
-		if ( bdv == null )
+		if ( viewer == null )
 		{
-			final Cache cache = new Cache.Dummy();
-			final ProgressWriter progressWriter = new ProgressWriterConsole();
-			bdv = new BigDataViewer(
-					new ArrayList<>( converterSetups ),
-					new ArrayList<>( sources ),
-					null,
-					numTimepoints,
-					cache,
-					frameTitle,
-					progressWriter,
-					viewerOptions );
-			final ViewerPanel viewer = bdv.getViewer();
-
-			// this triggers repaint when PlaceHolderSources are toggled
-			viewer.getVisibilityAndGrouping().addUpdateListener(
-					new VisibilityAndGrouping.UpdateListener()
-					{
-						@Override
-						public void visibilityChanged( final Event e )
-						{
-							if ( hasPlaceHolderSources )
-								viewer.getDisplay().repaint();
-						}
-					} );
-
-			viewer.setDisplayMode( DisplayMode.FUSED );
-			bdv.getViewerFrame().setVisible( true );
-			initTransform = !sources.isEmpty();
+			createViewer( converterSetups, sources, numTimepoints );
 		}
 		else
 		{
-			final SetupAssignments setupAssignments = bdv.getSetupAssignments();
-			final ViewerPanel viewer = bdv.getViewer();
-			initTransform = ( viewer.getState().numSources() == 0 ) && !sources.isEmpty();
+			final boolean initTransform = ( viewer.getState().numSources() == 0 ) && !sources.isEmpty();
 
 			if ( converterSetups != null )
 				for ( final ConverterSetup setup : converterSetups )
@@ -121,12 +84,11 @@ class BdvHandle implements Bdv
 				for ( final SourceAndConverter< ? > soc : sources )
 					viewer.addSource( soc );
 
-				InitializeViewerState.initTransform( bdv.getViewer() );
+			InitializeViewerState.initTransform( viewer );
 
+			if ( initTransform )
+				InitializeViewerState.initTransform( viewer );
 		}
-
-		if ( initTransform )
-			InitializeViewerState.initTransform( bdv.getViewer() );
 
 		updateHasPlaceHolderSources();
 		updateNumTimepoints();
@@ -138,11 +100,8 @@ class BdvHandle implements Bdv
 			final List< TransformListener< AffineTransform3D > > transformListeners,
 			final List< OverlayRenderer > overlays )
 	{
-		if ( bdv == null )
+		if ( viewer == null )
 			return;
-
-		final SetupAssignments setupAssignments = bdv.getSetupAssignments();
-		final ViewerPanel viewer = bdv.getViewer();
 
 		if ( converterSetups != null )
 			for ( final ConverterSetup setup : converterSetups )
@@ -158,19 +117,7 @@ class BdvHandle implements Bdv
 
 		if ( sources != null )
 			for ( final SourceAndConverter< ? > soc : sources )
-			{
-				// is this the last source?
-				final List< SourceState< ? > > sourcesLeft = viewer.getState().getSources();
-				if ( sourcesLeft.size() == 1 && sourcesLeft.get( 0 ).getSpimSource() == soc.getSpimSource() )
-				{
-					// it is the last source --> just close the BigDataViewer.
-					final ViewerFrame frame = bdv.getViewerFrame();
-					frame.dispatchEvent( new WindowEvent( frame, WindowEvent.WINDOW_CLOSING ) );
-					bdv = null;
-					return;
-				}
 				viewer.removeSource( soc.getSpimSource() );
-			}
 	}
 
 	void addBdvSource( final BdvSource bdvSource )
@@ -187,7 +134,7 @@ class BdvHandle implements Bdv
 		updateNumTimepoints();
 	}
 
-	private void updateHasPlaceHolderSources()
+	void updateHasPlaceHolderSources()
 	{
 		for ( final BdvSource s : bdvSources )
 			if ( s.isPlaceHolderSource() )
@@ -198,11 +145,12 @@ class BdvHandle implements Bdv
 		hasPlaceHolderSources = false;
 	}
 
-	private void updateNumTimepoints()
+	void updateNumTimepoints()
 	{
 		int numTimepoints = origNumTimepoints;
 		for ( final BdvSource s : bdvSources )
 			numTimepoints = Math.max( numTimepoints, s.getNumTimepoints() );
-		bdv.getViewer().setNumTimepoints( numTimepoints );
+		if ( viewer != null )
+			viewer.setNumTimepoints( numTimepoints );
 	}
 }
