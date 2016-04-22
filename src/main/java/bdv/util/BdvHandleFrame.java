@@ -8,7 +8,6 @@ import bdv.BigDataViewer;
 import bdv.export.ProgressWriter;
 import bdv.export.ProgressWriterConsole;
 import bdv.img.cache.Cache;
-import bdv.tools.InitializeViewerState;
 import bdv.tools.brightness.ConverterSetup;
 import bdv.viewer.DisplayMode;
 import bdv.viewer.SourceAndConverter;
@@ -48,7 +47,7 @@ class BdvHandleFrame extends BdvHandle
 	}
 
 	@Override
-	void createViewer(
+	boolean createViewer(
 			final List< ? extends ConverterSetup > converterSetups,
 			final List< ? extends SourceAndConverter< ? > > sources,
 			final int numTimepoints )
@@ -63,7 +62,7 @@ class BdvHandleFrame extends BdvHandle
 				cache,
 				frameTitle,
 				progressWriter,
-				viewerOptions );
+				bdvOptions.values.getViewerOptions() );
 		viewer = bdv.getViewer();
 		setupAssignments = bdv.getSetupAssignments();
 
@@ -82,7 +81,7 @@ class BdvHandleFrame extends BdvHandle
 		viewer.setDisplayMode( DisplayMode.FUSED );
 		bdv.getViewerFrame().setVisible( true );
 
-		if ( !sources.isEmpty() )
-			InitializeViewerState.initTransform( bdv.getViewer() );
+		final boolean initTransform = !sources.isEmpty();
+		return initTransform;
 	}
 }

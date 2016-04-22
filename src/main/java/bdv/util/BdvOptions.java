@@ -177,6 +177,12 @@ public class BdvOptions
 		return this;
 	}
 
+	/**
+	 * Set the title of the BigDataViewer window.
+	 *
+	 * @param title
+	 *            the window title.
+	 */
 	public BdvOptions frameTitle( final String title )
 	{
 		values.frameTitle = title;
@@ -199,6 +205,48 @@ public class BdvOptions
 				sx, 0, 0, 0,
 				0, sy, 0, 0,
 				0, 0, sz, 0 );
+		return this;
+	}
+
+	/**
+	 * Set up the BigDataViewer for 2D navigation.
+	 *
+	 * TODO: add more detailed explanation
+	 *
+	 * @return
+	 */
+	public BdvOptions is2D()
+	{
+		values.is2D = true;
+		transformEventHandlerFactory( BehaviourTransformEventHandlerPlanar.factory() );
+		return this;
+	}
+
+	/**
+	 * Specified when adding a stack. Describes how the axes of the stack are
+	 * ordered.
+	 *
+	 * @param axisOrder
+	 *            the axis order of a stack to add.
+	 */
+	public BdvOptions axisOrder( final AxisOrder axisOrder )
+	{
+		values.axisOrder = axisOrder;
+		return this;
+	}
+
+	/**
+	 * When showing content using one of the {@link BdvFunctions} methods, this
+	 * option can be given to specify that the content should be added to an
+	 * existing window. (All {@link BdvFunctions} methods return an instance of
+	 * {@link Bdv} that can be used that way).
+	 *
+	 * @param bdv
+	 *            to which viewer should the content be added.
+	 */
+	public BdvOptions addTo( final Bdv bdv )
+	{
+		values.addTo = bdv;
 		return this;
 	}
 
@@ -228,6 +276,12 @@ public class BdvOptions
 		private final AffineTransform3D sourceTransform = new AffineTransform3D();
 
 		private String frameTitle = "BigDataViewer";
+
+		private boolean is2D = false;
+
+		private AxisOrder axisOrder = AxisOrder.DEFAULT;
+
+		private Bdv addTo = null;
 
 		Values()
 		{
@@ -271,6 +325,21 @@ public class BdvOptions
 		public String getFrameTitle()
 		{
 			return frameTitle;
+		}
+
+		public boolean is2D()
+		{
+			return is2D;
+		}
+
+		public AxisOrder axisOrder()
+		{
+			return axisOrder;
+		}
+
+		public Bdv addTo()
+		{
+			return addTo;
 		}
 	}
 }

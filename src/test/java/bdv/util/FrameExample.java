@@ -24,7 +24,7 @@ public class FrameExample
 
 		// TODO: add BdvOptions.closeAfterRemovingLastSource()
 
-		final BdvHandleFrame handle = new BdvHandleFrame( Bdv.options().transformEventHandlerFactory( BehaviourTransformEventHandlerPlanar.factory() ) );
+		final BdvHandleFrame handle = new BdvHandleFrame( Bdv.options() );
 		final List< ? extends ConverterSetup > converterSetups = new ArrayList<>();
 		final List< ? extends SourceAndConverter< ? > > sources = new ArrayList<>();
 		final int numTimepoints = 1;
@@ -34,11 +34,11 @@ public class FrameExample
 		{
 			try
 			{
-				final BdvStackSource< ARGBType > source = BdvFunctions.show( handle, img, "img" );
+				final BdvSource source = BdvFunctions.show( img, "img", Bdv.options().addTo( handle ) );
 				FrameExample.class.wait( 1000 );
 				source.removeFromBdv();
 				FrameExample.class.wait( 1000 );
-				BdvFunctions.show( handle, img, "img" );
+				BdvFunctions.show( img, "img", Bdv.options().addTo( handle ) );
 //				FrameExample.class.wait( 1000 );
 //				handle.close();
 			}

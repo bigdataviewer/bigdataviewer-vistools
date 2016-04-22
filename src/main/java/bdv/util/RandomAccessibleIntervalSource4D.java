@@ -103,6 +103,7 @@ public class RandomAccessibleIntervalSource4D< T extends NumericType< T > > impl
 			final T zero = getType().createVariable();
 			zero.setZero();
 			currentSource = Views.hyperSlice( source, 3, timepointIndex );
+//			ImageJFunctions.show( currentSource );
 			for ( int method = 0; method < numInterpolationMethods; ++method )
 				currentInterpolatedSources[ method ] = Views.interpolate( Views.extendValue( currentSource, zero ), interpolatorFactories[ method ] );
 		}
@@ -117,7 +118,7 @@ public class RandomAccessibleIntervalSource4D< T extends NumericType< T > > impl
 	@Override
 	public boolean isPresent( final int t )
 	{
-		return source.dimension( 3 ) > t;
+		return source.min( 3 ) <= t && t <= source.max( 3 );
 	}
 
 	@Override

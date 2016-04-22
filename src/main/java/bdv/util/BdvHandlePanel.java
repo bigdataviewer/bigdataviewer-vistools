@@ -25,6 +25,7 @@ import bdv.viewer.InputActionBindings;
 import bdv.viewer.NavigationActions;
 import bdv.viewer.SourceAndConverter;
 import bdv.viewer.TriggerBehaviourBindings;
+import bdv.viewer.ViewerOptions;
 import bdv.viewer.ViewerPanel;
 import bdv.viewer.ViewerPanel.AlignPlane;
 import net.imglib2.realtransform.AffineTransform3D;
@@ -50,6 +51,8 @@ class BdvHandlePanel extends BdvHandle
 	public BdvHandlePanel( final Frame dialogOwner, final BdvOptions options )
 	{
 		super( options );
+
+		final ViewerOptions viewerOptions = options.values.getViewerOptions();
 
 		final InputTriggerConfig inputTriggerConfig = ( viewerOptions.values.getInputTriggerConfig() != null )
 				? viewerOptions.values.getInputTriggerConfig()
@@ -90,8 +93,7 @@ class BdvHandlePanel extends BdvHandle
 		navactions.modes( viewer );
 		navactions.sources( viewer );
 		navactions.time( viewer );
-		final boolean is2D = true; // TODO
-		if ( is2D )
+		if ( options.values.is2D() )
 			navactions.alignPlaneAction( viewer, AlignPlane.XY, "shift Z" );
 		else
 			navactions.alignPlanes( viewer );
@@ -114,9 +116,11 @@ class BdvHandlePanel extends BdvHandle
 	}
 
 	@Override
-	void createViewer(
+	boolean createViewer(
 			final List< ? extends ConverterSetup > converterSetups,
 			final List< ? extends SourceAndConverter< ? > > sources,
 			final int numTimepoints )
-	{}
+	{
+		throw new UnsupportedOperationException();
+	}
 }

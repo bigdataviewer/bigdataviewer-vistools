@@ -16,7 +16,7 @@ public class PanelExample
 	{
 		System.setProperty( "apple.laf.useScreenMenuBar", "true" );
 
-		final ArrayImg< ARGBType, IntArray > img = ArrayImgs.argbs( 100, 100, 100 );
+		final ArrayImg< ARGBType, IntArray > img = ArrayImgs.argbs( 100, 100, 10 );
 		final Random random = new Random();
 		img.forEach( t -> t.set( random.nextInt() ) );
 
@@ -29,7 +29,7 @@ public class PanelExample
 
 		final BdvHandlePanel handle = new BdvHandlePanel(
 				frame,
-				Bdv.options().transformEventHandlerFactory( BehaviourTransformEventHandlerPlanar.factory() ) );
+				Bdv.options().is2D() );
 		frame.add( handle.getViewerPanel() );
 		frame.pack();
 		frame.setDefaultCloseOperation( WindowConstants.DISPOSE_ON_CLOSE );
@@ -40,11 +40,13 @@ public class PanelExample
 		{
 			try
 			{
-				final BdvStackSource< ARGBType > source = BdvFunctions.show( handle, img, "img" );
+				final BdvSource source = BdvFunctions.show( img, "img", Bdv.options()
+						.addTo( handle )
+						.axisOrder( AxisOrder.XYC ) );
 				PanelExample.class.wait( 1000 );
-				source.removeFromBdv();
-				PanelExample.class.wait( 1000 );
-				BdvFunctions.show( handle, img, "img" );
+//				source.removeFromBdv();
+//				PanelExample.class.wait( 1000 );
+//				BdvFunctions.show( img, "img", Bdv.options().addTo( handle ) );
 			}
 			catch ( final InterruptedException e )
 			{

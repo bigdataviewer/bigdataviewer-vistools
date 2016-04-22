@@ -7,7 +7,6 @@ import bdv.tools.InitializeViewerState;
 import bdv.tools.brightness.ConverterSetup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.viewer.SourceAndConverter;
-import bdv.viewer.ViewerOptions;
 import bdv.viewer.ViewerPanel;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.ui.OverlayRenderer;
@@ -21,7 +20,7 @@ abstract class BdvHandle implements Bdv
 
 	protected final ArrayList< BdvSource > bdvSources;
 
-	protected final ViewerOptions viewerOptions;
+	protected final BdvOptions bdvOptions;
 
 	protected boolean hasPlaceHolderSources;
 
@@ -29,7 +28,7 @@ abstract class BdvHandle implements Bdv
 
 	public BdvHandle( final BdvOptions options )
 	{
-		viewerOptions = options.values.getViewerOptions();
+		bdvOptions = options;
 		bdvSources = new ArrayList<>();
 		origNumTimepoints = 1;
 	}
@@ -55,7 +54,7 @@ abstract class BdvHandle implements Bdv
 		return ( setupAssignments == null ) ? 0 : BdvFunctions.getUnusedSetupId( setupAssignments );
 	}
 
-	abstract void createViewer(
+	abstract boolean createViewer(
 			final List< ? extends ConverterSetup > converterSetups,
 			final List< ? extends SourceAndConverter< ? > > sources,
 			final int numTimepoints );
@@ -65,13 +64,14 @@ abstract class BdvHandle implements Bdv
 			final List< ? extends SourceAndConverter< ? > > sources,
 			final int numTimepoints )
 	{
+		final boolean initTransform;
 		if ( viewer == null )
 		{
-			createViewer( converterSetups, sources, numTimepoints );
+			initTransform = createViewer( converterSetups, sources, numTimepoints );
 		}
 		else
 		{
-			final boolean initTransform = ( viewer.getState().numSources() == 0 ) && !sources.isEmpty();
+			initTransform = ( viewer.getState().numSources() == 0 ) && !sources.isEmpty();
 
 			if ( converterSetups != null )
 				for ( final ConverterSetup setup : converterSetups )
@@ -83,11 +83,19 @@ abstract class BdvHandle implements Bdv
 			if ( sources != null )
 				for ( final SourceAndConverter< ? > soc : sources )
 					viewer.addSource( soc );
+		}
 
+		if ( initTransform )
+		{
 			InitializeViewerState.initTransform( viewer );
 
-			if ( initTransform )
-				InitializeViewerState.initTransform( viewer );
+			if ( bdvOptions.values.is2D() )
+			{
+				final AffineTransform3D t = new AffineTransform3D();
+				viewer.getState().getViewerTransform( t );
+				t.set( 0, 2, 3 );
+				viewer.setCurrentViewerTransform( t );
+			}
 		}
 
 		updateHasPlaceHolderSources();
@@ -152,5 +160,10 @@ abstract class BdvHandle implements Bdv
 			numTimepoints = Math.max( numTimepoints, s.getNumTimepoints() );
 		if ( viewer != null )
 			viewer.setNumTimepoints( numTimepoints );
+	}
+
+	boolean is2D()
+	{
+		return bdvOptions.values.is2D();
 	}
 }
