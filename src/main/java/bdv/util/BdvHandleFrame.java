@@ -33,6 +33,7 @@ class BdvHandleFrame extends BdvHandle
 		return bdv;
 	}
 
+	@Override
 	public void close()
 	{
 		if ( bdv != null )

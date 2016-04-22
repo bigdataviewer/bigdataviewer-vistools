@@ -123,4 +123,8 @@ class BdvHandlePanel extends BdvHandle
 	{
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public void close()
+	{}
 }

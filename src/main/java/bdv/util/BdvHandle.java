@@ -54,6 +54,8 @@ abstract class BdvHandle implements Bdv
 		return ( setupAssignments == null ) ? 0 : BdvFunctions.getUnusedSetupId( setupAssignments );
 	}
 
+	public abstract void close();
+
 	abstract boolean createViewer(
 			final List< ? extends ConverterSetup > converterSetups,
 			final List< ? extends SourceAndConverter< ? > > sources,
