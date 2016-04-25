@@ -13,7 +13,7 @@ import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.ui.OverlayRenderer;
 import net.imglib2.ui.TransformListener;
 
-abstract class BdvHandle implements Bdv
+public abstract class BdvHandle implements Bdv
 {
 	protected ViewerPanel viewer;
 
@@ -50,7 +50,7 @@ abstract class BdvHandle implements Bdv
 		return setupAssignments;
 	}
 
-	public int getUnusedSetupId()
+	int getUnusedSetupId()
 	{
 		return ( setupAssignments == null ) ? 0 : BdvFunctions.getUnusedSetupId( setupAssignments );
 	}

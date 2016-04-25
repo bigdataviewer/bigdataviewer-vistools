@@ -11,7 +11,7 @@ import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.ui.TransformListener;
 
-public class PlaceHolderOverlayInfo implements TransformListener< AffineTransform3D >, TimePointListener
+public final class PlaceHolderOverlayInfo implements TransformListener< AffineTransform3D >, TimePointListener
 {
 	private final ViewerPanel viewer;
 

@@ -21,13 +21,13 @@ import bdv.viewer.ViewerPanel.AlignPlane;
 import bdv.viewer.VisibilityAndGrouping;
 import bdv.viewer.VisibilityAndGrouping.Event;
 
-class BdvHandleFrame extends BdvHandle
+public class BdvHandleFrame extends BdvHandle
 {
 	private BigDataViewer bdv;
 
 	private final String frameTitle;
 
-	public BdvHandleFrame( final BdvOptions options )
+	BdvHandleFrame( final BdvOptions options )
 	{
 		super( options );
 		frameTitle = options.values.getFrameTitle();

@@ -6,7 +6,7 @@ import bdv.viewer.SourceAndConverter;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.ui.OverlayRenderer;
 
-public class BdvOverlaySource< O extends OverlayRenderer > extends BdvSource
+public abstract class BdvOverlaySource< O extends OverlayRenderer > extends BdvSource
 {
 	protected final PlaceHolderConverterSetup setup;
 

@@ -34,7 +34,7 @@ import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.ui.TransformEventHandler;
 import net.imglib2.ui.TransformEventHandlerFactory;
 
-class BdvHandlePanel extends BdvHandle
+public class BdvHandlePanel extends BdvHandle
 {
 	private final BrightnessDialog brightnessDialog;
 

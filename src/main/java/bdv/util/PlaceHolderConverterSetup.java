@@ -4,7 +4,7 @@ import bdv.tools.brightness.ConverterSetup;
 import bdv.viewer.RequestRepaint;
 import net.imglib2.type.numeric.ARGBType;
 
-final class PlaceHolderConverterSetup implements ConverterSetup
+public final class PlaceHolderConverterSetup implements ConverterSetup
 {
 	private final int setupId;
 

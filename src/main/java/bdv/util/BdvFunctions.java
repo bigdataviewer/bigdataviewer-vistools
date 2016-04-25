@@ -209,7 +209,7 @@ public class BdvFunctions
 
 	private static final TObjectIntHashMap< SetupAssignments > maxIds = new TObjectIntHashMap<>( 20, 0.75f, 0 );
 
-	// TODO: move to BdvFunctionUtild
+	// TODO: move to BdvFunctionUtils
 	public static synchronized int getUnusedSetupId( final SetupAssignments setupAssignments )
 	{
 		int maxId = maxIds.get( setupAssignments );

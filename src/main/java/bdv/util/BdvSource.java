@@ -30,7 +30,7 @@ public abstract class BdvSource implements Bdv
 
 	protected abstract boolean isPlaceHolderSource();
 
-	public int getNumTimepoints()
+	protected int getNumTimepoints()
 	{
 		return numTimepoints;
 	}

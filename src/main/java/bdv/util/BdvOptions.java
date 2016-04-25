@@ -196,7 +196,7 @@ public class BdvOptions
 	 * @param calibration
 	 *            the source calibration (scaling of the source axes).
 	 */
-	public BdvOptions sourceTransform( final double[] calibration )
+	public BdvOptions sourceTransform( final double ... calibration )
 	{
 		final double sx = calibration.length >= 1 ? calibration[ 0 ] : 1;
 		final double sy = calibration.length >= 2 ? calibration[ 1 ] : 1;
