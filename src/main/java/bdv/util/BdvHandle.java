@@ -5,6 +5,7 @@ import java.util.List;
 
 import bdv.tools.InitializeViewerState;
 import bdv.tools.brightness.ConverterSetup;
+import bdv.tools.brightness.MinMaxGroup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.viewer.SourceAndConverter;
 import bdv.viewer.ViewerPanel;
@@ -54,6 +55,7 @@ abstract class BdvHandle implements Bdv
 		return ( setupAssignments == null ) ? 0 : BdvFunctions.getUnusedSetupId( setupAssignments );
 	}
 
+	@Override
 	public abstract void close();
 
 	abstract boolean createViewer(
