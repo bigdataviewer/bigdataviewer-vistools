@@ -47,4 +47,7 @@ You should interpret `C` and `T` losely. The effect is that `T` will be mapped t
 while `C` is mapped to BDV sources.
 (This also means that you should not have images with a large `C` dimension.)
 
-There is/will be stuff to add annotation overlays. Currently only `BdvFunctions.showPoints()`.
+There is/will be stuff to add annotation overlays. Currently `BdvFunctions.showPoints()` is available.
+
+Here is an example screenshot where several 3D stacks, a set of boundary points, and 3D ellipsoids fitted to the boundary points were added to a BDV window. It also shows how the usual BDV dialogs can be used to adjust visibility / brightness / colors of tbe individual sources.
+![screenshot](screenshot.png)
