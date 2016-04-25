@@ -78,11 +78,18 @@ abstract class BdvHandle implements Bdv
 			initTransform = ( viewer.getState().numSources() == 0 ) && !sources.isEmpty();
 
 			if ( converterSetups != null )
+			{
 				for ( final ConverterSetup setup : converterSetups )
 				{
 					setupAssignments.addSetup( setup );
 					setup.setViewer( viewer );
 				}
+
+				final int g = setupAssignments.getMinMaxGroups().size() - 1;
+				final MinMaxGroup group = setupAssignments.getMinMaxGroups().get( g );
+				for ( final ConverterSetup setup : converterSetups )
+					setupAssignments.moveSetupToGroup( setup, group );
+			}
 
 			if ( sources != null )
 				for ( final SourceAndConverter< ? > soc : sources )
