@@ -12,6 +12,7 @@ import org.scijava.ui.behaviour.io.InputTriggerConfig;
 
 import bdv.BehaviourTransformEventHandler;
 import bdv.BehaviourTransformEventHandlerFactory;
+import bdv.BigDataViewer;
 import bdv.BigDataViewerActions;
 import bdv.img.cache.Cache;
 import bdv.tools.VisibilityAndGroupingDialog;
@@ -21,6 +22,7 @@ import bdv.tools.brightness.BrightnessDialog;
 import bdv.tools.brightness.ConverterSetup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.tools.transformation.ManualTransformationEditor;
+import bdv.viewer.DisplayMode;
 import bdv.viewer.InputActionBindings;
 import bdv.viewer.NavigationActions;
 import bdv.viewer.SourceAndConverter;
@@ -53,10 +55,7 @@ class BdvHandlePanel extends BdvHandle
 		super( options );
 
 		final ViewerOptions viewerOptions = options.values.getViewerOptions();
-
-		final InputTriggerConfig inputTriggerConfig = ( viewerOptions.values.getInputTriggerConfig() != null )
-				? viewerOptions.values.getInputTriggerConfig()
-				: new InputTriggerConfig();
+		final InputTriggerConfig inputTriggerConfig = BigDataViewer.getInputTriggerConfig( viewerOptions );
 
 		final TransformEventHandlerFactory< AffineTransform3D > thf = viewerOptions.values.getTransformEventHandlerFactory();
 		if ( thf instanceof BehaviourTransformEventHandlerFactory )
@@ -103,6 +102,8 @@ class BdvHandlePanel extends BdvHandle
 		bdvactions.dialog( activeSourcesDialog );
 		bdvactions.bookmarks( bookmarksEditor );
 		bdvactions.manualTransform( manualTransformationEditor );
+
+		viewer.setDisplayMode( DisplayMode.FUSED );
 	}
 
 	public InputActionBindings getKeybindings()

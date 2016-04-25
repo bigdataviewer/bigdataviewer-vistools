@@ -4,14 +4,20 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.scijava.ui.behaviour.io.InputTriggerConfig;
+
 import bdv.BigDataViewer;
 import bdv.export.ProgressWriter;
 import bdv.export.ProgressWriterConsole;
 import bdv.img.cache.Cache;
 import bdv.tools.brightness.ConverterSetup;
 import bdv.viewer.DisplayMode;
+import bdv.viewer.InputActionBindings;
+import bdv.viewer.NavigationActions;
 import bdv.viewer.SourceAndConverter;
 import bdv.viewer.ViewerFrame;
+import bdv.viewer.ViewerOptions;
+import bdv.viewer.ViewerPanel.AlignPlane;
 import bdv.viewer.VisibilityAndGrouping;
 import bdv.viewer.VisibilityAndGrouping.Event;
 
@@ -55,6 +61,7 @@ class BdvHandleFrame extends BdvHandle
 	{
 		final Cache cache = new Cache.Dummy();
 		final ProgressWriter progressWriter = new ProgressWriterConsole();
+		final ViewerOptions viewerOptions = bdvOptions.values.getViewerOptions();
 		bdv = new BigDataViewer(
 				new ArrayList<>( converterSetups ),
 				new ArrayList<>( sources ),
@@ -63,9 +70,20 @@ class BdvHandleFrame extends BdvHandle
 				cache,
 				frameTitle,
 				progressWriter,
-				bdvOptions.values.getViewerOptions() );
+				viewerOptions );
 		viewer = bdv.getViewer();
 		setupAssignments = bdv.getSetupAssignments();
+
+		if ( bdvOptions.values.is2D() )
+		{
+			final InputTriggerConfig inputTriggerConfig = BigDataViewer.getInputTriggerConfig( viewerOptions );
+			final InputActionBindings keybindings = bdv.getViewerFrame().getKeybindings();
+			final NavigationActions navactions = new NavigationActions( keybindings, inputTriggerConfig );
+			navactions.modes( viewer );
+			navactions.sources( viewer );
+			navactions.time( viewer );
+			navactions.alignPlaneAction( viewer, AlignPlane.XY, "shift Z" );
+		}
 
 		// this triggers repaint when PlaceHolderSources are toggled
 		viewer.getVisibilityAndGrouping().addUpdateListener(
