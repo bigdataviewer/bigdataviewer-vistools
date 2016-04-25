@@ -14,7 +14,6 @@ import bdv.viewer.SourceAndConverter;
 import gnu.trove.map.hash.TObjectIntHashMap;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
-import net.imglib2.algorithm.fitting.ellipsoid.Ellipsoid;
 import net.imglib2.display.RealARGBColorConverter;
 import net.imglib2.display.ScaledARGBConverter;
 import net.imglib2.realtransform.AffineTransform3D;
@@ -198,83 +197,6 @@ public class BdvFunctions
 		handle.getViewerPanel().getDisplay().addOverlayRenderer( overlay );
 
 		final BdvPointsSource bdvSource = new BdvPointsSource( handle, numTimepoints, setup, soc, info, overlay );
-		handle.addBdvSource( bdvSource );
-		return bdvSource;
-	}
-
-	public static BdvEllipsoidSource showEllipsoid(
-			final Ellipsoid ellipsoid,
-			final String name )
-	{
-		return showEllipsoid( ellipsoid, name, Bdv.options() );
-	}
-
-	public static BdvEllipsoidSource showEllipsoid(
-			final Ellipsoid ellipsoid,
-			final String name,
-			final BdvOptions options )
-	{
-		final Bdv bdv = options.values.addTo();
-		final BdvHandle handle = ( bdv == null )
-				? new BdvHandleFrame( options )
-				: bdv.getBdvHandle();
-		final AffineTransform3D sourceTransform = options.values.getSourceTransform();
-
-		final int setupId = handle.getUnusedSetupId();
-		final ARGBType defaultColor = new ARGBType( 0xff00ff00 );
-		final PlaceHolderConverterSetup setup = new PlaceHolderConverterSetup( setupId, 0, 255, defaultColor );
-		final PlaceHolderSource source = new PlaceHolderSource( name );
-		final SourceAndConverter< UnsignedShortType > soc = new SourceAndConverter<>( source, null );
-
-		final List< ConverterSetup > converterSetups = new ArrayList<>( Arrays.asList( setup ) );
-		final List< SourceAndConverter< UnsignedShortType > > sources = new ArrayList<>( Arrays.asList( soc ) );
-
-		final int numTimepoints = 1;
-		handle.add( converterSetups, sources, numTimepoints );
-
-		final PlaceHolderOverlayInfo info = new PlaceHolderOverlayInfo( handle.getViewerPanel(), source, setup );
-		final EllipsoidOverlay overlay = new EllipsoidOverlay();
-		overlay.setOverlayInfo( info );
-		overlay.setEllipsoid( ellipsoid );
-		overlay.setSourceTransform( sourceTransform );
-		handle.getViewerPanel().getDisplay().addOverlayRenderer( overlay );
-
-		final BdvEllipsoidSource bdvSource = new BdvEllipsoidSource( handle, numTimepoints, setup, soc, info, overlay );
-		handle.addBdvSource( bdvSource );
-		return bdvSource;
-	}
-
-	public static BdvEllipsoidsSource showEllipsoids(
-			final Bdv bdv,
-			final List< Ellipsoid > ellipsoids,
-			final String name,
-			final BdvOptions options )
-	{
-		final BdvHandle handle = ( bdv == null )
-				? new BdvHandleFrame( options )
-				: bdv.getBdvHandle();
-		final AffineTransform3D sourceTransform = options.values.getSourceTransform();
-
-		final int setupId = handle.getUnusedSetupId();
-		final ARGBType defaultColor = new ARGBType( 0xff00ff00 );
-		final PlaceHolderConverterSetup setup = new PlaceHolderConverterSetup( setupId, 0, 255, defaultColor );
-		final PlaceHolderSource source = new PlaceHolderSource( name );
-		final SourceAndConverter< UnsignedShortType > soc = new SourceAndConverter<>( source, null );
-
-		final List< ConverterSetup > converterSetups = new ArrayList<>( Arrays.asList( setup ) );
-		final List< SourceAndConverter< UnsignedShortType > > sources = new ArrayList<>( Arrays.asList( soc ) );
-
-		final int numTimepoints = ellipsoids.size();
-		handle.add( converterSetups, sources, numTimepoints );
-
-		final PlaceHolderOverlayInfo info = new PlaceHolderOverlayInfo( handle.getViewerPanel(), source, setup );
-		final EllipsoidsOverlay overlay = new EllipsoidsOverlay();
-		overlay.setOverlayInfo( info );
-		overlay.setEllipsoids( ellipsoids );
-		overlay.setSourceTransform( sourceTransform );
-		handle.getViewerPanel().getDisplay().addOverlayRenderer( overlay );
-
-		final BdvEllipsoidsSource bdvSource = new BdvEllipsoidsSource( handle, numTimepoints, setup, soc, info, overlay );
 		handle.addBdvSource( bdvSource );
 		return bdvSource;
 	}
