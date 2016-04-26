@@ -1,57 +1,33 @@
 package bdv.util;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.List;
 
 import net.imglib2.RealLocalizable;
 import net.imglib2.realtransform.AffineTransform3D;
-import net.imglib2.ui.OverlayRenderer;
 
-public class PointsOverlay implements OverlayRenderer
+public class PointsOverlay extends BdvOverlay
 {
-	private final AffineTransform3D sourceTransform;
-
 	private List< ? extends RealLocalizable > points;
 
 	private Color col;
-
-	private PlaceHolderOverlayInfo info;
-
-	public PointsOverlay()
-	{
-		this.sourceTransform = new AffineTransform3D();
-		this.info = null;
-	}
-
-	public void setOverlayInfo( final PlaceHolderOverlayInfo info )
-	{
-		this.info = info;
-	}
 
 	public < T extends RealLocalizable > void setPoints( final List< T > points )
 	{
 		this.points = points;
 	}
 
-	public void setSourceTransform( final AffineTransform3D t )
-	{
-		sourceTransform.set( t );
-	}
-
 	@Override
-	public void drawOverlays( final Graphics g )
+	protected void draw( final Graphics2D graphics )
 	{
-		if ( points == null || info == null || !info.isVisible() )
+		if ( points == null )
 			return;
 
 		col = new Color( info.getColor().get() );
 
 		final AffineTransform3D transform = new AffineTransform3D();
-		info.getViewerTransform( transform );
-		transform.concatenate( sourceTransform );
-		final Graphics2D graphics = ( Graphics2D ) g;
+		getCurrentTransform3D( transform );
 		final double[] lPos = new double[ 3 ];
 		final double[] gPos = new double[ 3 ];
 		for ( final RealLocalizable p : points )
@@ -85,8 +61,4 @@ public class PointsOverlay implements OverlayRenderer
 		else
 			return 3.0;
 	}
-
-	@Override
-	public void setCanvasSize( final int width, final int height )
-	{}
 }

@@ -201,6 +201,46 @@ public class BdvFunctions
 		return bdvSource;
 	}
 
+	public static < O extends BdvOverlay > BdvOverlaySource< O > showOverlay(
+			final O overlay,
+			final String name )
+	{
+		return showOverlay( overlay, name, Bdv.options() );
+	}
+
+	public static < O extends BdvOverlay > BdvOverlaySource< O > showOverlay(
+			final O overlay,
+			final String name,
+			final BdvOptions options )
+	{
+		final Bdv bdv = options.values.addTo();
+		final BdvHandle handle = ( bdv == null )
+				? new BdvHandleFrame( options )
+				: bdv.getBdvHandle();
+		final AffineTransform3D sourceTransform = options.values.getSourceTransform();
+
+		final int setupId = handle.getUnusedSetupId();
+		final ARGBType defaultColor = new ARGBType( 0xff00ff00 );
+		final PlaceHolderConverterSetup setup = new PlaceHolderConverterSetup( setupId, 0, 255, defaultColor );
+		final PlaceHolderSource source = new PlaceHolderSource( name );
+		final SourceAndConverter< UnsignedShortType > soc = new SourceAndConverter<>( source, null );
+
+		final List< ConverterSetup > converterSetups = new ArrayList<>( Arrays.asList( setup ) );
+		final List< SourceAndConverter< UnsignedShortType > > sources = new ArrayList<>( Arrays.asList( soc ) );
+
+		final int numTimepoints = 1;
+		handle.add( converterSetups, sources, numTimepoints );
+
+		final PlaceHolderOverlayInfo info = new PlaceHolderOverlayInfo( handle.getViewerPanel(), source, setup );
+		overlay.setOverlayInfo( info );
+		overlay.setSourceTransform( sourceTransform );
+		handle.getViewerPanel().getDisplay().addOverlayRenderer( overlay );
+
+		final BdvOverlaySource< O > bdvSource = new BdvOverlaySource<>( handle, numTimepoints, setup, soc, info, overlay );
+		handle.addBdvSource( bdvSource );
+		return bdvSource;
+	}
+
 	// TODO: move to BdvFunctionUtils
 	public static int getUnusedSetupId( final BigDataViewer bdv )
 	{
