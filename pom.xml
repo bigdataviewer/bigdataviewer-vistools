@@ -16,10 +16,6 @@
 	<name>BigDataViewer Visualization Tools</name>
 	<description>Helpers to use BigDataViewer as quick visualization in other projects</description>
 
-	<properties>
-		<scijava.jvm.version>1.8</scijava.jvm.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>sc.fiji</groupId>
@@ -82,13 +78,6 @@
 						<root>src/main/java</root>
 						<root>src/test/java</root>
 					</roots>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
 				</configuration>
 			</plugin>
 		</plugins>
