@@ -1,8 +1,11 @@
 package bdv.util;
 
+import java.util.HashSet;
 import java.util.List;
 
 import bdv.tools.brightness.ConverterSetup;
+import bdv.tools.brightness.MinMaxGroup;
+import bdv.tools.brightness.SetupAssignments;
 import bdv.viewer.SourceAndConverter;
 
 public class BdvStackSource< T > extends BdvSource
@@ -38,6 +41,33 @@ public class BdvStackSource< T > extends BdvSource
 	protected boolean isPlaceHolderSource()
 	{
 		return false;
+	}
+
+	@Override
+	public void setDisplayRange( final double min, final double max )
+	{
+		final HashSet< MinMaxGroup > groups = new HashSet<>();
+		final SetupAssignments sa = getBdvHandle().getSetupAssignments();
+		for ( final ConverterSetup setup : converterSetups )
+			groups.add( sa.getMinMaxGroup( setup ) );
+		for ( final MinMaxGroup group : groups )
+		{
+			// TODO: fix in BDV. Brightness ranges should all be double
+			group.getMinBoundedValue().setCurrentValue( ( int ) min );
+			group.getMaxBoundedValue().setCurrentValue( ( int ) max );
+		}
+	}
+
+	@Override
+	public void setDisplayRangeBounds( final double min, final double max )
+	{
+		final HashSet< MinMaxGroup > groups = new HashSet<>();
+		final SetupAssignments sa = getBdvHandle().getSetupAssignments();
+		for ( final ConverterSetup setup : converterSetups )
+			groups.add( sa.getMinMaxGroup( setup ) );
+		for ( final MinMaxGroup group : groups )
+			// TODO: fix in BDV. Brightness ranges should all be double
+			group.setRange( ( int ) min, ( int ) max );
 	}
 
 //	public T getType()

@@ -2,6 +2,8 @@ package bdv.util;
 
 import java.util.Arrays;
 
+import bdv.tools.brightness.MinMaxGroup;
+import bdv.tools.brightness.SetupAssignments;
 import bdv.viewer.SourceAndConverter;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.ui.OverlayRenderer;
@@ -47,5 +49,24 @@ public class BdvOverlaySource< O extends OverlayRenderer > extends BdvSource
 	protected boolean isPlaceHolderSource()
 	{
 		return true;
+	}
+
+	@Override
+	public void setDisplayRange( final double min, final double max )
+	{
+		final SetupAssignments sa = getBdvHandle().getSetupAssignments();
+		final MinMaxGroup group = sa.getMinMaxGroup( setup );
+		// TODO: fix in BDV. Brightness ranges should all be double
+		group.getMinBoundedValue().setCurrentValue( ( int ) min );
+		group.getMaxBoundedValue().setCurrentValue( ( int ) max );
+	}
+
+	@Override
+	public void setDisplayRangeBounds( final double min, final double max )
+	{
+		final SetupAssignments sa = getBdvHandle().getSetupAssignments();
+		final MinMaxGroup group = sa.getMinMaxGroup( setup );
+		// TODO: fix in BDV. Brightness ranges should all be double
+		group.setRange( ( int ) min, ( int ) max );
 	}
 }

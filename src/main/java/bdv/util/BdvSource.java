@@ -17,6 +17,10 @@ public abstract class BdvSource implements Bdv
 	// closes bdv if it was the last source
 	public abstract void removeFromBdv();
 
+	public abstract void setDisplayRange( final double min, final double max );
+
+	public abstract void setDisplayRangeBounds( final double min, final double max );
+
 	@Override
 	public BdvHandle getBdvHandle()
 	{
