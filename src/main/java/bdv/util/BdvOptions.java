@@ -60,19 +60,12 @@ public class BdvOptions
 	}
 
 	/**
-	 * Set width of {@link ViewerPanel} canvas.
+	 * Set preferred size of {@link ViewerPanel} canvas. (This does not include
+	 * the time slider).
 	 */
-	public BdvOptions width( final int w )
+	public BdvOptions preferredSize( final int w, final int h )
 	{
 		values.width = w;
-		return this;
-	}
-
-	/**
-	 * Set height of {@link ViewerPanel} canvas.
-	 */
-	public BdvOptions height( final int h )
-	{
 		values.height = h;
 		return this;
 	}
@@ -255,9 +248,9 @@ public class BdvOptions
 	 */
 	public static class Values
 	{
-		private int width = 800;
+		private int width = -1;
 
-		private int height = 600;
+		private int height = -1;
 
 		private double[] screenScales = new double[] { 1, 0.75, 0.5, 0.25, 0.125 };
 
@@ -290,31 +283,37 @@ public class BdvOptions
 
 		public BdvOptions optionsFromValues()
 		{
-			return new BdvOptions().
-				width( width ).
-				height( height ).
-				screenScales( screenScales ).
-				targetRenderNanos( targetRenderNanos ).
-				doubleBuffered( doubleBuffered ).
-				numRenderingThreads( numRenderingThreads ).
-				transformEventHandlerFactory( transformEventHandlerFactory ).
-				accumulateProjectorFactory( accumulateProjectorFactory ).
-				inputTriggerConfig( inputTriggerConfig ).
-				sourceTransform( sourceTransform );
+			final BdvOptions o = new BdvOptions()
+					.preferredSize( width, height )
+					.screenScales( screenScales )
+					.targetRenderNanos( targetRenderNanos )
+					.doubleBuffered( doubleBuffered )
+					.numRenderingThreads( numRenderingThreads )
+					.transformEventHandlerFactory( transformEventHandlerFactory )
+					.accumulateProjectorFactory( accumulateProjectorFactory )
+					.inputTriggerConfig( inputTriggerConfig )
+					.sourceTransform( sourceTransform )
+					.frameTitle( frameTitle )
+					.axisOrder( axisOrder )
+					.addTo( addTo );
+			if ( is2D() )
+				o.is2D();
+			return o;
 		}
 
 		public ViewerOptions getViewerOptions()
 		{
-			return ViewerOptions.options().
-				width( width ).
-				height( height ).
-				screenScales( screenScales ).
-				targetRenderNanos( targetRenderNanos ).
-				doubleBuffered( doubleBuffered ).
-				numRenderingThreads( numRenderingThreads ).
-				transformEventHandlerFactory( transformEventHandlerFactory ).
-				accumulateProjectorFactory( accumulateProjectorFactory ).
-				inputTriggerConfig( inputTriggerConfig );
+			final ViewerOptions o = ViewerOptions.options()
+					.screenScales( screenScales )
+					.targetRenderNanos( targetRenderNanos )
+					.doubleBuffered( doubleBuffered )
+					.numRenderingThreads( numRenderingThreads )
+					.transformEventHandlerFactory( transformEventHandlerFactory )
+					.accumulateProjectorFactory( accumulateProjectorFactory )
+					.inputTriggerConfig( inputTriggerConfig );
+			if ( hasPreferredSize() )
+				o.width( width ).height( height );
+			return o;
 		}
 
 		public AffineTransform3D getSourceTransform()
@@ -330,6 +329,11 @@ public class BdvOptions
 		public boolean is2D()
 		{
 			return is2D;
+		}
+
+		public boolean hasPreferredSize()
+		{
+			return width > 0 && height > 0;
 		}
 
 		public AxisOrder axisOrder()

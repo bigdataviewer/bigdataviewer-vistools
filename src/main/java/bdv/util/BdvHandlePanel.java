@@ -64,6 +64,8 @@ public class BdvHandlePanel extends BdvHandle
 		final Cache cache = new Cache.Dummy();
 
 		viewer = new ViewerPanel( new ArrayList<>(), 1, cache, viewerOptions );
+		if ( !options.values.hasPreferredSize() )
+			viewer.getDisplay().setPreferredSize( null );
 		setupAssignments = new SetupAssignments( new ArrayList<>(), 0, 65535 );
 
 		keybindings = new InputActionBindings();
