@@ -17,10 +17,10 @@ public class Example2D
 
 		final ArrayImg< ARGBType, IntArray > img = ArrayImgs.argbs( 100, 100, 100 );
 		img.forEach( t -> t.set( random.nextInt() & 0xFF00FF00 ) );
-		final Bdv bdv3D = BdvFunctions.show( img, "greens", Bdv.options().is2D() );
+		final Bdv bdv2D = BdvFunctions.show( img, "greens", Bdv.options().is2D() );
 
 		final ArrayImg< ARGBType, IntArray > img2 = ArrayImgs.argbs( 100, 100, 100 );
 		img2.forEach( t -> t.set( random.nextInt() & 0xFFFF0000 ) );
-		BdvFunctions.show( img2, "reds", Bdv.options().addTo( bdv3D ) );
+		BdvFunctions.show( img2, "reds", Bdv.options().addTo( bdv2D ) );
 	}
 }
