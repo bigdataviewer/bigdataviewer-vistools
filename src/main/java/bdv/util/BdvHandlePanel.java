@@ -1,6 +1,8 @@
 package bdv.util;
 
 import java.awt.Frame;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +68,15 @@ public class BdvHandlePanel extends BdvHandle
 		viewer = new ViewerPanel( new ArrayList<>(), 1, cache, viewerOptions );
 		if ( !options.values.hasPreferredSize() )
 			viewer.getDisplay().setPreferredSize( null );
+		viewer.getDisplay().addComponentListener( new ComponentAdapter()
+		{
+			@Override
+			public void componentResized( final ComponentEvent e )
+			{
+				tryInitTransform();
+			}
+		} );
+
 		setupAssignments = new SetupAssignments( new ArrayList<>(), 0, 65535 );
 
 		keybindings = new InputActionBindings();

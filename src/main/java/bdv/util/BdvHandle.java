@@ -98,8 +98,29 @@ public abstract class BdvHandle implements Bdv
 
 		if ( initTransform )
 		{
-			InitializeViewerState.initTransform( viewer );
+			synchronized ( this )
+			{
+				initTransformPending = true;
+				tryInitTransform();
+			}
+		}
 
+		updateHasPlaceHolderSources();
+		updateNumTimepoints();
+	}
+
+	private boolean initTransformPending;
+
+	protected synchronized void tryInitTransform()
+	{
+		if ( viewer.getDisplay().getWidth() <= 0 || viewer.getDisplay().getHeight() <= 0 )
+			return;
+
+		if ( initTransformPending )
+		{
+			initTransformPending = false;
+
+			InitializeViewerState.initTransform( viewer );
 			if ( bdvOptions.values.is2D() )
 			{
 				final AffineTransform3D t = new AffineTransform3D();
@@ -108,9 +129,6 @@ public abstract class BdvHandle implements Bdv
 				viewer.setCurrentViewerTransform( t );
 			}
 		}
-
-		updateHasPlaceHolderSources();
-		updateNumTimepoints();
 	}
 
 	void remove(
