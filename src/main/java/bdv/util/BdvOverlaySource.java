@@ -69,4 +69,16 @@ public class BdvOverlaySource< O extends OverlayRenderer > extends BdvSource
 		// TODO: fix in BDV. Brightness ranges should all be double
 		group.setRange( ( int ) min, ( int ) max );
 	}
+
+	@Override
+	public void setCurrent()
+	{
+		getBdvHandle().getViewerPanel().getVisibilityAndGrouping().setCurrentSource( source.getSpimSource() );
+	}
+
+	@Override
+	public void setActive( final boolean isActive )
+	{
+		getBdvHandle().getViewerPanel().getVisibilityAndGrouping().setSourceActive( source.getSpimSource(), isActive );
+	}
 }

@@ -70,6 +70,18 @@ public class BdvStackSource< T > extends BdvSource
 			group.setRange( ( int ) min, ( int ) max );
 	}
 
+	@Override
+	public void setCurrent()
+	{
+		getBdvHandle().getViewerPanel().getVisibilityAndGrouping().setCurrentSource( sources.get( 0 ).getSpimSource() );
+	}
+
+	@Override
+	public void setActive( final boolean isActive )
+	{
+		getBdvHandle().getViewerPanel().getVisibilityAndGrouping().setSourceActive( sources.get( 0 ).getSpimSource(), isActive );
+	}
+
 //	public T getType()
 //	{
 //		return type;

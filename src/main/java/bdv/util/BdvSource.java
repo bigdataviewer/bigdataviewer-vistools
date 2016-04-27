@@ -21,6 +21,10 @@ public abstract class BdvSource implements Bdv
 
 	public abstract void setDisplayRangeBounds( final double min, final double max );
 
+	public abstract void setCurrent();
+
+	public abstract void setActive( final boolean isActive );
+
 	@Override
 	public BdvHandle getBdvHandle()
 	{
