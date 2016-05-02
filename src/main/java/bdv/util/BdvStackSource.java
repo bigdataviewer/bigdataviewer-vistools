@@ -79,7 +79,8 @@ public class BdvStackSource< T > extends BdvSource
 	@Override
 	public void setActive( final boolean isActive )
 	{
-		getBdvHandle().getViewerPanel().getVisibilityAndGrouping().setSourceActive( sources.get( 0 ).getSpimSource(), isActive );
+		for ( final SourceAndConverter< T > source : sources )
+			getBdvHandle().getViewerPanel().getVisibilityAndGrouping().setSourceActive( source.getSpimSource(), isActive );
 	}
 
 //	public T getType()
