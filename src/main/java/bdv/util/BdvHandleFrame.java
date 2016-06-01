@@ -15,6 +15,7 @@ import bdv.viewer.DisplayMode;
 import bdv.viewer.InputActionBindings;
 import bdv.viewer.NavigationActions;
 import bdv.viewer.SourceAndConverter;
+import bdv.viewer.TriggerBehaviourBindings;
 import bdv.viewer.ViewerFrame;
 import bdv.viewer.ViewerOptions;
 import bdv.viewer.ViewerPanel.AlignPlane;
@@ -51,6 +52,16 @@ public class BdvHandleFrame extends BdvHandle
 			setupAssignments = null;
 			bdvSources.clear();
 		}
+	}
+
+	@Override
+	public InputActionBindings getKeybindings() {
+		return bdv.getViewerFrame().getKeybindings();
+	}
+
+	@Override
+	public TriggerBehaviourBindings getTriggerbindings() {
+		return bdv.getViewerFrame().getTriggerbindings();
 	}
 
 	@Override

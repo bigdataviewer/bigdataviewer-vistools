@@ -7,7 +7,9 @@ import bdv.tools.InitializeViewerState;
 import bdv.tools.brightness.ConverterSetup;
 import bdv.tools.brightness.MinMaxGroup;
 import bdv.tools.brightness.SetupAssignments;
+import bdv.viewer.InputActionBindings;
 import bdv.viewer.SourceAndConverter;
+import bdv.viewer.TriggerBehaviourBindings;
 import bdv.viewer.ViewerPanel;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.ui.OverlayRenderer;
@@ -57,6 +59,10 @@ public abstract class BdvHandle implements Bdv
 
 	@Override
 	public abstract void close();
+
+	public abstract InputActionBindings getKeybindings();
+
+	public abstract TriggerBehaviourBindings getTriggerbindings();
 
 	abstract boolean createViewer(
 			final List< ? extends ConverterSetup > converterSetups,

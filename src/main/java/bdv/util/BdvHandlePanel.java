@@ -119,11 +119,13 @@ public class BdvHandlePanel extends BdvHandle
 		viewer.setDisplayMode( DisplayMode.FUSED );
 	}
 
+	@Override
 	public InputActionBindings getKeybindings()
 	{
 		return keybindings;
 	}
 
+	@Override
 	public TriggerBehaviourBindings getTriggerbindings()
 	{
 		return triggerbindings;
