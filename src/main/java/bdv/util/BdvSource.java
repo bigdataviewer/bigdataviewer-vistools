@@ -1,5 +1,7 @@
 package bdv.util;
 
+import net.imglib2.type.numeric.ARGBType;
+
 public abstract class BdvSource implements Bdv
 {
 	private BdvHandle bdv;
@@ -20,6 +22,8 @@ public abstract class BdvSource implements Bdv
 	public abstract void setDisplayRange( final double min, final double max );
 
 	public abstract void setDisplayRangeBounds( final double min, final double max );
+
+	public abstract void setColor( final ARGBType color );
 
 	public abstract void setCurrent();
 

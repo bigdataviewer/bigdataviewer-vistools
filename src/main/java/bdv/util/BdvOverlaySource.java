@@ -5,6 +5,7 @@ import java.util.Arrays;
 import bdv.tools.brightness.MinMaxGroup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.viewer.SourceAndConverter;
+import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.ui.OverlayRenderer;
 
@@ -68,6 +69,12 @@ public class BdvOverlaySource< O extends OverlayRenderer > extends BdvSource
 		final MinMaxGroup group = sa.getMinMaxGroup( setup );
 		// TODO: fix in BDV. Brightness ranges should all be double
 		group.setRange( ( int ) min, ( int ) max );
+	}
+
+	@Override
+	public void setColor( final ARGBType color )
+	{
+		setup.setColor( color );
 	}
 
 	@Override

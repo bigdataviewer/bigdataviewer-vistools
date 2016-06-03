@@ -7,6 +7,7 @@ import bdv.tools.brightness.ConverterSetup;
 import bdv.tools.brightness.MinMaxGroup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.viewer.SourceAndConverter;
+import net.imglib2.type.numeric.ARGBType;
 
 public class BdvStackSource< T > extends BdvSource
 {
@@ -41,6 +42,13 @@ public class BdvStackSource< T > extends BdvSource
 	protected boolean isPlaceHolderSource()
 	{
 		return false;
+	}
+
+	@Override
+	public void setColor( final ARGBType color )
+	{
+		for ( final ConverterSetup setup : converterSetups )
+			setup.setColor( color );
 	}
 
 	@Override
