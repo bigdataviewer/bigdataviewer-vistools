@@ -57,9 +57,8 @@ public class BdvOverlaySource< O extends OverlayRenderer > extends BdvSource
 	{
 		final SetupAssignments sa = getBdvHandle().getSetupAssignments();
 		final MinMaxGroup group = sa.getMinMaxGroup( setup );
-		// TODO: fix in BDV. Brightness ranges should all be double
-		group.getMinBoundedValue().setCurrentValue( ( int ) min );
-		group.getMaxBoundedValue().setCurrentValue( ( int ) max );
+		group.getMinBoundedValue().setCurrentValue( min );
+		group.getMaxBoundedValue().setCurrentValue( max );
 	}
 
 	@Override
@@ -67,8 +66,7 @@ public class BdvOverlaySource< O extends OverlayRenderer > extends BdvSource
 	{
 		final SetupAssignments sa = getBdvHandle().getSetupAssignments();
 		final MinMaxGroup group = sa.getMinMaxGroup( setup );
-		// TODO: fix in BDV. Brightness ranges should all be double
-		group.setRange( ( int ) min, ( int ) max );
+		group.setRange( min, max );
 	}
 
 	@Override

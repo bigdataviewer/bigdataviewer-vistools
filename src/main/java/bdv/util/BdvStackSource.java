@@ -60,9 +60,8 @@ public class BdvStackSource< T > extends BdvSource
 			groups.add( sa.getMinMaxGroup( setup ) );
 		for ( final MinMaxGroup group : groups )
 		{
-			// TODO: fix in BDV. Brightness ranges should all be double
-			group.getMinBoundedValue().setCurrentValue( ( int ) min );
-			group.getMaxBoundedValue().setCurrentValue( ( int ) max );
+			group.getMinBoundedValue().setCurrentValue( min );
+			group.getMaxBoundedValue().setCurrentValue( max );
 		}
 	}
 
@@ -74,8 +73,7 @@ public class BdvStackSource< T > extends BdvSource
 		for ( final ConverterSetup setup : converterSetups )
 			groups.add( sa.getMinMaxGroup( setup ) );
 		for ( final MinMaxGroup group : groups )
-			// TODO: fix in BDV. Brightness ranges should all be double
-			group.setRange( ( int ) min, ( int ) max );
+			group.setRange( min, max );
 	}
 
 	@Override
