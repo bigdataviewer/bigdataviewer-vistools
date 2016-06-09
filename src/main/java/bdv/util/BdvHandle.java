@@ -9,8 +9,10 @@ import bdv.tools.brightness.MinMaxGroup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.viewer.InputActionBindings;
 import bdv.viewer.SourceAndConverter;
+import bdv.viewer.TimePointListener;
 import bdv.viewer.TriggerBehaviourBindings;
 import bdv.viewer.ViewerPanel;
+import bdv.viewer.VisibilityAndGrouping.UpdateListener;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.ui.OverlayRenderer;
 import net.imglib2.ui.TransformListener;
@@ -147,6 +149,8 @@ public abstract class BdvHandle implements Bdv
 			final List< ? extends ConverterSetup > converterSetups,
 			final List< ? extends SourceAndConverter< ? > > sources,
 			final List< TransformListener< AffineTransform3D > > transformListeners,
+			final List< TimePointListener > timepointListeners,
+			final List< UpdateListener > visibilityUpdateListeners,
 			final List< OverlayRenderer > overlays )
 	{
 		if ( viewer == null )
@@ -159,6 +163,14 @@ public abstract class BdvHandle implements Bdv
 		if ( transformListeners != null )
 			for ( final TransformListener< AffineTransform3D > l : transformListeners )
 				viewer.removeTransformListener( l );
+
+		if ( timepointListeners != null )
+			for ( final TimePointListener l : timepointListeners )
+				viewer.removeTimePointListener( l );
+
+		if ( visibilityUpdateListeners != null )
+			for ( final UpdateListener l : visibilityUpdateListeners )
+				viewer.getVisibilityAndGrouping().removeUpdateListener( l );
 
 		if ( overlays != null )
 			for ( final OverlayRenderer o : overlays )

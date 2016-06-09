@@ -33,7 +33,7 @@ public class BdvStackSource< T > extends BdvSource
 	@Override
 	public void removeFromBdv()
 	{
-		getBdvHandle().remove( converterSetups, sources, null, null );
+		getBdvHandle().remove( converterSetups, sources, null, null, null, null );
 		getBdvHandle().removeBdvSource( this );
 		setBdvHandle( null );
 	}

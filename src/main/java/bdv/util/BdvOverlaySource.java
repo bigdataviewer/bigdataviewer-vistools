@@ -41,6 +41,8 @@ public class BdvOverlaySource< O extends OverlayRenderer > extends BdvSource
 				Arrays.asList( setup ),
 				Arrays.asList( source ),
 				Arrays.asList( info ),
+				Arrays.asList( info ),
+				Arrays.asList( info ),
 				Arrays.asList( overlay ) );
 		getBdvHandle().removeBdvSource( this );
 		setBdvHandle( null );

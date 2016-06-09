@@ -1,9 +1,15 @@
 package bdv.util;
 
+import static bdv.viewer.VisibilityAndGrouping.Event.VISIBILITY_CHANGED;
+
+import java.util.ArrayList;
+
 import bdv.tools.brightness.ConverterSetup;
 import bdv.viewer.Source;
 import bdv.viewer.TimePointListener;
 import bdv.viewer.ViewerPanel;
+import bdv.viewer.VisibilityAndGrouping.Event;
+import bdv.viewer.VisibilityAndGrouping.UpdateListener;
 import bdv.viewer.state.SourceGroup;
 import bdv.viewer.state.SourceState;
 import bdv.viewer.state.ViewerState;
@@ -11,7 +17,7 @@ import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.ui.TransformListener;
 
-public final class PlaceHolderOverlayInfo implements TransformListener< AffineTransform3D >, TimePointListener
+public final class PlaceHolderOverlayInfo implements TransformListener< AffineTransform3D >, TimePointListener, UpdateListener
 {
 	private final ViewerPanel viewer;
 
@@ -23,6 +29,22 @@ public final class PlaceHolderOverlayInfo implements TransformListener< AffineTr
 
 	private int timePointIndex;
 
+	private boolean wasVisible;
+
+	private final ArrayList< VisibilityChangeListener > listeners;
+
+	public static interface VisibilityChangeListener
+	{
+		public void visibilityChanged();
+	}
+
+	/**
+	 *
+	 * @param viewer
+	 * @param source
+	 *            used for determining visibility.
+	 * @param converterSetup
+	 */
 	public PlaceHolderOverlayInfo(
 			final ViewerPanel viewer,
 			final Source< ? > source,
@@ -32,9 +54,16 @@ public final class PlaceHolderOverlayInfo implements TransformListener< AffineTr
 		this.source = source;
 		this.converterSetup = converterSetup;
 		this.viewerTransform = new AffineTransform3D();
+		this.listeners = new ArrayList<>();
 
 		viewer.addRenderTransformListener( this );
 		viewer.addTimePointListener( this );
+		viewer.getVisibilityAndGrouping().addUpdateListener( this );
+	}
+
+	Source< ? > getSource()
+	{
+		return source;
 	}
 
 	@Override
@@ -55,7 +84,6 @@ public final class PlaceHolderOverlayInfo implements TransformListener< AffineTr
 				break;
 			else
 				++sourceIndex;
-		state.isSourceVisible( sourceIndex );
 		switch ( state.getDisplayMode() )
 		{
 		case SINGLE:
@@ -122,5 +150,62 @@ public final class PlaceHolderOverlayInfo implements TransformListener< AffineTr
 	public void timePointChanged( final int timePointIndex )
 	{
 		this.timePointIndex = timePointIndex;
+	}
+
+	@Override
+	public void visibilityChanged( final Event e )
+	{
+		if ( e.id == VISIBILITY_CHANGED )
+		{
+			final boolean isVisible = isVisible();
+			if ( wasVisible != isVisible )
+			{
+				wasVisible = isVisible;
+				synchronized( listeners )
+				{
+					for ( final VisibilityChangeListener l : listeners )
+						l.visibilityChanged();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Registers a VisibilityChangeListener, that will be notified when the
+	 * visibility of the source represented by this PlaceHolderOverlayInfo
+	 * changes.
+	 *
+	 * @param listener
+	 *            the listener to register.
+	 * @return {@code true} if the listener was successfully registered.
+	 *         {@code false} if it was already registered.
+	 */
+	public boolean addVisibilityChangeListener( final VisibilityChangeListener listener )
+	{
+		synchronized( listeners )
+		{
+			if ( !listeners.contains( listener ) )
+			{
+				listeners.add( listener );
+				return true;
+			}
+			return false;
+		}
+	}
+
+	/**
+	 * Removes the specified listener.
+	 *
+	 * @param listener
+	 *            the listener to remove.
+	 * @return {@code true} if the listener was present in the listeners of
+	 *         this model and was successfully removed.
+	 */
+	public boolean removeVisibilityChangeListener( final VisibilityChangeListener listener )
+	{
+		synchronized( listeners )
+		{
+			return listeners.remove( listener );
+		}
 	}
 }

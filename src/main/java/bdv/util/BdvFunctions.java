@@ -102,9 +102,9 @@ public class BdvFunctions
 			{
 				s = new RandomAccessibleIntervalSource<>( stack, new ARGBType(), sourceTransform, name );
 			}
-			final TransformedSource< ARGBType > ts = new TransformedSource< ARGBType >( s );
+			final TransformedSource< ARGBType > ts = new TransformedSource<>( s );
 			final ScaledARGBConverter.ARGB converter = new ScaledARGBConverter.ARGB( 0, 255 );
-			final SourceAndConverter< ARGBType > soc = new SourceAndConverter< ARGBType >( ts, converter );
+			final SourceAndConverter< ARGBType > soc = new SourceAndConverter<>( ts, converter );
 
 			final int setupId = handle.getUnusedSetupId();
 			final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
@@ -142,12 +142,12 @@ public class BdvFunctions
 			{
 				s = new RandomAccessibleIntervalSource<>( stack, type, sourceTransform, name );
 			}
-			final TransformedSource< T > ts = new TransformedSource< T >( s );
+			final TransformedSource< T > ts = new TransformedSource<>( s );
 			final double typeMin = Math.max( 0, Math.min( type.getMinValue(), 65535 ) );
 			final double typeMax = Math.max( 0, Math.min( type.getMaxValue(), 65535 ) );
 			final RealARGBColorConverter< T > converter = new RealARGBColorConverter.Imp1< T >( typeMin, typeMax );
 			converter.setColor( new ARGBType( 0xffffffff ) );
-			final SourceAndConverter< T > soc = new SourceAndConverter< T >( ts, converter );
+			final SourceAndConverter< T > soc = new SourceAndConverter<>( ts, converter );
 
 			final int setupId = handle.getUnusedSetupId();
 			final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
