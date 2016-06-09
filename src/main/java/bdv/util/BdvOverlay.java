@@ -3,10 +3,26 @@ package bdv.util;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import bdv.BigDataViewer;
+import bdv.tools.brightness.ConverterSetup;
+import bdv.viewer.Source;
 import net.imglib2.realtransform.AffineTransform2D;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.ui.OverlayRenderer;
 
+/**
+ * An overlay that can be shown with
+ * {@link BdvFunctions#showOverlay(BdvOverlay, String, BdvOptions)}: This method
+ * will add a dummy {@link Source} and {@link ConverterSetup} to the
+ * {@link BigDataViewer} such that the visibility, display range, and color for
+ * the overlay can be adjusted by the user, like for a normal {@link Source}.
+ * <p>
+ * Derived classes need to implement {@link #draw(Graphics2D)}.
+ * They can access the current viewr transform using {@link #getCurrentTransform2D(AffineTransform2D)}, {@link #getCurrentTransform3D(AffineTransform3D)}.
+ * They can access the user-set display range and color via {@link #info}.
+ *
+ * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
+ */
 public abstract class BdvOverlay implements OverlayRenderer
 {
 	protected final AffineTransform3D sourceTransform;

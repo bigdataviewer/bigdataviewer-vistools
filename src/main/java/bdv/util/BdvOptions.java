@@ -42,7 +42,7 @@ import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.ui.TransformEventHandlerFactory;
 
 /**
- * Optional parameters for {@link ViewerPanel}.
+ * Optional parameters for {@link BdvFunctions}.
  *
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
  */

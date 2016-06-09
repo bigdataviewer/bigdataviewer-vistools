@@ -15,6 +15,12 @@ import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.ui.OverlayRenderer;
 import net.imglib2.ui.TransformListener;
 
+/**
+ * Represents a BigDataViewer frame or panel and can be used to get to the bdv
+ * internals.
+ *
+ * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
+ */
 public abstract class BdvHandle implements Bdv
 {
 	protected ViewerPanel viewer;

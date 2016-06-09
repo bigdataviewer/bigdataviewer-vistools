@@ -51,6 +51,5 @@ public class DisplayRangeExample
 				e.printStackTrace();
 			}
 		}
-
 	}
 }
