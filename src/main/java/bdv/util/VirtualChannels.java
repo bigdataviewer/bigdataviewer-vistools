@@ -11,6 +11,24 @@ import net.imglib2.converter.TypeIdentity;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.ARGBType;
 
+
+/**
+ * The current application for VirtualChannel sources is the following scenario:
+ *
+ * We have a labeling and want to display it using lookup tables to convert
+ * labels to ARGBType. From the same labeling we want to make multiple channels,
+ * e.g., selected ROIs, ROIs having property A, property B, etc. These could be
+ * added to BDV as individually converted images. So we could use N lookup
+ * tables to display N converted images. Instead, it is more efficient to merge
+ * the N lookup tables and then display only one converted image. We still want
+ * to be able to control display range and color settings for the N
+ * "virtual channels" individually. So {@link VirtualChannels} adds N fake
+ * sources to the BDV. Each fake source is used to control visibility and
+ * settings for one lookup table. Only one of the fake source will then actually
+ * render the converted img.
+ *
+ * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
+ */
 public class VirtualChannels
 {
 	public static interface VirtualChannel
