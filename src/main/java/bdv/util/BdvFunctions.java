@@ -9,6 +9,7 @@ import bdv.tools.brightness.ConverterSetup;
 import bdv.tools.brightness.RealARGBColorConverterSetup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.tools.transformation.TransformedSource;
+import bdv.util.VirtualChannels.VirtualChannel;
 import bdv.viewer.Source;
 import bdv.viewer.SourceAndConverter;
 import gnu.trove.map.hash.TObjectIntHashMap;
@@ -224,6 +225,23 @@ public class BdvFunctions
 		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, numTimepoints, type, converterSetups, sources );
 		handle.addBdvSource( bdvSource );
 		return bdvSource;
+	}
+
+	public static List< BdvVirtualChannelSource > show(
+			final RandomAccessibleInterval< ARGBType > img,
+			final List< ? extends VirtualChannel > virtualChannels,
+			final String name )
+	{
+		return show( img, virtualChannels, name );
+	}
+
+	public static List< BdvVirtualChannelSource > show(
+			final RandomAccessibleInterval< ARGBType > img,
+			final List< ? extends VirtualChannel > virtualChannels,
+			final String name,
+			final BdvOptions options )
+	{
+		return VirtualChannels.show( img, virtualChannels, name, options );
 	}
 
 	public static BdvPointsSource showPoints(

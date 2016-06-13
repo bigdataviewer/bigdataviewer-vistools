@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import bdv.tools.brightness.MinMaxGroup;
-import bdv.tools.brightness.SetupAssignments;
 import bdv.viewer.Source;
 import bdv.viewer.SourceAndConverter;
 import net.imglib2.RandomAccessibleInterval;
@@ -22,10 +20,9 @@ public class VirtualChannels
 		public void updateSetupParameters();
 	}
 
-	// BdvFunctions.
-	public static List< BdvVirtualChannelSource > show(
+	static List< BdvVirtualChannelSource > show(
 			final RandomAccessibleInterval< ARGBType > img,
-			final List< VirtualChannel > virtualChannels,
+			final List< ? extends VirtualChannel > virtualChannels,
 			final String name,
 			final BdvOptions options )
 	{
@@ -33,8 +30,9 @@ public class VirtualChannels
 		final BdvHandle handle = ( bdv == null )
 				? new BdvHandleFrame( options )
 				: bdv.getBdvHandle();
-		final AxisOrder axisOrder = options.values.axisOrder();
 		final AffineTransform3D sourceTransform = options.values.getSourceTransform();
+		AxisOrder axisOrder = options.values.axisOrder();
+		axisOrder = AxisOrder.getAxisOrder( axisOrder, img, handle.is2D() );
 
 		final ArrayList< RandomAccessibleInterval< ARGBType > > stacks = AxisOrder.splitInputStackIntoSourceStacks( img, axisOrder );
 		if ( stacks.size() != 1 )
@@ -119,88 +117,6 @@ public class VirtualChannels
 		public boolean isPresent( final int t )
 		{
 			return super.isPresent( t ) && coordinator.shouldBePresent( this );
-		}
-	}
-
-	public static class BdvVirtualChannelSource extends BdvSource
-	{
-		protected final PlaceHolderConverterSetup setup;
-
-		private final SourceAndConverter< ARGBType > source;
-
-		private final PlaceHolderOverlayInfo info;
-
-		private final ChannelSourceCoordinator coordinator;
-
-		protected BdvVirtualChannelSource(
-				final BdvHandle bdv,
-				final int numTimepoints,
-				final PlaceHolderConverterSetup setup,
-				final SourceAndConverter< ARGBType > source,
-				final PlaceHolderOverlayInfo info,
-				final ChannelSourceCoordinator coordinator )
-		{
-			super( bdv, numTimepoints );
-			this.setup = setup;
-			this.source = source;
-			this.info = info;
-			this.coordinator = coordinator;
-		}
-
-		@Override
-		public void removeFromBdv()
-		{
-			coordinator.sharedInfos.remove( info );
-			getBdvHandle().remove(
-					Arrays.asList( setup ),
-					Arrays.asList( source ),
-					Arrays.asList( info ),
-					Arrays.asList( info ),
-					Arrays.asList( info ),
-					null );
-			getBdvHandle().removeBdvSource( this );
-			setBdvHandle( null );
-		}
-
-		@Override
-		protected boolean isPlaceHolderSource()
-		{
-			return false;
-		}
-
-		@Override
-		public void setDisplayRange( final double min, final double max )
-		{
-			final SetupAssignments sa = getBdvHandle().getSetupAssignments();
-			final MinMaxGroup group = sa.getMinMaxGroup( setup );
-			group.getMinBoundedValue().setCurrentValue( min );
-			group.getMaxBoundedValue().setCurrentValue( max );
-		}
-
-		@Override
-		public void setDisplayRangeBounds( final double min, final double max )
-		{
-			final SetupAssignments sa = getBdvHandle().getSetupAssignments();
-			final MinMaxGroup group = sa.getMinMaxGroup( setup );
-			group.setRange( min, max );
-		}
-
-		@Override
-		public void setColor( final ARGBType color )
-		{
-			setup.setColor( color );
-		}
-
-		@Override
-		public void setCurrent()
-		{
-			getBdvHandle().getViewerPanel().getVisibilityAndGrouping().setCurrentSource( source.getSpimSource() );
-		}
-
-		@Override
-		public void setActive( final boolean isActive )
-		{
-			getBdvHandle().getViewerPanel().getVisibilityAndGrouping().setSourceActive( source.getSpimSource(), isActive );
 		}
 	}
 }
