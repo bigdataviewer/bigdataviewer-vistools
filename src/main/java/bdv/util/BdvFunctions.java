@@ -232,7 +232,7 @@ public class BdvFunctions
 			final List< ? extends VirtualChannel > virtualChannels,
 			final String name )
 	{
-		return show( img, virtualChannels, name );
+		return show( img, virtualChannels, name, Bdv.options() );
 	}
 
 	public static List< BdvVirtualChannelSource > show(
