@@ -173,7 +173,7 @@ public class BdvFunctions
 		final List< ConverterSetup > converterSetups = new ArrayList<>();
 		final List< SourceAndConverter< ARGBType > > sources = new ArrayList<>();
 
-		int numTimepoints = 1;
+		final int numTimepoints = 1;
 		final Source< ARGBType > s = new RealRandomAccessibleIntervalSource<>( img, interval, new ARGBType(), sourceTransform, name );
 
 		final TransformedSource< ARGBType > ts = new TransformedSource< ARGBType >( s );
@@ -204,9 +204,9 @@ public class BdvFunctions
 		final List< ConverterSetup > converterSetups = new ArrayList<>();
 		final List< SourceAndConverter< T > > sources = new ArrayList<>();
 
-		int numTimepoints = 1;
+		final int numTimepoints = 1;
 
-		Source< T > s = new RealRandomAccessibleIntervalSource< T >( img, interval, type, sourceTransform, name );
+		final Source< T > s = new RealRandomAccessibleIntervalSource< T >( img, interval, type, sourceTransform, name );
 
 		final TransformedSource< T > ts = new TransformedSource< T >( s );
 		final double typeMin = Math.max( 0, Math.min( type.getMinValue(), 65535 ) );
