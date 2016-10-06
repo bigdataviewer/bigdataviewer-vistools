@@ -66,13 +66,4 @@ public final class PlaceHolderSource implements Source< UnsignedShortType >
 	{
 		transform.identity();
 	}
-
-	@Override
-	@Deprecated
-	public AffineTransform3D getSourceTransform( final int t, final int level )
-	{
-		final AffineTransform3D transform = new AffineTransform3D();
-		getSourceTransform( t, level, transform );
-		return transform;
-	}
 }

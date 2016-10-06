@@ -150,15 +150,6 @@ public class RandomAccessibleIntervalSource4D< T extends NumericType< T > > impl
 	}
 
 	@Override
-	@Deprecated
-	public AffineTransform3D getSourceTransform( final int t, final int level )
-	{
-		final AffineTransform3D transform = new AffineTransform3D();
-		getSourceTransform( t, level, transform );
-		return transform;
-	}
-
-	@Override
 	public String getName()
 	{
 		return name;

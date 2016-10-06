@@ -11,12 +11,14 @@ import javax.swing.SwingUtilities;
 
 import org.scijava.ui.behaviour.MouseAndKeyHandler;
 import org.scijava.ui.behaviour.io.InputTriggerConfig;
+import org.scijava.ui.behaviour.util.InputActionBindings;
+import org.scijava.ui.behaviour.util.TriggerBehaviourBindings;
 
 import bdv.BehaviourTransformEventHandler;
 import bdv.BehaviourTransformEventHandlerFactory;
 import bdv.BigDataViewer;
 import bdv.BigDataViewerActions;
-import bdv.img.cache.Cache;
+import bdv.cache.CacheControl;
 import bdv.tools.VisibilityAndGroupingDialog;
 import bdv.tools.bookmarks.Bookmarks;
 import bdv.tools.bookmarks.BookmarksEditor;
@@ -25,10 +27,8 @@ import bdv.tools.brightness.ConverterSetup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.tools.transformation.ManualTransformationEditor;
 import bdv.viewer.DisplayMode;
-import bdv.viewer.InputActionBindings;
 import bdv.viewer.NavigationActions;
 import bdv.viewer.SourceAndConverter;
-import bdv.viewer.TriggerBehaviourBindings;
 import bdv.viewer.ViewerOptions;
 import bdv.viewer.ViewerPanel;
 import bdv.viewer.ViewerPanel.AlignPlane;
@@ -63,7 +63,7 @@ public class BdvHandlePanel extends BdvHandle
 		if ( thf instanceof BehaviourTransformEventHandlerFactory )
 			( ( BehaviourTransformEventHandlerFactory< ? > ) thf ).setConfig( inputTriggerConfig );
 
-		final Cache cache = new Cache.Dummy();
+		final CacheControl cache = new CacheControl.Dummy();
 
 		viewer = new ViewerPanel( new ArrayList<>(), 1, cache, viewerOptions );
 		if ( !options.values.hasPreferredSize() )
@@ -101,7 +101,8 @@ public class BdvHandlePanel extends BdvHandle
 		brightnessDialog = new BrightnessDialog( dialogOwner, setupAssignments );
 		activeSourcesDialog = new VisibilityAndGroupingDialog( dialogOwner, viewer.getVisibilityAndGrouping() );
 
-		final NavigationActions navactions = new NavigationActions( keybindings, inputTriggerConfig );
+		final NavigationActions navactions = new NavigationActions( inputTriggerConfig );
+		navactions.install( keybindings, "navigation" );
 		navactions.modes( viewer );
 		navactions.sources( viewer );
 		navactions.time( viewer );
@@ -110,7 +111,8 @@ public class BdvHandlePanel extends BdvHandle
 		else
 			navactions.alignPlanes( viewer );
 
-		final BigDataViewerActions bdvactions = new BigDataViewerActions( keybindings, inputTriggerConfig );
+		final BigDataViewerActions bdvactions = new BigDataViewerActions( inputTriggerConfig );
+		bdvactions.install( keybindings, "bdv" );
 		bdvactions.dialog( brightnessDialog );
 		bdvactions.dialog( activeSourcesDialog );
 		bdvactions.bookmarks( bookmarksEditor );

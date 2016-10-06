@@ -5,17 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.scijava.ui.behaviour.io.InputTriggerConfig;
+import org.scijava.ui.behaviour.util.InputActionBindings;
+import org.scijava.ui.behaviour.util.TriggerBehaviourBindings;
 
 import bdv.BigDataViewer;
+import bdv.cache.CacheControl;
 import bdv.export.ProgressWriter;
 import bdv.export.ProgressWriterConsole;
-import bdv.img.cache.Cache;
 import bdv.tools.brightness.ConverterSetup;
 import bdv.viewer.DisplayMode;
-import bdv.viewer.InputActionBindings;
 import bdv.viewer.NavigationActions;
 import bdv.viewer.SourceAndConverter;
-import bdv.viewer.TriggerBehaviourBindings;
 import bdv.viewer.ViewerFrame;
 import bdv.viewer.ViewerOptions;
 import bdv.viewer.ViewerPanel.AlignPlane;
@@ -70,7 +70,7 @@ public class BdvHandleFrame extends BdvHandle
 			final List< ? extends SourceAndConverter< ? > > sources,
 			final int numTimepoints )
 	{
-		final Cache cache = new Cache.Dummy();
+		final CacheControl cache = new CacheControl.Dummy();
 		final ProgressWriter progressWriter = new ProgressWriterConsole();
 		final ViewerOptions viewerOptions = bdvOptions.values.getViewerOptions();
 		bdv = new BigDataViewer(
@@ -89,7 +89,8 @@ public class BdvHandleFrame extends BdvHandle
 		{
 			final InputTriggerConfig inputTriggerConfig = BigDataViewer.getInputTriggerConfig( viewerOptions );
 			final InputActionBindings keybindings = bdv.getViewerFrame().getKeybindings();
-			final NavigationActions navactions = new NavigationActions( keybindings, inputTriggerConfig );
+			final NavigationActions navactions = new NavigationActions( inputTriggerConfig );
+			navactions.install( keybindings, "navigation" );
 			navactions.modes( viewer );
 			navactions.sources( viewer );
 			navactions.time( viewer );
