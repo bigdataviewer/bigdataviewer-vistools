@@ -98,9 +98,9 @@ public class BdvStackSource< T > extends BdvSource
 //	{
 //		return converterSetups;
 //	}
-//
-//	public List< SourceAndConverter< T > > getSources()
-//	{
-//		return sources;
-//	}
+
+	public List< SourceAndConverter< T > > getSources()
+	{
+		return sources;
+	}
 }
