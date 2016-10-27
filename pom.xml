@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>bigdataviewer-vistools</artifactId>
-	<version>1.0.0-beta-4-SNAPSHOT</version>
+	<version>1.0.0-beta-4</version>
 	<url>http://github.com/bigdataviewer/bigdataviewer-vistools</url>
 	<inceptionYear>2016</inceptionYear>
 
@@ -49,7 +49,7 @@
 	<scm>
 		<connection>scm:git:git://github.com/bigdataviewer/bigdataviewer-core</connection>
 		<developerConnection>scm:git:git@github.com:bigdataviewer/bigdataviewer-core</developerConnection>
-		<tag>HEAD</tag>
+		<tag>bigdataviewer-vistools-1.0.0-beta-4</tag>
 		<url>https://github.com/bigdataviewer/bigdataviewer-core</url>
 	</scm>
 	<ciManagement>
