@@ -16,10 +16,13 @@
 	<name>BigDataViewer Visualization Tools</name>
 	<description>Helpers to use BigDataViewer as quick visualization in other projects</description>
 
+	<properties><enforcer.skip>true</enforcer.skip></properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>sc.fiji</groupId>
 			<artifactId>bigdataviewer-core</artifactId>
+			<version>3.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.imglib2</groupId>
