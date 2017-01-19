@@ -18,7 +18,7 @@ import bdv.BehaviourTransformEventHandler;
 import bdv.BehaviourTransformEventHandlerFactory;
 import bdv.BigDataViewer;
 import bdv.BigDataViewerActions;
-import bdv.cache.CacheControl;
+import bdv.cache.CacheControl.CacheControls;
 import bdv.tools.VisibilityAndGroupingDialog;
 import bdv.tools.bookmarks.Bookmarks;
 import bdv.tools.bookmarks.BookmarksEditor;
@@ -63,9 +63,9 @@ public class BdvHandlePanel extends BdvHandle
 		if ( thf instanceof BehaviourTransformEventHandlerFactory )
 			( ( BehaviourTransformEventHandlerFactory< ? > ) thf ).setConfig( inputTriggerConfig );
 
-		final CacheControl cache = new CacheControl.Dummy();
+		cacheControls = new CacheControls();
 
-		viewer = new ViewerPanel( new ArrayList<>(), 1, cache, viewerOptions );
+		viewer = new ViewerPanel( new ArrayList<>(), 1, cacheControls, viewerOptions );
 		if ( !options.values.hasPreferredSize() )
 			viewer.getDisplay().setPreferredSize( null );
 		viewer.getDisplay().addComponentListener( new ComponentAdapter()

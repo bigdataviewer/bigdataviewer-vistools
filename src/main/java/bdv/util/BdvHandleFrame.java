@@ -9,7 +9,7 @@ import org.scijava.ui.behaviour.util.InputActionBindings;
 import org.scijava.ui.behaviour.util.TriggerBehaviourBindings;
 
 import bdv.BigDataViewer;
-import bdv.cache.CacheControl;
+import bdv.cache.CacheControl.CacheControls;
 import bdv.export.ProgressWriter;
 import bdv.export.ProgressWriterConsole;
 import bdv.tools.brightness.ConverterSetup;
@@ -33,6 +33,7 @@ public class BdvHandleFrame extends BdvHandle
 		super( options );
 		frameTitle = options.values.getFrameTitle();
 		bdv = null;
+		cacheControls = new CacheControls();
 	}
 
 	public BigDataViewer getBigDataViewer()
@@ -70,7 +71,6 @@ public class BdvHandleFrame extends BdvHandle
 			final List< ? extends SourceAndConverter< ? > > sources,
 			final int numTimepoints )
 	{
-		final CacheControl cache = new CacheControl.Dummy();
 		final ProgressWriter progressWriter = new ProgressWriterConsole();
 		final ViewerOptions viewerOptions = bdvOptions.values.getViewerOptions();
 		bdv = new BigDataViewer(
@@ -78,7 +78,7 @@ public class BdvHandleFrame extends BdvHandle
 				new ArrayList<>( sources ),
 				null,
 				numTimepoints,
-				cache,
+				cacheControls,
 				frameTitle,
 				progressWriter,
 				viewerOptions );

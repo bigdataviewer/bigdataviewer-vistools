@@ -5,14 +5,20 @@ import java.util.Arrays;
 import java.util.List;
 
 import bdv.BigDataViewer;
+import bdv.ViewerImgLoader;
+import bdv.img.cache.VolatileGlobalCellCache;
+import bdv.spimdata.WrapBasicImgLoader;
 import bdv.tools.brightness.ConverterSetup;
 import bdv.tools.brightness.RealARGBColorConverterSetup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.tools.transformation.TransformedSource;
 import bdv.util.VirtualChannels.VirtualChannel;
+import bdv.viewer.RequestRepaint;
 import bdv.viewer.Source;
 import bdv.viewer.SourceAndConverter;
 import gnu.trove.map.hash.TObjectIntHashMap;
+import mpicbg.spim.data.generic.AbstractSpimData;
+import mpicbg.spim.data.generic.sequence.AbstractSequenceDescription;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
@@ -268,6 +274,118 @@ public class BdvFunctions
 			final BdvOptions options )
 	{
 		return VirtualChannels.show( img, virtualChannels, name, options );
+	}
+
+	private static < T > BdvStackSource< T > addSpimDataSource(
+			final BdvHandle handle,
+			final SourceAndConverter< T > source,
+			final ConverterSetup setup,
+			final int numTimepoints )
+	{
+		final int setupId = handle.getUnusedSetupId();
+		final ConverterSetup wrappedConverterSetup = new ConverterSetup()
+		{
+			@Override
+			public boolean supportsColor()
+			{
+				return setup.supportsColor();
+			}
+
+			@Override
+			public void setViewer( final RequestRepaint viewer )
+			{
+				setup.setViewer( viewer );
+			}
+
+			@Override
+			public void setDisplayRange( final double min, final double max )
+			{
+				setup.setDisplayRange( min, max );
+			}
+
+			@Override
+			public void setColor( final ARGBType color )
+			{
+				setup.setColor( color );
+			}
+
+			@Override
+			public int getSetupId()
+			{
+				return setupId;
+			}
+
+			@Override
+			public double getDisplayRangeMin()
+			{
+				return setup.getDisplayRangeMin();
+			}
+
+			@Override
+			public double getDisplayRangeMax()
+			{
+				return setup.getDisplayRangeMax();
+			}
+
+			@Override
+			public ARGBType getColor()
+			{
+				return setup.getColor();
+			}
+		};
+
+		final List< ConverterSetup > converterSetups = new ArrayList<>();
+		final List< SourceAndConverter< T > > sources = new ArrayList<>();
+		converterSetups.add( wrappedConverterSetup );
+		sources.add( source );
+		handle.add( converterSetups, sources, numTimepoints );
+
+		final T type = source.getSpimSource().getType();
+		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, numTimepoints, type, converterSetups, sources );
+		handle.addBdvSource( bdvSource );
+
+		return bdvSource;
+	}
+
+	public static List< BdvStackSource< ? > > show(
+			final AbstractSpimData< ? > spimData )
+	{
+		return show( spimData, Bdv.options() );
+	}
+
+	public static List< BdvStackSource< ? > > show(
+			final AbstractSpimData< ? > spimData,
+			final BdvOptions options )
+	{
+		final Bdv bdv = options.values.addTo();
+		final BdvHandle handle = ( bdv == null )
+				? new BdvHandleFrame( options )
+				: bdv.getBdvHandle();
+
+		final AbstractSequenceDescription< ?, ?, ? > seq = spimData.getSequenceDescription();
+		final int numTimepoints = seq.getTimePoints().size();
+		final VolatileGlobalCellCache cache = ( VolatileGlobalCellCache ) ( ( ViewerImgLoader ) seq.getImgLoader() ).getCacheControl();
+		handle.getBdvHandle().getCacheControls().addCacheControl( cache );
+		cache.clearCache();
+
+		WrapBasicImgLoader.wrapImgLoaderIfNecessary( spimData );
+		final ArrayList< ConverterSetup > converterSetups = new ArrayList<>();
+		final ArrayList< SourceAndConverter< ? > > sources = new ArrayList<>();
+		BigDataViewer.initSetups( spimData, converterSetups, sources );
+		if ( converterSetups.size() != sources.size() )
+			throw new UnsupportedOperationException( "BigDataViewer.initSetups did not behave as expected" );
+
+		final List< BdvStackSource< ? > > bdvSources = new ArrayList<>();
+		for ( int i = 0; i < sources.size(); i++ )
+		{
+			bdvSources.add( addSpimDataSource(
+					handle,
+					sources.get( i ),
+					converterSetups.get( i ),
+					numTimepoints ) );
+		}
+		WrapBasicImgLoader.removeWrapperIfPresent( spimData );
+		return bdvSources;
 	}
 
 	public static BdvPointsSource showPoints(

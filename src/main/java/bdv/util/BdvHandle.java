@@ -6,6 +6,7 @@ import java.util.List;
 import org.scijava.ui.behaviour.util.InputActionBindings;
 import org.scijava.ui.behaviour.util.TriggerBehaviourBindings;
 
+import bdv.cache.CacheControl.CacheControls;
 import bdv.tools.InitializeViewerState;
 import bdv.tools.brightness.ConverterSetup;
 import bdv.tools.brightness.MinMaxGroup;
@@ -38,6 +39,8 @@ public abstract class BdvHandle implements Bdv
 
 	protected final int origNumTimepoints;
 
+	protected CacheControls cacheControls;
+
 	public BdvHandle( final BdvOptions options )
 	{
 		bdvOptions = options;
@@ -59,6 +62,11 @@ public abstract class BdvHandle implements Bdv
 	public SetupAssignments getSetupAssignments()
 	{
 		return setupAssignments;
+	}
+
+	CacheControls getCacheControls()
+	{
+		return cacheControls;
 	}
 
 	int getUnusedSetupId()
