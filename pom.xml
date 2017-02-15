@@ -47,10 +47,10 @@
 	</repositories>
 
 	<scm>
-		<connection>scm:git:git://github.com/bigdataviewer/bigdataviewer-core</connection>
-		<developerConnection>scm:git:git@github.com:bigdataviewer/bigdataviewer-core</developerConnection>
+		<connection>scm:git:git://github.com/bigdataviewer/bigdataviewer-vistools</connection>
+		<developerConnection>scm:git:git@github.com:bigdataviewer/bigdataviewer-vistools</developerConnection>
 		<tag>HEAD</tag>
-		<url>https://github.com/bigdataviewer/bigdataviewer-core</url>
+		<url>https://github.com/bigdataviewer/bigdataviewer-vistools</url>
 	</scm>
 	<ciManagement>
 		<system>Jenkins</system>
