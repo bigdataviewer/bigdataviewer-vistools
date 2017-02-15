@@ -54,7 +54,7 @@
 	</scm>
 	<ciManagement>
 		<system>Jenkins</system>
-		<url>http://jenkins.imagej.net/job/BigDataViewer-Core/</url>
+		<url>http://jenkins.imagej.net/job/bigdataviewer-vistools/</url>
 	</ciManagement>
 
 	<licenses>
