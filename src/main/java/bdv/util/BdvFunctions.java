@@ -13,6 +13,7 @@ import bdv.util.VirtualChannels.VirtualChannel;
 import bdv.viewer.Source;
 import bdv.viewer.SourceAndConverter;
 import gnu.trove.map.hash.TObjectIntHashMap;
+import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
@@ -20,6 +21,7 @@ import net.imglib2.RealRandomAccessible;
 import net.imglib2.display.RealARGBColorConverter;
 import net.imglib2.display.ScaledARGBConverter;
 import net.imglib2.realtransform.AffineTransform3D;
+import net.imglib2.realtransform.RealViews;
 import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
@@ -164,12 +166,24 @@ public class BdvFunctions
 
 	private static BdvStackSource< ARGBType > addSourceARGBType(
 			final BdvHandle handle,
-			final RealRandomAccessible< ARGBType > img,
-			final Interval interval,
+			RealRandomAccessible< ARGBType > img,
+			Interval interval,
 			final String name,
 			final AxisOrder axisOrder,
 			final AffineTransform3D sourceTransform )
 	{
+		/*
+		 * If AxisOrder is a 2D variant (has no Z dimension), augment the
+		 * sourceStacks by a Z dimension.
+		 */
+		if ( axisOrder.addZ )
+		{
+			img = RealViews.addDimension( img );
+			interval = new FinalInterval(
+					new long[]{ interval.min( 0 ), interval.min( 1 ), 0 },
+					new long[]{ interval.max( 0 ), interval.max( 1 ), 0 } );
+		}
+
 		final List< ConverterSetup > converterSetups = new ArrayList<>();
 		final List< SourceAndConverter< ARGBType > > sources = new ArrayList<>();
 
@@ -194,12 +208,24 @@ public class BdvFunctions
 
 	private static < T extends RealType< T > > BdvStackSource< T > addSourceRealType(
 			final BdvHandle handle,
-			final RealRandomAccessible< T > img,
-			final Interval interval,
+			RealRandomAccessible< T > img,
+			Interval interval,
 			final String name,
 			final AxisOrder axisOrder,
 			final AffineTransform3D sourceTransform )
 	{
+		/*
+		 * If AxisOrder is a 2D variant (has no Z dimension), augment the
+		 * sourceStacks by a Z dimension.
+		 */
+		if ( axisOrder.addZ )
+		{
+			img = RealViews.addDimension( img );
+			interval = new FinalInterval(
+					new long[]{ interval.min( 0 ), interval.min( 1 ), 0 },
+					new long[]{ interval.max( 0 ), interval.max( 1 ), 0 } );
+		}
+
 		final T type = img.realRandomAccess().get();
 		final List< ConverterSetup > converterSetups = new ArrayList<>();
 		final List< SourceAndConverter< T > > sources = new ArrayList<>();
