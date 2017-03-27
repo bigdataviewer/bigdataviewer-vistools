@@ -58,8 +58,8 @@
 		<url>https://github.com/bigdataviewer/bigdataviewer-vistools</url>
 	</scm>
 	<ciManagement>
-		<system>Jenkins</system>
-		<url>http://jenkins.imagej.net/job/bigdataviewer-vistools/</url>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/bigdataviewer/bigdataviewer-vistools</url>
 	</ciManagement>
 
 	<licenses>
