@@ -122,8 +122,8 @@ public class VolatileViews
 	@SuppressWarnings( "unchecked" )
 	private static < T extends NativeType< T >, V extends Volatile< T > & NativeType< V >, A > VolatileViewData< T, V > wrapCachedCellImg(
 			final CachedCellImg< T, A > cachedCellImg,
-			final SharedQueue queue,
-			final CacheHints hints )
+			SharedQueue queue,
+			CacheHints hints )
 	{
 		final T type = cachedCellImg.createLinkedType();
 		final CellGrid grid = cachedCellImg.getCellGrid();
@@ -134,6 +134,10 @@ public class VolatileViews
 			throw new IllegalArgumentException( "underlying " + CachedCellImg.class.getSimpleName() + " must have volatile access type" );
 
 		final V vtype = ( V ) VolatileTypeMatcher.getVolatileTypeForType( type );
+		if ( queue == null )
+			queue = new SharedQueue( 1, 1 );
+		if ( hints == null )
+			hints = new CacheHints( LoadingStrategy.VOLATILE, 0, false );
 		@SuppressWarnings( "rawtypes" )
 		final VolatileCachedCellImg< V, ? > img = createVolatileCachedCellImg( grid, vtype, flags, ( Cache ) cache, queue, hints );
 
@@ -145,14 +149,9 @@ public class VolatileViews
 			final T type,
 			final AccessFlags[] accessFlags,
 			final Cache< Long, Cell< A > > cache,
-			SharedQueue queue,
-			CacheHints hints )
+			final SharedQueue queue,
+			final CacheHints hints )
 	{
-		if ( queue == null )
-			queue = new SharedQueue( 1, 1 );
-		if ( hints == null )
-			hints = new CacheHints( LoadingStrategy.VOLATILE, 0, false );
-
 		final CreateInvalid< Long, Cell< A > > createInvalid = CreateInvalidVolatileCell.get( grid, type, accessFlags );
 		final VolatileCache< Long, Cell< A > > volatileCache = new WeakRefVolatileCache<>( cache, queue, createInvalid );
 		final VolatileCachedCellImg< T, A > volatileImg = new VolatileCachedCellImg<>( grid, type, hints, volatileCache.unchecked()::get );
