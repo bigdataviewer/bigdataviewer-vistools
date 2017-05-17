@@ -3,49 +3,92 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>sc.fiji</groupId>
-		<artifactId>pom-bigdataviewer</artifactId>
-		<version>4.0.1</version>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>14.0.0</version>
+		<relativePath />
 	</parent>
 
+	<groupId>sc.fiji</groupId>
 	<artifactId>bigdataviewer-vistools</artifactId>
 	<version>1.0.0-beta-5-SNAPSHOT</version>
-	<url>http://github.com/bigdataviewer/bigdataviewer-vistools</url>
-	<inceptionYear>2016</inceptionYear>
 
 	<name>BigDataViewer Visualization Tools</name>
 	<description>Helpers to use BigDataViewer as quick visualization in other projects</description>
-
-	<properties><enforcer.skip>true</enforcer.skip></properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>sc.fiji</groupId>
-			<artifactId>bigdataviewer-core</artifactId>
-			<version>3.0.4-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.imglib2</groupId>
-			<artifactId>imglib2-realtransform</artifactId>
-			<version>2.0.0-beta-36</version>
-		</dependency>
-	</dependencies>
+	<url>http://github.com/bigdataviewer/bigdataviewer-vistools</url>
+	<inceptionYear>2016</inceptionYear>
+	<organization>
+		<name>BigDataViewer</name>
+		<url>https://imagej.net/BigDataViewer</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>Simplified BSD License</name>
+			<url>http://opensource.org/licenses/BSD-2-Clause</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<developers>
 		<developer>
 			<id>tpietzsch</id>
 			<name>Tobias Pietzsch</name>
-			<email>pietzsch@mpi-cbg.de</email>
-			<url />
-			<organization>MPI-CBG</organization>
-			<organizationUrl>http://www.mpi-cbg.de/</organizationUrl>
+			<url>https://imagej.net/User:Pietzsch</url>
 			<roles>
-				<role>architect</role>
+				<role>founder</role>
+				<role>lead</role>
 				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
 			</roles>
-			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>ctrueden</id>
+			<name>Curtis Rueden</name>
+			<url>https://imagej.net/User:Rueden</url>
+			<roles>
+				<role>maintainer</role>
+			</roles>
 		</developer>
 	</developers>
+	<contributors>
+		<contributor>
+			<name>Stephan Saalfeld</name>
+			<url>https://imagej.net/User:Saalfeld</url>
+			<properties><id>axtimwalde</id></properties>
+		</contributor>
+	</contributors>
+
+	<mailingLists>
+		<mailingList>
+			<name>ImageJ Forum</name>
+			<archive>http://forum.imagej.net/</archive>
+		</mailingList>
+	</mailingLists>
+
+	<scm>
+		<connection>scm:git:git://github.com/bigdataviewer/bigdataviewer-vistools</connection>
+		<developerConnection>scm:git:git@github.com:bigdataviewer/bigdataviewer-vistools</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/bigdataviewer/bigdataviewer-vistools</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/bigdataviewer/bigdataviewer-vistools/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/bigdataviewer/bigdataviewer-vistools</url>
+	</ciManagement>
+
+	<properties>
+		<package-name>bdv.util</package-name>
+		<license.licenseName>bsd_2</license.licenseName>
+		<license.copyrightOwners>BigDataViewer developers.</license.copyrightOwners>
+		<license.projectName>BigDataViewer quick visualization API.</license.projectName>
+	</properties>
 
 	<repositories>
 		<repository>
@@ -54,40 +97,15 @@
 		</repository>
 	</repositories>
 
-	<scm>
-		<connection>scm:git:git://github.com/bigdataviewer/bigdataviewer-vistools</connection>
-		<developerConnection>scm:git:git@github.com:bigdataviewer/bigdataviewer-vistools</developerConnection>
-		<tag>HEAD</tag>
-		<url>https://github.com/bigdataviewer/bigdataviewer-vistools</url>
-	</scm>
-	<ciManagement>
-		<system>Jenkins</system>
-		<url>http://jenkins.imagej.net/job/bigdataviewer-vistools/</url>
-	</ciManagement>
-
-	<licenses>
-		<license>
-			<name>BSD 2-Clause License</name>
-			<url>http://opensource.org/licenses/BSD-2-Clause</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<configuration>
-					<licenseName>bsd_2</licenseName>
-					<copyrightOwners>Tobias Pietzsch</copyrightOwners>
-					<organizationName>BigDataViewer authors</organizationName>
-					<projectName>Helpers to use BigDataViewer as quick visualization in other projects</projectName>
-					<roots>
-						<root>src/main/java</root>
-						<root>src/test/java</root>
-					</roots>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	<dependencies>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>bigdataviewer-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>imglib2-realtransform</artifactId>
+			<version>2.0.0-beta-36</version>
+		</dependency>
+	</dependencies>
 </project>
