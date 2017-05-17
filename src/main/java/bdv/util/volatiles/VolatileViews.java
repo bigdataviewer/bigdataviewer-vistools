@@ -2,9 +2,6 @@ package bdv.util.volatiles;
 
 import bdv.img.cache.CreateInvalidVolatileCell;
 import bdv.img.cache.VolatileCachedCellImg;
-import net.imglib2.AbstractWrappedInterval;
-import net.imglib2.Interval;
-import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
@@ -23,92 +20,15 @@ import net.imglib2.type.NativeType;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.MixedTransformView;
 
+/**
+ * Wrap view cascades ending in {@link CachedCellImg} as volatile views.
+ * {@link RandomAccessible}s wrapped in this way can be displayed in
+ * BigDataViewer while loading asynchronously.
+ *
+ * @author Tobias Pietzsch
+ */
 public class VolatileViews
 {
-	/**
-	 * Something that provides {@link VolatileViewData}.
-	 *
-	 * @param <T>
-	 *            original image pixel type
-	 * @param <V>
-	 *            corresponding volatile pixel type
-	 *
-	 * @author Tobias Pietzsch
-	 */
-	public interface VolatileView< T, V extends Volatile< T > >
-	{
-		public VolatileViewData< T, V > getVolatileViewData();
-	}
-
-	public static class VolatileRandomAccessibleIntervalView< T, V extends Volatile< T > >
-		extends AbstractWrappedInterval< RandomAccessibleInterval< V > >
-		implements VolatileView< T, V >, RandomAccessibleInterval< V >
-	{
-		private final VolatileViewData< T, V > viewData;
-
-		public VolatileRandomAccessibleIntervalView(
-				final VolatileViewData< T, V > viewData )
-		{
-			super( ( RandomAccessibleInterval< V > ) viewData.getImg() );
-			this.viewData = viewData;
-		}
-
-		@Override
-		public VolatileViewData< T, V > getVolatileViewData()
-		{
-			return viewData;
-		}
-
-		@Override
-		public RandomAccess< V > randomAccess()
-		{
-			return sourceInterval.randomAccess();
-		}
-
-		@Override
-		public RandomAccess< V > randomAccess( final Interval interval )
-		{
-			return sourceInterval.randomAccess( interval );
-		}
-	}
-
-	public static class VolatileRandomAccessibleView< T, V extends Volatile< T > >
-		implements VolatileView< T, V >, RandomAccessible< V >
-	{
-		private final VolatileViewData< T, V > viewData;
-
-		public VolatileRandomAccessibleView(
-				final VolatileViewData< T, V > viewData )
-		{
-			this.viewData = viewData;
-		}
-
-		@Override
-		public VolatileViewData< T, V > getVolatileViewData()
-		{
-			return viewData;
-		}
-
-		@Override
-		public RandomAccess< V > randomAccess()
-		{
-			return viewData.getImg().randomAccess();
-		}
-
-		@Override
-		public RandomAccess< V > randomAccess( final Interval interval )
-		{
-			return viewData.getImg().randomAccess( interval );
-		}
-
-		@Override
-		public int numDimensions()
-		{
-			return viewData.getImg().numDimensions();
-
-		}
-	}
-
 	public static < T, V extends Volatile< T > > RandomAccessibleInterval< V > wrapAsVolatile(
 			final RandomAccessibleInterval< T > rai )
 	{
@@ -154,6 +74,8 @@ public class VolatileViews
 		final VolatileViewData< T, V > viewData = ( VolatileViewData< T, V > ) wrapAsVolatileViewData( rai, queue, hints );
 		return new VolatileRandomAccessibleView<>( viewData );
 	}
+
+	// ==============================================================
 
 	@SuppressWarnings( "unchecked" )
 	private static < T, V extends Volatile< T > > VolatileViewData< T, V > wrapAsVolatileViewData(
@@ -237,3 +159,4 @@ public class VolatileViews
 		return volatileImg;
 	}
 }
+

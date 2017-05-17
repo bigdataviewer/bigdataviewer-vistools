@@ -1,7 +1,6 @@
 package bdv.util.volatiles;
 
 import bdv.cache.CacheControl;
-import bdv.util.volatiles.VolatileViews.VolatileView;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
