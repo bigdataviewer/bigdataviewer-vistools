@@ -88,8 +88,8 @@ public class RandomAccessibleIntervalSource4D< T extends NumericType< T > > impl
 		voxelDimensions = null; // TODO?
 
 		interpolatorFactories = new InterpolatorFactory[ numInterpolationMethods ];
-		interpolatorFactories[ iNearestNeighborMethod ] = new NearestNeighborInterpolatorFactory< T >();
-		interpolatorFactories[ iNLinearMethod ] = new ClampingNLinearInterpolatorFactory< T >();
+		interpolatorFactories[ iNearestNeighborMethod ] = new NearestNeighborInterpolatorFactory<>();
+		interpolatorFactories[ iNLinearMethod ] = new ClampingNLinearInterpolatorFactory<>();
 
 		currentInterpolatedSources = new RealRandomAccessible[ numInterpolationMethods ];
 		loadTimepoint( 0 );

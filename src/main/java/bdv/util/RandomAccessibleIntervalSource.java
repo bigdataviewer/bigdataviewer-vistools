@@ -82,8 +82,8 @@ public class RandomAccessibleIntervalSource< T extends NumericType< T > > implem
 		voxelDimensions = null; // TODO?
 
 		final InterpolatorFactory< T, RandomAccessible< T > >[] interpolatorFactories = new InterpolatorFactory[ numInterpolationMethods ];
-		interpolatorFactories[ iNearestNeighborMethod ] = new NearestNeighborInterpolatorFactory< T >();
-		interpolatorFactories[ iNLinearMethod ] = new ClampingNLinearInterpolatorFactory< T >();
+		interpolatorFactories[ iNearestNeighborMethod ] = new NearestNeighborInterpolatorFactory<>();
+		interpolatorFactories[ iNLinearMethod ] = new ClampingNLinearInterpolatorFactory<>();
 
 		final T zero = getType().createVariable();
 		zero.setZero();
