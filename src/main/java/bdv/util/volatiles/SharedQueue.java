@@ -15,10 +15,15 @@ public class SharedQueue extends BlockingFetchQueues< Callable< ? > > implements
 {
 	private final FetcherThreads fetcherThreads;
 
-	public SharedQueue( final int numPriorities, final int numFetcherThreads )
+	public SharedQueue( final int numFetcherThreads, final int numPriorities )
 	{
 		super( numPriorities );
 		fetcherThreads = new FetcherThreads( this, numFetcherThreads );
+	}
+
+	public SharedQueue( final int numFetcherThreads )
+	{
+		this( numFetcherThreads, 1 );
 	}
 
 	public void shutdown()
