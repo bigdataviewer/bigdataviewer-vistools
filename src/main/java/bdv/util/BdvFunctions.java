@@ -13,8 +13,8 @@ import bdv.tools.brightness.RealARGBColorConverterSetup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.tools.transformation.TransformedSource;
 import bdv.util.VirtualChannels.VirtualChannel;
+import bdv.util.volatiles.VolatileViewData;
 import bdv.util.volatiles.VolatileViews.VolatileView;
-import bdv.util.volatiles.VolatileViews.VolatileViewData;
 import bdv.viewer.RequestRepaint;
 import bdv.viewer.Source;
 import bdv.viewer.SourceAndConverter;
@@ -66,8 +66,8 @@ public class BdvFunctions
 		if ( img instanceof VolatileView )
 		{
 			final VolatileViewData< ?, ? > viewData = ( ( VolatileView< ?, ? > ) img ).getVolatileViewData();
-			type = ( T ) viewData.volatileType;
-			handle.getCacheControls().addCacheControl( viewData.cacheControl );
+			type = ( T ) viewData.getVolatileType();
+			handle.getCacheControls().addCacheControl( viewData.getCacheControl() );
 		}
 		else
 			type = Util.getTypeFromInterval( img );

@@ -1,6 +1,5 @@
 package bdv.util.volatiles;
 
-import bdv.cache.CacheControl;
 import bdv.img.cache.CreateInvalidVolatileCell;
 import bdv.img.cache.VolatileCachedCellImg;
 import net.imglib2.AbstractWrappedInterval;
@@ -27,46 +26,6 @@ import net.imglib2.view.MixedTransformView;
 public class VolatileViews
 {
 	/**
-	 * Metadata associated with a {@link VolatileView}. It comprises the types
-	 * of the original and volatile image, a {@link CacheControl} for the
-	 * volatile cache, and the wrapped {@link RandomAccessible}.
-	 * <p>
-	 * {@link VolatileViewData} is used while wrapping deeper layers of a view
-	 * cascade (ending at a {@link CachedCellImg}) and only on the top layer
-	 * wrapped as a {@link RandomAccessible} / {@link RandomAccessibleInterval}.
-	 * </p>
-	 *
-	 * @param <T>
-	 *            original image pixel type
-	 * @param <V>
-	 *            corresponding volatile pixel type
-	 *
-	 * @author Tobias Pietzsch
-	 */
-	public static class VolatileViewData< T, V extends Volatile< T > >
-	{
-		public RandomAccessible< V > img;
-
-		public CacheControl cacheControl;
-
-		public T type;
-
-		public V volatileType;
-
-		public VolatileViewData(
-				final RandomAccessible< V > img,
-				final CacheControl cacheControl,
-				final T type,
-				final V volatileType )
-		{
-			this.img = img;
-			this.cacheControl = cacheControl;
-			this.type = type;
-			this.volatileType = volatileType;
-		}
-	}
-
-	/**
 	 * Something that provides {@link VolatileViewData}.
 	 *
 	 * @param <T>
@@ -90,7 +49,7 @@ public class VolatileViews
 		public VolatileRandomAccessibleIntervalView(
 				final VolatileViewData< T, V > viewData )
 		{
-			super( ( RandomAccessibleInterval< V > ) viewData.img );
+			super( ( RandomAccessibleInterval< V > ) viewData.getImg() );
 			this.viewData = viewData;
 		}
 
@@ -133,19 +92,19 @@ public class VolatileViews
 		@Override
 		public RandomAccess< V > randomAccess()
 		{
-			return viewData.img.randomAccess();
+			return viewData.getImg().randomAccess();
 		}
 
 		@Override
 		public RandomAccess< V > randomAccess( final Interval interval )
 		{
-			return viewData.img.randomAccess( interval );
+			return viewData.getImg().randomAccess( interval );
 		}
 
 		@Override
 		public int numDimensions()
 		{
-			return viewData.img.numDimensions();
+			return viewData.getImg().numDimensions();
 
 		}
 	}
@@ -219,20 +178,20 @@ public class VolatileViews
 			final IntervalView< T > view = ( IntervalView< T > ) rai;
 			final VolatileViewData< T, V > sourceData = wrapAsVolatileViewData( view.getSource(), queue, hints );
 			return new VolatileViewData<>(
-					new IntervalView<>( sourceData.img, view ),
-					sourceData.cacheControl,
-					sourceData.type,
-					sourceData.volatileType );
+					new IntervalView<>( sourceData.getImg(), view ),
+					sourceData.getCacheControl(),
+					sourceData.getType(),
+					sourceData.getVolatileType() );
 		}
 		else if ( rai instanceof MixedTransformView )
 		{
 			final MixedTransformView< T > view = ( MixedTransformView< T > ) rai;
 			final VolatileViewData< T, V > sourceData = wrapAsVolatileViewData( view.getSource(), queue, hints );
 			return new VolatileViewData<>(
-					new MixedTransformView<>( sourceData.img, view.getTransformToSource() ),
-					sourceData.cacheControl,
-					sourceData.type,
-					sourceData.volatileType );
+					new MixedTransformView<>( sourceData.getImg(), view.getTransformToSource() ),
+					sourceData.getCacheControl(),
+					sourceData.getType(),
+					sourceData.getVolatileType() );
 		}
 
 		throw new IllegalArgumentException();
