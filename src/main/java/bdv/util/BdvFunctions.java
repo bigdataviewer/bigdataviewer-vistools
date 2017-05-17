@@ -13,6 +13,8 @@ import bdv.tools.brightness.RealARGBColorConverterSetup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.tools.transformation.TransformedSource;
 import bdv.util.VirtualChannels.VirtualChannel;
+import bdv.util.volatiles.VolatileViews.VolatileView;
+import bdv.util.volatiles.VolatileViews.VolatileViewData;
 import bdv.viewer.RequestRepaint;
 import bdv.viewer.Source;
 import bdv.viewer.SourceAndConverter;
@@ -48,6 +50,7 @@ public class BdvFunctions
 		return show( img, name, Bdv.options() );
 	}
 
+	@SuppressWarnings( "unchecked" )
 	public static < T > BdvStackSource< T > show(
 			final RandomAccessibleInterval< T > img,
 			final String name,
@@ -59,7 +62,15 @@ public class BdvFunctions
 				: bdv.getBdvHandle();
 		final AxisOrder axisOrder = options.values.axisOrder();
 		final AffineTransform3D sourceTransform = options.values.getSourceTransform();
-		final T type = Util.getTypeFromInterval( img );
+		final T type;
+		if ( img instanceof VolatileView )
+		{
+			final VolatileViewData< ?, ? > viewData = ( ( VolatileView< ?, ? > ) img ).getVolatileViewData();
+			type = ( T ) viewData.volatileType;
+			handle.getCacheControls().addCacheControl( viewData.cacheControl );
+		}
+		else
+			type = Util.getTypeFromInterval( img );
 		if ( type instanceof ARGBType )
 		{
 			@SuppressWarnings( "unchecked" )
