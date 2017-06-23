@@ -28,49 +28,58 @@
  */
 package bdv.util;
 
+import java.util.function.Supplier;
+
+import bdv.util.volatiles.SharedQueue;
 import mpicbg.spim.data.sequence.VoxelDimensions;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.Volatile;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.NumericType;
 
-public class RandomAccessibleIntervalSource< T extends NumericType< T > > extends AbstractSource< T >
+public class RandomAccessibleIntervalMipmapSource< T extends NumericType< T > > extends AbstractSource< T >
 {
-	private final RandomAccessibleInterval< T > source;
+	protected final RandomAccessibleInterval< T >[] mipmapSources;
 
-	private final AffineTransform3D sourceTransform;
+	protected final AffineTransform3D[] mipmapTransforms;
 
-	private final VoxelDimensions voxelDimensions;
+	protected final VoxelDimensions voxelDimensions;
 
-	public RandomAccessibleIntervalSource(
-			final RandomAccessibleInterval< T > img,
+	public RandomAccessibleIntervalMipmapSource(
+			final RandomAccessibleInterval< T >[] imgs,
 			final T type,
-			final String name )
-	{
-		this( img, type, new AffineTransform3D(), name );
-	}
-
-	public RandomAccessibleIntervalSource(
-			final RandomAccessibleInterval< T > img,
-			final T type,
-			final AffineTransform3D sourceTransform,
+			final int[][] mipmapScales,
+			final VoxelDimensions voxelDimensions,
 			final String name )
 	{
 		super( type, name );
-		this.source = img;
-		this.sourceTransform = sourceTransform;
-		voxelDimensions = null; // TODO?
+		assert imgs.length == mipmapScales.length : "Number of mipmaps and scale factors do not match.";
+
+		this.mipmapSources = imgs;
+		this.mipmapTransforms = new AffineTransform3D[ mipmapScales.length ];
+		for ( int s = 0; s < mipmapScales.length; ++s )
+		{
+			final AffineTransform3D mipmapTransform = new AffineTransform3D();
+			mipmapTransform.set(
+					mipmapScales[ s ][ 0 ], 0, 0, 0.5 * ( mipmapScales[ s ][ 0 ] - 1 ),
+					0, mipmapScales[ s ][ 1 ], 0, 0.5 * ( mipmapScales[ s ][ 1 ] - 1 ),
+					0, 0, mipmapScales[ s ][ 2 ], 0.5 * ( mipmapScales[ s ][ 2 ] - 1 ) );
+			mipmapTransforms[ s ] = mipmapTransform;
+		}
+
+		this.voxelDimensions = voxelDimensions;
 	}
 
 	@Override
 	public RandomAccessibleInterval< T > getSource( final int t, final int level )
 	{
-		return source;
+		return mipmapSources[ level ];
 	}
 
 	@Override
 	public synchronized void getSourceTransform( final int t, final int level, final AffineTransform3D transform )
 	{
-		transform.set( sourceTransform );
+		transform.set( mipmapTransforms[ level ] );
 	}
 
 	@Override
@@ -82,6 +91,16 @@ public class RandomAccessibleIntervalSource< T extends NumericType< T > > extend
 	@Override
 	public int getNumMipmapLevels()
 	{
-		return 1;
+		return mipmapSources.length;
+	}
+
+	public < V extends Volatile< T > & NumericType< V > > VolatileRandomAccessibleIntervalMipmapSource< T, V > asVolatile( final V vType, final SharedQueue queue )
+	{
+		return new VolatileRandomAccessibleIntervalMipmapSource<>( this, vType, queue );
+	}
+
+	public < V extends Volatile< T > & NumericType< V > > VolatileRandomAccessibleIntervalMipmapSource< T, V > asVolatile( final Supplier< V > vTypeSupplier, final SharedQueue queue )
+	{
+		return new VolatileRandomAccessibleIntervalMipmapSource<>( this, vTypeSupplier, queue );
 	}
 }
