@@ -305,24 +305,10 @@ public class BdvFunctions
 		return show( spimData, Bdv.options() );
 	}
 
-	/** TODO: make a separate method for RealType with color argument?
-	 *
-	 * @param source
-	 * @param options
-	 * @return
-	 */
-	public static < T > BdvStackSource< T > show(
-			final Source< T > source,
-			final BdvOptions options )
-	{
-		return show( source, options, new ARGBType( 0xffffffff ) );
-	}
-
 	@SuppressWarnings( { "unchecked", "rawtypes" } )
 	public static < T > BdvStackSource< T > show(
 			final Source< T > source,
-			final BdvOptions options,
-			final ARGBType color )
+			final BdvOptions options )
 	{
 		final Bdv bdv = options.values.addTo();
 		final BdvHandle handle = ( bdv == null )
@@ -335,7 +321,7 @@ public class BdvFunctions
 		if ( type instanceof ARGBType )
 			stackSource = ( BdvStackSource< T > ) addSourceARGBType( handle, ( Source< ARGBType > ) source );
 		else if ( type instanceof RealType )
-			stackSource = ( BdvStackSource< T > ) ( BdvStackSource< ? > ) addSourceRealType( handle, ( Source< RealType > ) source, color );
+			stackSource = ( BdvStackSource< T > ) ( BdvStackSource< ? > ) addSourceRealType( handle, ( Source< RealType > ) source );
 		else
 			stackSource = null;
 
@@ -371,16 +357,11 @@ public class BdvFunctions
 
 	private static < T extends RealType< T > > BdvStackSource< T > addSourceRealType( final BdvHandle handle, final Source< T > source )
 	{
-		return addSourceRealType( handle, source, new ARGBType( 0xffffffff ) );
-	}
-
-	private static < T extends RealType< T > > BdvStackSource< T > addSourceRealType( final BdvHandle handle, final Source< T > source, final ARGBType color )
-	{
 		final T type = Util.getTypeFromInterval( source.getSource( 0, 0 ) );
 		final List< ConverterSetup > converterSetups = new ArrayList<>();
 		final List< SourceAndConverter< T > > sources = new ArrayList<>();
 
-		addSourceRealType( handle, source, color, converterSetups, sources );
+		addSourceRealType( handle, source, converterSetups, sources );
 
 		final int numTimepoints = 1;
 		handle.add( converterSetups, sources, numTimepoints );
@@ -391,16 +372,11 @@ public class BdvFunctions
 
 	private static < T extends RealType< T > > void addSourceRealType( final BdvHandle handle, final Source< T > source, final List< ConverterSetup > converterSetups, final List< SourceAndConverter< T > > sources )
 	{
-		addSourceRealType( handle, source, new ARGBType( 0xffffffff ), converterSetups, sources );
-	}
-
-	private static < T extends RealType< T > > void addSourceRealType( final BdvHandle handle, final Source< T > source, final ARGBType color, final List< ConverterSetup > converterSetups, final List< SourceAndConverter< T > > sources )
-	{
 		final T type = Util.getTypeFromInterval( source.getSource( 0, 0 ) );
 		final double typeMin = Math.max( 0, Math.min( type.getMinValue(), 65535 ) );
 		final double typeMax = Math.max( 0, Math.min( type.getMaxValue(), 65535 ) );
 		final RealARGBColorConverter< T > converter = new RealARGBColorConverter.Imp1<>( typeMin, typeMax );
-		converter.setColor( color );
+		converter.setColor( new ARGBType( 0xffffffff ) );
 
 		final TransformedSource< T > ts = new TransformedSource<>( source );
 		final SourceAndConverter< T > soc = new SourceAndConverter<>( ts, converter );
