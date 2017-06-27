@@ -28,14 +28,19 @@
  */
 package bdv.util;
 
+import bdv.viewer.Interpolation;
 import mpicbg.spim.data.sequence.VoxelDimensions;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.RealRandomAccessible;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.NumericType;
+import net.imglib2.view.Views;
 
 public class RandomAccessibleIntervalSource< T extends NumericType< T > > extends AbstractSource< T >
 {
 	private final RandomAccessibleInterval< T > source;
+
+	private final RealRandomAccessible< T >[] interpolatedSources;
 
 	private final AffineTransform3D sourceTransform;
 
@@ -59,12 +64,21 @@ public class RandomAccessibleIntervalSource< T extends NumericType< T > > extend
 		this.source = img;
 		this.sourceTransform = sourceTransform;
 		voxelDimensions = null; // TODO?
+		interpolatedSources = new RealRandomAccessible[ Interpolation.values().length ];
+		for ( final Interpolation method : Interpolation.values() )
+			interpolatedSources[ method.ordinal() ] = Views.interpolate( Views.extendZero( source ), interpolators.get( method ) );
 	}
 
 	@Override
 	public RandomAccessibleInterval< T > getSource( final int t, final int level )
 	{
 		return source;
+	}
+
+	@Override
+	public RealRandomAccessible< T > getInterpolatedSource( final int t, final int level, final Interpolation method )
+	{
+		return interpolatedSources[ method.ordinal() ];
 	}
 
 	@Override
