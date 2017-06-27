@@ -31,13 +31,13 @@ package bdv.util;
 import java.util.Arrays;
 
 import bdv.viewer.Interpolation;
-import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.NumericType;
+import net.imglib2.util.Intervals;
 import net.imglib2.view.Views;
 
 public class RandomAccessibleSource4D< T extends NumericType< T > > extends AbstractSource< T >
@@ -50,7 +50,7 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > extends Abst
 
 	protected int currentTimePointIndex;
 
-	private RandomAccessible< T > currentSource;
+	private RandomAccessibleInterval< T > currentSource;
 
 	private final RealRandomAccessible< T >[] currentInterpolatedSources;
 
@@ -75,7 +75,9 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > extends Abst
 		super( type, name );
 		this.source = img;
 		this.interval = interval;
-		this.timeSliceInterval = new FinalInterval( Views.hyperSlice( Views.interval( source, interval ), 3, 0 ) );
+		this.timeSliceInterval = Intervals.createMinMax(
+				interval.min( 0 ), interval.min( 1 ), interval.min( 2 ),
+				interval.max( 0 ), interval.max( 1 ), interval.max( 2 ) );
 		this.sourceTransform = sourceTransform;
 		currentInterpolatedSources = new RealRandomAccessible[ Interpolation.values().length ];
 		loadTimepoint( 0 );
@@ -88,9 +90,10 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > extends Abst
 		{
 			final T zero = getType().createVariable();
 			zero.setZero();
-			currentSource = Views.hyperSlice( source, 3, timepointIndex );
+			final RandomAccessible< T > slice = Views.hyperSlice( source, 3, timepointIndex );
+			currentSource = Views.interval( slice, timeSliceInterval );
 			for ( final Interpolation method : Interpolation.values() )
-				currentInterpolatedSources[ method.ordinal() ] = Views.interpolate( currentSource, interpolators.get( method ) );
+				currentInterpolatedSources[ method.ordinal() ] = Views.interpolate( slice, interpolators.get( method ) );
 		}
 		else
 		{
@@ -110,7 +113,7 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > extends Abst
 	{
 		if ( t != currentTimePointIndex )
 			loadTimepoint( t );
-		return Views.interval( currentSource, timeSliceInterval );
+		return currentSource;
 	}
 
 	@Override
