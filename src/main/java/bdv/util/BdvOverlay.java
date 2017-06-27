@@ -17,9 +17,11 @@ import net.imglib2.ui.OverlayRenderer;
  * {@link BigDataViewer} such that the visibility, display range, and color for
  * the overlay can be adjusted by the user, like for a normal {@link Source}.
  * <p>
- * Derived classes need to implement {@link #draw(Graphics2D)}.
- * They can access the current viewr transform using {@link #getCurrentTransform2D(AffineTransform2D)}, {@link #getCurrentTransform3D(AffineTransform3D)}.
- * They can access the user-set display range and color via {@link #info}.
+ * Derived classes need to implement {@link #draw(Graphics2D)}. They can access
+ * the current viewer transform using
+ * {@link #getCurrentTransform2D(AffineTransform2D)},
+ * {@link #getCurrentTransform3D(AffineTransform3D)}. They can access the
+ * user-set display range and color via {@link #info}.
  *
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
  */
