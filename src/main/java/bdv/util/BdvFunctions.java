@@ -489,9 +489,13 @@ public class BdvFunctions
 
 	private static final TObjectIntHashMap< SetupAssignments > maxIds = new TObjectIntHashMap<>( 20, 0.75f, 0 );
 
+	private static final SetupAssignments nullSetupAssignmentsKey = new SetupAssignments( new ArrayList<>(), 0, 1 );
+
 	// TODO: move to BdvFunctionUtils
-	public static synchronized int getUnusedSetupId( final SetupAssignments setupAssignments )
+	public static synchronized int getUnusedSetupId( SetupAssignments setupAssignments )
 	{
+		if ( setupAssignments == null )
+			setupAssignments = nullSetupAssignmentsKey;
 		int maxId = maxIds.get( setupAssignments );
 		for ( final ConverterSetup setup : setupAssignments.getConverterSetups() )
 			maxId = Math.max( setup.getSetupId(), maxId );

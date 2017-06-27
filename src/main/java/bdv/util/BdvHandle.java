@@ -71,7 +71,7 @@ public abstract class BdvHandle implements Bdv
 
 	int getUnusedSetupId()
 	{
-		return ( setupAssignments == null ) ? 0 : BdvFunctions.getUnusedSetupId( setupAssignments );
+		return BdvFunctions.getUnusedSetupId( setupAssignments );
 	}
 
 	@Override
