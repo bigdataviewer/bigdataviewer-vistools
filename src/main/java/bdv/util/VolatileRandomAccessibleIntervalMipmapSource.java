@@ -28,60 +28,61 @@
  */
 package bdv.util;
 
+import java.util.function.Supplier;
+
+import bdv.util.volatiles.SharedQueue;
+import bdv.util.volatiles.VolatileViews;
 import mpicbg.spim.data.sequence.VoxelDimensions;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.Volatile;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.NumericType;
 
-public class RandomAccessibleIntervalSource< T extends NumericType< T > > extends AbstractSource< T >
+public class VolatileRandomAccessibleIntervalMipmapSource< T extends NumericType< T >, V extends Volatile< T > & NumericType< V > > extends AbstractSource< V >
 {
-	private final RandomAccessibleInterval< T > source;
+	private final RandomAccessibleIntervalMipmapSource< T > source;
 
-	private final AffineTransform3D sourceTransform;
+	private SharedQueue queue;
 
-	private final VoxelDimensions voxelDimensions;
-
-	public RandomAccessibleIntervalSource(
-			final RandomAccessibleInterval< T > img,
-			final T type,
-			final String name )
+	public VolatileRandomAccessibleIntervalMipmapSource(
+			final RandomAccessibleIntervalMipmapSource< T > source,
+			final V type,
+			final SharedQueue queue )
 	{
-		this( img, type, new AffineTransform3D(), name );
+		super( type, source.getName() );
+		this.source = source;
+		this.queue = queue;
 	}
 
-	public RandomAccessibleIntervalSource(
-			final RandomAccessibleInterval< T > img,
-			final T type,
-			final AffineTransform3D sourceTransform,
-			final String name )
+	public VolatileRandomAccessibleIntervalMipmapSource(
+			final RandomAccessibleIntervalMipmapSource< T > source,
+			final Supplier< V > typeSupplier,
+			final SharedQueue queue )
 	{
-		super( type, name );
-		this.source = img;
-		this.sourceTransform = sourceTransform;
-		voxelDimensions = null; // TODO?
+		this( source, typeSupplier.get(), queue );
 	}
 
 	@Override
-	public RandomAccessibleInterval< T > getSource( final int t, final int level )
+	public RandomAccessibleInterval< V > getSource( final int t, final int level )
 	{
-		return source;
+		return VolatileViews.wrapAsVolatile( source.getSource( t, level ), queue );
 	}
 
 	@Override
 	public synchronized void getSourceTransform( final int t, final int level, final AffineTransform3D transform )
 	{
-		transform.set( sourceTransform );
+		source.getSourceTransform( t, level, transform );
 	}
 
 	@Override
 	public VoxelDimensions getVoxelDimensions()
 	{
-		return voxelDimensions;
+		return source.getVoxelDimensions();
 	}
 
 	@Override
 	public int getNumMipmapLevels()
 	{
-		return 1;
+		return source.getNumMipmapLevels();
 	}
 }

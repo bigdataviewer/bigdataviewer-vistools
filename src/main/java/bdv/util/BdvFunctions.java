@@ -460,6 +460,46 @@ public class BdvFunctions
 		return show( spimData, Bdv.options() );
 	}
 
+	/**
+	 * TODO handle NumericType
+	 *
+	 * @param source
+	 * @param options
+	 * @return
+	 */
+	public static < T extends RealType< T > > BdvStackSource< T > show(
+			final Source< T > source,
+			final BdvOptions options )
+	{
+		final Bdv bdv = options.values.addTo();
+		final BdvHandle handle = ( bdv == null )
+				? new BdvHandleFrame( options )
+				: bdv.getBdvHandle();
+
+		final T type = Util.getTypeFromInterval( source.getSource( 0, 0 ) );
+		final double typeMin = Math.max( 0, Math.min( type.getMinValue(), 65535 ) );
+		final double typeMax = Math.max( 0, Math.min( type.getMaxValue(), 65535 ) );
+		final RealARGBColorConverter< T > converter = new RealARGBColorConverter.Imp1<>( typeMin, typeMax );
+		converter.setColor( new ARGBType( 0xffffffff ) );
+
+		final List< ConverterSetup > converterSetups = new ArrayList<>();
+		final List< SourceAndConverter< T > > sources = new ArrayList<>();
+
+		final SourceAndConverter< T > soc = new SourceAndConverter<>( source, converter );
+
+		final int setupId = handle.getUnusedSetupId();
+		final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
+
+		converterSetups.add( setup );
+		sources.add( soc );
+
+		handle.add( converterSetups, sources, 1 );
+		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, 1, type, converterSetups, sources );
+		handle.addBdvSource( bdvSource );
+		return bdvSource;
+	}
+
+
 	public static List< BdvStackSource< ? > > show(
 			final AbstractSpimData< ? > spimData,
 			final BdvOptions options )
