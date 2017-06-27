@@ -58,7 +58,10 @@ public class OverlayExample3D
 				if ( alpha < 64 )
 					alpha = 64;
 
-				return new Color( 255, 0, 0, alpha );
+				final int r = ARGBType.red( info.getColor().get() );
+				final int g = ARGBType.green( info.getColor().get() );
+				final int b = ARGBType.blue( info.getColor().get() );
+				return new Color( r , g, b, alpha );
 			}
 
 			private int getSize( final double depth )
