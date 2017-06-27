@@ -28,25 +28,20 @@
  */
 package bdv.util;
 
+import java.util.Arrays;
+
 import bdv.viewer.Interpolation;
-import bdv.viewer.Source;
-import mpicbg.spim.data.sequence.VoxelDimensions;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealRandomAccessible;
-import net.imglib2.interpolation.InterpolatorFactory;
-import net.imglib2.interpolation.randomaccess.ClampingNLinearInterpolatorFactory;
-import net.imglib2.interpolation.randomaccess.NearestNeighborInterpolatorFactory;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.NumericType;
 import net.imglib2.view.Views;
 
-public class RandomAccessibleSource4D< T extends NumericType< T > > implements Source< T >
+public class RandomAccessibleSource4D< T extends NumericType< T > > extends AbstractSource< T >
 {
-	private final T type;
-
 	private final RandomAccessible< T > source;
 
 	private final Interval interval;
@@ -60,18 +55,6 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > implements S
 	private final RealRandomAccessible< T >[] currentInterpolatedSources;
 
 	private final AffineTransform3D sourceTransform;
-
-	private final String name;
-
-	private final VoxelDimensions voxelDimensions;
-
-	private final static int numInterpolationMethods = 2;
-
-	private final static int iNearestNeighborMethod = 0;
-
-	private final static int iNLinearMethod = 1;
-
-	private final InterpolatorFactory< T, RandomAccessible< T > >[] interpolatorFactories;
 
 	public RandomAccessibleSource4D(
 			final RandomAccessible< T > img,
@@ -89,19 +72,12 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > implements S
 			final AffineTransform3D sourceTransform,
 			final String name )
 	{
+		super( type, name );
 		this.source = img;
 		this.interval = interval;
 		this.timeSliceInterval = new FinalInterval( Views.hyperSlice( Views.interval( source, interval ), 3, 0 ) );
-		this.name = name;
-		this.type = type;
 		this.sourceTransform = sourceTransform;
-		voxelDimensions = null; // TODO?
-
-		interpolatorFactories = new InterpolatorFactory[ numInterpolationMethods ];
-		interpolatorFactories[ iNearestNeighborMethod ] = new NearestNeighborInterpolatorFactory< >();
-		interpolatorFactories[ iNLinearMethod ] = new ClampingNLinearInterpolatorFactory< >();
-
-		currentInterpolatedSources = new RealRandomAccessible[ numInterpolationMethods ];
+		currentInterpolatedSources = new RealRandomAccessible[ Interpolation.values().length ];
 		loadTimepoint( 0 );
 	}
 
@@ -113,15 +89,13 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > implements S
 			final T zero = getType().createVariable();
 			zero.setZero();
 			currentSource = Views.hyperSlice( source, 3, timepointIndex );
-//			ImageJFunctions.show( currentSource );
-			for ( int method = 0; method < numInterpolationMethods; ++method )
-				currentInterpolatedSources[ method ] = Views.interpolate( currentSource, interpolatorFactories[ method ] );
+			for ( final Interpolation method : Interpolation.values() )
+				currentInterpolatedSources[ method.ordinal() ] = Views.interpolate( currentSource, interpolators.get( method ) );
 		}
 		else
 		{
 			currentSource = null;
-			for ( int method = 0; method < numInterpolationMethods; ++method )
-				currentInterpolatedSources[ method ] = null;
+			Arrays.fill( currentInterpolatedSources, null );
 		}
 	}
 
@@ -129,12 +103,6 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > implements S
 	public boolean isPresent( final int t )
 	{
 		return interval.min( 3 ) <= t && t <= interval.max( 3 );
-	}
-
-	@Override
-	public T getType()
-	{
-		return type;
 	}
 
 	@Override
@@ -150,30 +118,12 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > implements S
 	{
 		if ( t != currentTimePointIndex )
 			loadTimepoint( t );
-		return currentInterpolatedSources[ method == Interpolation.NLINEAR ? iNLinearMethod : iNearestNeighborMethod ];
+		return currentInterpolatedSources[ method.ordinal() ];
 	}
 
 	@Override
 	public synchronized void getSourceTransform( final int t, final int level, final AffineTransform3D transform )
 	{
 		transform.set( sourceTransform );
-	}
-
-	@Override
-	public String getName()
-	{
-		return name;
-	}
-
-	@Override
-	public VoxelDimensions getVoxelDimensions()
-	{
-		return voxelDimensions;
-	}
-
-	@Override
-	public int getNumMipmapLevels()
-	{
-		return 1;
 	}
 }

@@ -29,23 +29,16 @@
 package bdv.util;
 
 import bdv.viewer.Interpolation;
-import bdv.viewer.Source;
-import mpicbg.spim.data.sequence.VoxelDimensions;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealRandomAccessible;
-import net.imglib2.interpolation.InterpolatorFactory;
-import net.imglib2.interpolation.randomaccess.ClampingNLinearInterpolatorFactory;
-import net.imglib2.interpolation.randomaccess.NearestNeighborInterpolatorFactory;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.NumericType;
 import net.imglib2.view.Views;
 
-public class RandomAccessibleSource< T extends NumericType< T > > implements Source< T >
+public class RandomAccessibleSource< T extends NumericType< T > > extends AbstractSource< T >
 {
-	private final T type;
-
 	private final RandomAccessible< T > source;
 
 	private final Interval interval;
@@ -53,16 +46,6 @@ public class RandomAccessibleSource< T extends NumericType< T > > implements Sou
 	private final RealRandomAccessible< T >[] interpolatedSources;
 
 	private final AffineTransform3D sourceTransform;
-
-	private final String name;
-
-	private final VoxelDimensions voxelDimensions;
-
-	private final static int numInterpolationMethods = 2;
-
-	private final static int iNearestNeighborMethod = 0;
-
-	private final static int iNLinearMethod = 1;
 
 	public RandomAccessibleSource(
 			final RandomAccessible< T > img,
@@ -80,40 +63,14 @@ public class RandomAccessibleSource< T extends NumericType< T > > implements Sou
 			final AffineTransform3D sourceTransform,
 			final String name )
 	{
+		super( type, name );
 		this.source = img;
 		this.interval = interval;
-		this.name = name;
-		this.type = type;
 		this.sourceTransform = sourceTransform;
-		voxelDimensions = null; // TODO?
+		interpolatedSources = new RealRandomAccessible[ Interpolation.values().length ];
+		for ( final Interpolation method : Interpolation.values() )
+			interpolatedSources[ method.ordinal() ] = Views.interpolate( source, interpolators.get( method ) );
 
-		final InterpolatorFactory< T, RandomAccessible< T > >[] interpolatorFactories = new InterpolatorFactory[ numInterpolationMethods ];
-		interpolatorFactories[ iNearestNeighborMethod ] = new NearestNeighborInterpolatorFactory< >();
-		interpolatorFactories[ iNLinearMethod ] = new ClampingNLinearInterpolatorFactory< >();
-
-		interpolatedSources = new RealRandomAccessible[ numInterpolationMethods ];
-		for ( int method = 0; method < numInterpolationMethods; ++method )
-			interpolatedSources[ method ] = Views.interpolate( source, interpolatorFactories[ method ] );
-
-	}
-
-	public static < T extends NumericType< T > > T getZero( final T t )
-	{
-		final T zero = t.createVariable();
-		t.setZero();
-		return zero;
-	}
-
-	@Override
-	public boolean isPresent( final int t )
-	{
-		return true;
-	}
-
-	@Override
-	public T getType()
-	{
-		return type;
 	}
 
 	@Override
@@ -125,30 +82,12 @@ public class RandomAccessibleSource< T extends NumericType< T > > implements Sou
 	@Override
 	public RealRandomAccessible< T > getInterpolatedSource( final int t, final int level, final Interpolation method )
 	{
-		return interpolatedSources[ method == Interpolation.NLINEAR ? iNLinearMethod : iNearestNeighborMethod ];
+		return interpolatedSources[ method.ordinal() ];
 	}
 
 	@Override
 	public synchronized void getSourceTransform( final int t, final int level, final AffineTransform3D transform )
 	{
 		transform.set( sourceTransform );
-	}
-
-	@Override
-	public String getName()
-	{
-		return name;
-	}
-
-	@Override
-	public VoxelDimensions getVoxelDimensions()
-	{
-		return voxelDimensions;
-	}
-
-	@Override
-	public int getNumMipmapLevels()
-	{
-		return 1;
 	}
 }
