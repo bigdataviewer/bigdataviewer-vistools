@@ -67,13 +67,7 @@ public class RealRandomAccessibleIntervalSource< T extends NumericType< T > > ex
 	}
 
 	@Override
-	public int getNumMipmapLevels()
-	{
-		return 1;
-	}
-
-	@Override
-	public Interval getInterval( int t, int level )
+	public Interval getInterval( final int t, final int level )
 	{
 		return interval;
 	}
