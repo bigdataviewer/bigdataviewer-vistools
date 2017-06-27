@@ -1,5 +1,6 @@
 package bdv.util;
 
+import static bdv.viewer.VisibilityAndGrouping.Event.SOURCE_ACTVITY_CHANGED;
 import static bdv.viewer.VisibilityAndGrouping.Event.VISIBILITY_CHANGED;
 
 import java.util.ArrayList;
@@ -155,7 +156,7 @@ public final class PlaceHolderOverlayInfo implements TransformListener< AffineTr
 	@Override
 	public void visibilityChanged( final Event e )
 	{
-		if ( e.id == VISIBILITY_CHANGED )
+		if ( e.id == VISIBILITY_CHANGED || e.id == SOURCE_ACTVITY_CHANGED )
 		{
 			final boolean isVisible = isVisible();
 			if ( wasVisible != isVisible )
