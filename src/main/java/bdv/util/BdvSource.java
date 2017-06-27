@@ -27,6 +27,8 @@ public abstract class BdvSource implements Bdv
 
 	public abstract void setCurrent();
 
+	public abstract boolean isCurrent();
+
 	public abstract void setActive( final boolean isActive );
 
 	@Override

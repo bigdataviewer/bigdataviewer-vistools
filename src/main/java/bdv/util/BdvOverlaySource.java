@@ -1,10 +1,13 @@
 package bdv.util;
 
 import java.util.Arrays;
+import java.util.List;
 
 import bdv.tools.brightness.MinMaxGroup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.viewer.SourceAndConverter;
+import bdv.viewer.state.SourceState;
+import bdv.viewer.state.ViewerState;
 import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.ui.OverlayRenderer;
@@ -81,6 +84,15 @@ public class BdvOverlaySource< O extends OverlayRenderer > extends BdvSource
 	public void setCurrent()
 	{
 		getBdvHandle().getViewerPanel().getVisibilityAndGrouping().setCurrentSource( source.getSpimSource() );
+	}
+
+	@Override
+	public boolean isCurrent()
+	{
+		final ViewerState state = getBdvHandle().getViewerPanel().getState();
+		final List< SourceState< ? > > ss = state.getSources();
+		final int i = state.getCurrentSource();
+		return i >= 0 && i < ss.size() && ss.get( i ).getSpimSource() == source.getSpimSource();
 	}
 
 	@Override
