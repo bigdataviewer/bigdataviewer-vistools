@@ -29,7 +29,6 @@
 package bdv.util;
 
 import bdv.viewer.Interpolation;
-import mpicbg.spim.data.sequence.VoxelDimensions;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.realtransform.AffineTransform3D;
@@ -43,8 +42,6 @@ public class RandomAccessibleIntervalSource< T extends NumericType< T > > extend
 	private final RealRandomAccessible< T >[] interpolatedSources;
 
 	private final AffineTransform3D sourceTransform;
-
-	private final VoxelDimensions voxelDimensions;
 
 	public RandomAccessibleIntervalSource(
 			final RandomAccessibleInterval< T > img,
@@ -63,7 +60,6 @@ public class RandomAccessibleIntervalSource< T extends NumericType< T > > extend
 		super( type, name );
 		this.source = img;
 		this.sourceTransform = sourceTransform;
-		voxelDimensions = null; // TODO?
 		interpolatedSources = new RealRandomAccessible[ Interpolation.values().length ];
 		for ( final Interpolation method : Interpolation.values() )
 			interpolatedSources[ method.ordinal() ] = Views.interpolate( Views.extendZero( source ), interpolators.get( method ) );
@@ -85,17 +81,5 @@ public class RandomAccessibleIntervalSource< T extends NumericType< T > > extend
 	public synchronized void getSourceTransform( final int t, final int level, final AffineTransform3D transform )
 	{
 		transform.set( sourceTransform );
-	}
-
-	@Override
-	public VoxelDimensions getVoxelDimensions()
-	{
-		return voxelDimensions;
-	}
-
-	@Override
-	public int getNumMipmapLevels()
-	{
-		return 1;
 	}
 }

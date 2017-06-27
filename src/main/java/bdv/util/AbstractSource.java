@@ -32,6 +32,7 @@ import java.util.function.Supplier;
 
 import bdv.viewer.Interpolation;
 import bdv.viewer.Source;
+import mpicbg.spim.data.sequence.VoxelDimensions;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.type.numeric.NumericType;
 import net.imglib2.view.Views;
@@ -78,5 +79,17 @@ public abstract class AbstractSource< T extends NumericType< T > > implements So
 	public String getName()
 	{
 		return name;
+	}
+
+	@Override
+	public VoxelDimensions getVoxelDimensions()
+	{
+		return null;
+	}
+
+	@Override
+	public int getNumMipmapLevels()
+	{
+		return 1;
 	}
 }
