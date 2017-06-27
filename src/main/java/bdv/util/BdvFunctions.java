@@ -23,7 +23,6 @@ import mpicbg.spim.data.generic.AbstractSpimData;
 import mpicbg.spim.data.generic.sequence.AbstractSequenceDescription;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
-import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealRandomAccessible;
@@ -34,18 +33,16 @@ import net.imglib2.realtransform.RealViews;
 import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
-import net.imglib2.type.volatiles.VolatileARGBType;
-import net.imglib2.util.Intervals;
-import net.imglib2.util.Pair;
 import net.imglib2.util.Util;
-import net.imglib2.view.Views;
 
 /**
  * all show methods return a {@link Bdv} which can be used to add more stuff to the same window
  *
  *
- * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
- * @author Philipp Hanslovsky &lt;hanslovskyp@janelia.hhmi.org&gt;
+ * @author Tobias Pietzsch
+ * @author Philipp Hanslovsky
+ * @author Igor Pisarev
+ * @author Stephan Saalfeld
  */
 public class BdvFunctions
 {
@@ -80,7 +77,7 @@ public class BdvFunctions
 		if ( type instanceof ARGBType )
 		{
 			@SuppressWarnings( "unchecked" )
-			final BdvStackSource< T > stackSource = ( BdvStackSource< T > ) addStackSourceARGBType(
+			final BdvStackSource< T > stackSource = ( BdvStackSource< T > ) addRandomAccessibleIntervalStackARGBType(
 					handle,
 					( RandomAccessibleInterval< ARGBType > ) img,
 					name,
@@ -91,7 +88,7 @@ public class BdvFunctions
 		else if ( type instanceof RealType )
 		{
 			@SuppressWarnings( { "unchecked", "rawtypes" } )
-			final BdvStackSource< ? > tmp = addStackSourceRealType(
+			final BdvStackSource< ? > tmp = addRandomAccessibleIntervalStackRealType(
 					handle,
 					( RandomAccessibleInterval< RealType > ) img,
 					name,
@@ -101,22 +98,11 @@ public class BdvFunctions
 			final BdvStackSource< T > stackSource = ( BdvStackSource< T > ) tmp;
 			return stackSource;
 		}
-		else if ( type instanceof VolatileARGBType )
-		{
-			@SuppressWarnings( "unchecked" )
-			final BdvStackSource< T > stackSource = ( BdvStackSource< T > ) addStackSourceVolatileARGBType(
-					handle,
-					( RandomAccessibleInterval< VolatileARGBType > ) img,
-					name,
-					AxisOrder.getAxisOrder( axisOrder, img, handle.is2D() ),
-					sourceTransform );
-			return stackSource;
-		}
 
 		return null;
 	}
 
-	private static BdvStackSource< ARGBType > addStackSourceARGBType(
+	private static BdvStackSource< ARGBType > addRandomAccessibleIntervalStackARGBType(
 			final BdvHandle handle,
 			final RandomAccessibleInterval< ARGBType > img,
 			final String name,
@@ -139,15 +125,7 @@ public class BdvFunctions
 			{
 				s = new RandomAccessibleIntervalSource<>( stack, new ARGBType(), sourceTransform, name );
 			}
-			final TransformedSource< ARGBType > ts = new TransformedSource<>( s );
-			final ScaledARGBConverter.ARGB converter = new ScaledARGBConverter.ARGB( 0, 255 );
-			final SourceAndConverter< ARGBType > soc = new SourceAndConverter<>( ts, converter );
-
-			final int setupId = handle.getUnusedSetupId();
-			final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
-
-			converterSetups.add( setup );
-			sources.add( soc );
+			addSourceARGBType( handle, s, converterSetups, sources );
 		}
 		handle.add( converterSetups, sources, numTimepoints );
 		final BdvStackSource< ARGBType > bdvSource = new BdvStackSource<>( handle, numTimepoints, new ARGBType(), converterSetups, sources );
@@ -155,7 +133,7 @@ public class BdvFunctions
 		return bdvSource;
 	}
 
-	private static < T extends RealType< T > > BdvStackSource< T > addStackSourceRealType(
+	private static < T extends RealType< T > > BdvStackSource< T > addRandomAccessibleIntervalStackRealType(
 			final BdvHandle handle,
 			final RandomAccessibleInterval< T > img,
 			final String name,
@@ -179,18 +157,7 @@ public class BdvFunctions
 			{
 				s = new RandomAccessibleIntervalSource<>( stack, type, sourceTransform, name );
 			}
-			final TransformedSource< T > ts = new TransformedSource<>( s );
-			final double typeMin = Math.max( 0, Math.min( type.getMinValue(), 65535 ) );
-			final double typeMax = Math.max( 0, Math.min( type.getMaxValue(), 65535 ) );
-			final RealARGBColorConverter< T > converter = new RealARGBColorConverter.Imp1<>( typeMin, typeMax );
-			converter.setColor( new ARGBType( 0xffffffff ) );
-			final SourceAndConverter< T > soc = new SourceAndConverter<>( ts, converter );
-
-			final int setupId = handle.getUnusedSetupId();
-			final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
-
-			converterSetups.add( setup );
-			sources.add( soc );
+			addSourceRealType( handle, s, converterSetups, sources );
 		}
 		handle.add( converterSetups, sources, numTimepoints );
 		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, numTimepoints, type, converterSetups, sources );
@@ -198,44 +165,7 @@ public class BdvFunctions
 		return bdvSource;
 	}
 
-	private static BdvStackSource< VolatileARGBType > addStackSourceVolatileARGBType(
-			final BdvHandle handle,
-			final RandomAccessibleInterval< VolatileARGBType > img,
-			final String name,
-			final AxisOrder axisOrder,
-			final AffineTransform3D sourceTransform )
-	{
-		final List< ConverterSetup > converterSetups = new ArrayList<>();
-		final List< SourceAndConverter< VolatileARGBType > > sources = new ArrayList<>();
-		final ArrayList< RandomAccessibleInterval< VolatileARGBType > > stacks = AxisOrder.splitInputStackIntoSourceStacks( img, axisOrder );
-		int numTimepoints = 1;
-		for ( final RandomAccessibleInterval< VolatileARGBType > stack : stacks )
-		{
-			final Source< VolatileARGBType > s;
-			if ( stack.numDimensions() > 3 )
-			{
-				numTimepoints = ( int ) stack.max( 3 ) + 1;
-				s = new RandomAccessibleIntervalSource4D<>( stack, new VolatileARGBType(), sourceTransform, name );
-			}
-			else
-				s = new RandomAccessibleIntervalSource<>( stack, new VolatileARGBType(), sourceTransform, name );
-			final TransformedSource< VolatileARGBType > ts = new TransformedSource<>( s );
-			final ScaledARGBConverter.VolatileARGB converter = new ScaledARGBConverter.VolatileARGB( 0, 255 );
-			final SourceAndConverter< VolatileARGBType > soc = new SourceAndConverter<>( ts, converter );
-
-			final int setupId = handle.getUnusedSetupId();
-			final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
-
-			converterSetups.add( setup );
-			sources.add( soc );
-		}
-		handle.add( converterSetups, sources, numTimepoints );
-		final BdvStackSource< VolatileARGBType > bdvSource = new BdvStackSource<>( handle, numTimepoints, new VolatileARGBType(), converterSetups, sources );
-		handle.addBdvSource( bdvSource );
-		return bdvSource;
-	}
-
-	private static BdvStackSource< ARGBType > addSourceARGBType(
+	private static BdvStackSource< ARGBType > addRandomAccessibleIntervalARGBType(
 			final BdvHandle handle,
 			RealRandomAccessible< ARGBType > img,
 			Interval interval,
@@ -255,29 +185,11 @@ public class BdvFunctions
 					new long[]{ interval.max( 0 ), interval.max( 1 ), 0 } );
 		}
 
-		final List< ConverterSetup > converterSetups = new ArrayList<>();
-		final List< SourceAndConverter< ARGBType > > sources = new ArrayList<>();
-
-		final int numTimepoints = 1;
 		final Source< ARGBType > s = new RealRandomAccessibleIntervalSource<>( img, interval, new ARGBType(), sourceTransform, name );
-
-		final TransformedSource< ARGBType > ts = new TransformedSource<>( s );
-		final ScaledARGBConverter.ARGB converter = new ScaledARGBConverter.ARGB( 0, 255 );
-		final SourceAndConverter< ARGBType > soc = new SourceAndConverter<>( ts, converter );
-
-		final int setupId = handle.getUnusedSetupId();
-		final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
-
-		converterSetups.add( setup );
-		sources.add( soc );
-
-		handle.add( converterSetups, sources, numTimepoints );
-		final BdvStackSource< ARGBType > bdvSource = new BdvStackSource<>( handle, numTimepoints, new ARGBType(), converterSetups, sources );
-		handle.addBdvSource( bdvSource );
-		return bdvSource;
+		return addSourceARGBType( handle, s );
 	}
 
-	private static < T extends RealType< T > > BdvStackSource< T > addSourceRealType(
+	private static < T extends RealType< T > > BdvStackSource< T > addRandomAccessibleIntervalRealType(
 			final BdvHandle handle,
 			RealRandomAccessible< T > img,
 			Interval interval,
@@ -298,72 +210,8 @@ public class BdvFunctions
 		}
 
 		final T type = img.realRandomAccess().get();
-		final List< ConverterSetup > converterSetups = new ArrayList<>();
-		final List< SourceAndConverter< T > > sources = new ArrayList<>();
-
-		final int numTimepoints = 1;
-
 		final Source< T > s = new RealRandomAccessibleIntervalSource<>( img, interval, type, sourceTransform, name );
-
-		final TransformedSource< T > ts = new TransformedSource<>( s );
-		final double typeMin = Math.max( 0, Math.min( type.getMinValue(), 65535 ) );
-		final double typeMax = Math.max( 0, Math.min( type.getMaxValue(), 65535 ) );
-		final RealARGBColorConverter< T > converter = new RealARGBColorConverter.Imp1<>( typeMin, typeMax );
-		converter.setColor( new ARGBType( 0xffffffff ) );
-		final SourceAndConverter< T > soc = new SourceAndConverter<>( ts, converter );
-
-		final int setupId = handle.getUnusedSetupId();
-		final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
-
-		converterSetups.add( setup );
-		sources.add( soc );
-
-		handle.add( converterSetups, sources, numTimepoints );
-		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, numTimepoints, type, converterSetups, sources );
-		handle.addBdvSource( bdvSource );
-		return bdvSource;
-	}
-
-	private static BdvStackSource< VolatileARGBType > addSourceVolatileARGBType(
-			final BdvHandle handle,
-			RealRandomAccessible< VolatileARGBType > img,
-			Interval interval,
-			final String name,
-			final AxisOrder axisOrder,
-			final AffineTransform3D sourceTransform )
-	{
-		/*
-		 * If AxisOrder is a 2D variant (has no Z dimension), augment the
-		 * sourceStacks by a Z dimension.
-		 */
-		if ( axisOrder.addZ )
-		{
-			img = RealViews.addDimension( img );
-			interval = new FinalInterval(
-					new long[] { interval.min( 0 ), interval.min( 1 ), 0 },
-					new long[] { interval.max( 0 ), interval.max( 1 ), 0 } );
-		}
-
-		final List< ConverterSetup > converterSetups = new ArrayList<>();
-		final List< SourceAndConverter< VolatileARGBType > > sources = new ArrayList<>();
-
-		final int numTimepoints = 1;
-		final Source< VolatileARGBType > s = new RealRandomAccessibleIntervalSource<>( img, interval, new VolatileARGBType(), sourceTransform, name );
-
-		final TransformedSource< VolatileARGBType > ts = new TransformedSource<>( s );
-		final ScaledARGBConverter.VolatileARGB converter = new ScaledARGBConverter.VolatileARGB( 0, 255 );
-		final SourceAndConverter< VolatileARGBType > soc = new SourceAndConverter<>( ts, converter );
-
-		final int setupId = handle.getUnusedSetupId();
-		final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
-
-		converterSetups.add( setup );
-		sources.add( soc );
-
-		handle.add( converterSetups, sources, numTimepoints );
-		final BdvStackSource< VolatileARGBType > bdvSource = new BdvStackSource<>( handle, numTimepoints, new VolatileARGBType(), converterSetups, sources );
-		handle.addBdvSource( bdvSource );
-		return bdvSource;
+		return addSourceRealType( handle, s );
 	}
 
 	public static List< BdvVirtualChannelSource > show(
@@ -460,14 +308,8 @@ public class BdvFunctions
 		return show( spimData, Bdv.options() );
 	}
 
-	/**
-	 * TODO handle NumericType
-	 *
-	 * @param source
-	 * @param options
-	 * @return
-	 */
-	public static < T extends RealType< T > > BdvStackSource< T > show(
+	@SuppressWarnings( { "unchecked", "rawtypes" } )
+	public static < T > BdvStackSource< T > show(
 			final Source< T > source,
 			final BdvOptions options )
 	{
@@ -477,26 +319,76 @@ public class BdvFunctions
 				: bdv.getBdvHandle();
 
 		final T type = Util.getTypeFromInterval( source.getSource( 0, 0 ) );
-		final double typeMin = Math.max( 0, Math.min( type.getMinValue(), 65535 ) );
-		final double typeMax = Math.max( 0, Math.min( type.getMaxValue(), 65535 ) );
-		final RealARGBColorConverter< T > converter = new RealARGBColorConverter.Imp1<>( typeMin, typeMax );
-		converter.setColor( new ARGBType( 0xffffffff ) );
+		final BdvStackSource< T > stackSource;
 
+		if ( type instanceof ARGBType )
+			stackSource = ( BdvStackSource< T > ) addSourceARGBType( handle, ( Source< ARGBType > ) source );
+		else if ( type instanceof RealType )
+			stackSource = ( BdvStackSource< T > ) ( BdvStackSource< ? > ) addSourceRealType( handle, ( Source< RealType > ) source );
+		else
+			stackSource = null;
+
+		return stackSource;
+	}
+
+	private static BdvStackSource< ARGBType > addSourceARGBType( final BdvHandle handle, final Source< ARGBType > source )
+	{
 		final List< ConverterSetup > converterSetups = new ArrayList<>();
-		final List< SourceAndConverter< T > > sources = new ArrayList<>();
+		final List< SourceAndConverter< ARGBType > > sources = new ArrayList<>();
 
-		final SourceAndConverter< T > soc = new SourceAndConverter<>( source, converter );
+		addSourceARGBType( handle, source, converterSetups, sources );
+
+		final int numTimepoints = 1;
+		handle.add( converterSetups, sources, numTimepoints );
+		final BdvStackSource< ARGBType > bdvSource = new BdvStackSource<>( handle, numTimepoints, new ARGBType(), converterSetups, sources );
+		handle.addBdvSource( bdvSource );
+		return bdvSource;
+	}
+
+	private static void addSourceARGBType( final BdvHandle handle, final Source< ARGBType > source, final List< ConverterSetup > converterSetups, final List< SourceAndConverter< ARGBType > > sources )
+	{
+		final TransformedSource< ARGBType > ts = new TransformedSource<>( source );
+		final ScaledARGBConverter.ARGB converter = new ScaledARGBConverter.ARGB( 0, 255 );
+		final SourceAndConverter< ARGBType > soc = new SourceAndConverter<>( ts, converter );
 
 		final int setupId = handle.getUnusedSetupId();
 		final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
 
 		converterSetups.add( setup );
 		sources.add( soc );
+	}
 
-		handle.add( converterSetups, sources, 1 );
-		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, 1, type, converterSetups, sources );
+	private static < T extends RealType< T > > BdvStackSource< T > addSourceRealType( final BdvHandle handle, final Source< T > source )
+	{
+		final T type = Util.getTypeFromInterval( source.getSource( 0, 0 ) );
+		final List< ConverterSetup > converterSetups = new ArrayList<>();
+		final List< SourceAndConverter< T > > sources = new ArrayList<>();
+
+		addSourceRealType( handle, source, converterSetups, sources );
+
+		final int numTimepoints = 1;
+		handle.add( converterSetups, sources, numTimepoints );
+		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, numTimepoints, type, converterSetups, sources );
 		handle.addBdvSource( bdvSource );
 		return bdvSource;
+	}
+
+	private static < T extends RealType< T > > void addSourceRealType( final BdvHandle handle, final Source< T > source, final List< ConverterSetup > converterSetups, final List< SourceAndConverter< T > > sources )
+	{
+		final T type = Util.getTypeFromInterval( source.getSource( 0, 0 ) );
+		final double typeMin = Math.max( 0, Math.min( type.getMinValue(), 65535 ) );
+		final double typeMax = Math.max( 0, Math.min( type.getMaxValue(), 65535 ) );
+		final RealARGBColorConverter< T > converter = new RealARGBColorConverter.Imp1<>( typeMin, typeMax );
+		converter.setColor( new ARGBType( 0xffffffff ) );
+
+		final TransformedSource< T > ts = new TransformedSource<>( source );
+		final SourceAndConverter< T > soc = new SourceAndConverter<>( ts, converter );
+
+		final int setupId = handle.getUnusedSetupId();
+		final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
+
+		converterSetups.add( setup );
+		sources.add( soc );
 	}
 
 
@@ -656,7 +548,7 @@ public class BdvFunctions
 		if ( type instanceof ARGBType )
 		{
 			@SuppressWarnings( "unchecked" )
-			final BdvStackSource< T > stackSource = ( BdvStackSource< T > ) addSourceARGBType(
+			final BdvStackSource< T > stackSource = ( BdvStackSource< T > ) addRandomAccessibleIntervalARGBType(
 					handle,
 					( RealRandomAccessible< ARGBType > ) img,
 					interval,
@@ -668,7 +560,7 @@ public class BdvFunctions
 		else if ( type instanceof RealType )
 		{
 			@SuppressWarnings( { "unchecked", "rawtypes" } )
-			final BdvStackSource< ? > tmp = addSourceRealType(
+			final BdvStackSource< ? > tmp = addRandomAccessibleIntervalRealType(
 					handle,
 					( RealRandomAccessible< RealType > ) img,
 					interval,
@@ -679,208 +571,7 @@ public class BdvFunctions
 			final BdvStackSource< T > stackSource = ( BdvStackSource< T > ) tmp;
 			return stackSource;
 		}
-		else if ( type instanceof VolatileARGBType )
-		{
-			@SuppressWarnings( "unchecked" )
-			final BdvStackSource< T > stackSource = ( BdvStackSource< T > ) addSourceVolatileARGBType(
-					handle,
-					( RealRandomAccessible< VolatileARGBType > ) img,
-					interval,
-					name,
-					AxisOrder.getAxisOrder( axisOrder, img, handle.is2D() ),
-					sourceTransform );
-			return stackSource;
-		}
 
 		return null;
-	}
-
-	public static < T > BdvStackSource< T > show(
-			final RandomAccessible< T > img,
-			final Interval interval,
-			final String name,
-			final BdvOptions options )
-	{
-
-		final Bdv bdv = options.values.addTo();
-		final BdvHandle handle = bdv == null ? new BdvHandleFrame( options ) : bdv.getBdvHandle();
-		final T type = Util.getTypeFromInterval( Views.interval( img, interval ) );
-		final AxisOrder axisOrder = options.values.axisOrder();
-		final AffineTransform3D sourceTransform = options.values.getSourceTransform();
-		if ( type instanceof ARGBType )
-		{
-			@SuppressWarnings( "unchecked" )
-			final BdvStackSource< T > stackSource = ( BdvStackSource< T > ) addStackSourceARGBType(
-					handle,
-					( RandomAccessible< ARGBType > ) img,
-					interval,
-					name,
-					AxisOrder.getAxisOrder( axisOrder, img, handle.is2D() ),
-					sourceTransform );
-			return stackSource;
-		}
-		else if ( type instanceof RealType )
-		{
-			@SuppressWarnings( { "unchecked", "rawtypes" } )
-			final BdvStackSource< ? > tmp = addStackSourceRealType(
-					handle,
-					( RandomAccessible< RealType > ) img,
-					interval,
-					name,
-					AxisOrder.getAxisOrder( axisOrder, img, handle.is2D() ),
-					sourceTransform );
-			@SuppressWarnings( "unchecked" )
-			final BdvStackSource< T > stackSource = ( BdvStackSource< T > ) tmp;
-			return stackSource;
-		}
-		else if ( type instanceof VolatileARGBType )
-		{
-			@SuppressWarnings( "unchecked" )
-			final BdvStackSource< T > stackSource = ( BdvStackSource< T > ) addStackSourceVolatileARGBType(
-					handle,
-					( RandomAccessible< VolatileARGBType > ) img,
-					interval,
-					name,
-					AxisOrder.getAxisOrder( axisOrder, img, handle.is2D() ),
-					sourceTransform );
-			return stackSource;
-		}
-
-		return null;
-	}
-
-	private static BdvStackSource< ARGBType > addStackSourceARGBType(
-			final BdvHandle handle,
-			final RandomAccessible< ARGBType > img,
-			Interval interval,
-			final String name,
-			final AxisOrder axisOrder,
-			final AffineTransform3D sourceTransform )
-	{
-		final List< ConverterSetup > converterSetups = new ArrayList<>();
-		final List< SourceAndConverter< ARGBType > > sources = new ArrayList<>();
-		final Pair< ArrayList< RandomAccessible< ARGBType > >, Interval > stacksAndInterval = AxisOrder.splitInputStackIntoSourceStacks(
-				img,
-				interval,
-				axisOrder );
-		int numTimepoints = 1;
-		final ArrayList< RandomAccessible< ARGBType > > stacks = stacksAndInterval.getA();
-		interval = stacksAndInterval.getB();
-
-		for ( final RandomAccessible< ARGBType > stack : stacks )
-		{
-			final Source< ARGBType > s;
-			if ( stack.numDimensions() > 3 )
-			{
-				numTimepoints = ( int ) interval.max( 3 ) + 1;
-				s = new RandomAccessibleSource4D<>( stack, interval, new ARGBType(), sourceTransform, name );
-			}
-			else
-				s = new RandomAccessibleSource<>( stack, interval, new ARGBType(), sourceTransform, name );
-			final TransformedSource< ARGBType > ts = new TransformedSource<>( s );
-			final ScaledARGBConverter.ARGB converter = new ScaledARGBConverter.ARGB( 0, 255 );
-			final SourceAndConverter< ARGBType > soc = new SourceAndConverter<>( ts, converter );
-
-			final int setupId = handle.getUnusedSetupId();
-			final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
-
-			converterSetups.add( setup );
-			sources.add( soc );
-		}
-		handle.add( converterSetups, sources, numTimepoints );
-		final BdvStackSource< ARGBType > bdvSource = new BdvStackSource<>( handle, numTimepoints, new ARGBType(), converterSetups, sources );
-		handle.addBdvSource( bdvSource );
-		return bdvSource;
-	}
-
-	private static < T extends RealType< T > > BdvStackSource< T > addStackSourceRealType(
-			final BdvHandle handle,
-			final RandomAccessible< T > img,
-			Interval interval,
-			final String name,
-			final AxisOrder axisOrder,
-			final AffineTransform3D sourceTransform )
-	{
-		final T type = Util.getTypeFromInterval( Views.interval( img, interval ) );
-		final List< ConverterSetup > converterSetups = new ArrayList<>();
-		final List< SourceAndConverter< T > > sources = new ArrayList<>();
-		final Pair< ArrayList< RandomAccessible< T > >, Interval > stacksAndInterval = AxisOrder.splitInputStackIntoSourceStacks( img, interval, axisOrder );
-		int numTimepoints = 1;
-		final ArrayList< RandomAccessible< T > > stacks = stacksAndInterval.getA();
-		interval = stacksAndInterval.getB();
-
-		for ( final RandomAccessible< T > stack : stacks )
-		{
-			final Source< T > s;
-			if ( stack.numDimensions() > 3 )
-			{
-				numTimepoints = ( int ) interval.max( 3 ) + 1;
-				s = new RandomAccessibleSource4D<>( stack, interval, type, sourceTransform, name );
-			}
-			else
-				s = new RandomAccessibleSource<>( stack, interval, type, sourceTransform, name );
-			final TransformedSource< T > ts = new TransformedSource<>( s );
-			final double typeMin = Math.max( 0, Math.min( type.getMinValue(), 65535 ) );
-			final double typeMax = Math.max( 0, Math.min( type.getMaxValue(), 65535 ) );
-			final RealARGBColorConverter< T > converter = new RealARGBColorConverter.Imp1<>( typeMin, typeMax );
-			converter.setColor( new ARGBType( 0xffffffff ) );
-			final SourceAndConverter< T > soc = new SourceAndConverter<>( ts, converter );
-
-			final int setupId = handle.getUnusedSetupId();
-			final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
-
-			converterSetups.add( setup );
-			sources.add( soc );
-		}
-		handle.add( converterSetups, sources, numTimepoints );
-		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, numTimepoints, type, converterSetups, sources );
-		handle.addBdvSource( bdvSource );
-		return bdvSource;
-	}
-
-	private static BdvStackSource< VolatileARGBType > addStackSourceVolatileARGBType(
-			final BdvHandle handle,
-			final RandomAccessible< VolatileARGBType > img,
-			Interval interval,
-			final String name,
-			final AxisOrder axisOrder,
-			final AffineTransform3D sourceTransform )
-	{
-		System.out.println( "Input interval! " + Intervals.minAsLongArray( interval ) + " " + Intervals.maxAsLongArray( interval ) );
-		final List< ConverterSetup > converterSetups = new ArrayList<>();
-		final List< SourceAndConverter< VolatileARGBType > > sources = new ArrayList<>();
-		final Pair< ArrayList< RandomAccessible< VolatileARGBType > >, Interval > stacksAndInterval = AxisOrder.splitInputStackIntoSourceStacks( img, interval, axisOrder );
-		int numTimepoints = 1;
-		final ArrayList< RandomAccessible< VolatileARGBType > > stacks = stacksAndInterval.getA();
-		interval = stacksAndInterval.getB();
-
-		for ( final RandomAccessible< VolatileARGBType > stack : stacks )
-		{
-			final Source< VolatileARGBType > s;
-			if ( stack.numDimensions() > 3 )
-			{
-				numTimepoints = ( int ) interval.max( 3 ) + 1;
-				System.out.println( "num dimensions >3! " + numTimepoints );
-				s = new RandomAccessibleSource4D<>( stack, interval, new VolatileARGBType(), sourceTransform, name );
-			}
-			else
-			{
-				System.out.println( "num dimensions <=3! " + numTimepoints );
-				s = new RandomAccessibleSource<>( stack, interval, new VolatileARGBType(), sourceTransform, name );
-			}
-			final TransformedSource< VolatileARGBType > ts = new TransformedSource<>( s );
-			final ScaledARGBConverter.VolatileARGB converter = new ScaledARGBConverter.VolatileARGB( 0, 255 );
-			final SourceAndConverter< VolatileARGBType > soc = new SourceAndConverter<>( ts, converter );
-
-			final int setupId = handle.getUnusedSetupId();
-			final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
-
-			converterSetups.add( setup );
-			sources.add( soc );
-		}
-		handle.add( converterSetups, sources, numTimepoints );
-		final BdvStackSource< VolatileARGBType > bdvSource = new BdvStackSource<>( handle, numTimepoints, new VolatileARGBType(), converterSetups, sources );
-		handle.addBdvSource( bdvSource );
-		return bdvSource;
 	}
 }

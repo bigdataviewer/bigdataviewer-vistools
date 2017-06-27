@@ -48,7 +48,7 @@ public class RandomAccessibleIntervalMipmapSource< T extends NumericType< T > > 
 	public RandomAccessibleIntervalMipmapSource(
 			final RandomAccessibleInterval< T >[] imgs,
 			final T type,
-			final int[][] mipmapScales,
+			final double[][] mipmapScales,
 			final VoxelDimensions voxelDimensions,
 			final String name )
 	{
