@@ -32,11 +32,7 @@ import java.util.function.Supplier;
 
 import bdv.viewer.Interpolation;
 import bdv.viewer.Source;
-import net.imglib2.RandomAccessible;
 import net.imglib2.RealRandomAccessible;
-import net.imglib2.interpolation.InterpolatorFactory;
-import net.imglib2.interpolation.randomaccess.ClampingNLinearInterpolatorFactory;
-import net.imglib2.interpolation.randomaccess.NearestNeighborInterpolatorFactory;
 import net.imglib2.type.numeric.NumericType;
 import net.imglib2.view.Views;
 
@@ -44,25 +40,15 @@ public abstract class AbstractSource< T extends NumericType< T > > implements So
 {
 	protected final T type;
 
-	protected final static int numInterpolationMethods = 2;
-
-	protected final static int iNearestNeighborMethod = 0;
-
-	protected final static int iNLinearMethod = 1;
-
 	protected final String name;
 
-	@SuppressWarnings( "unchecked" )
-	protected final InterpolatorFactory< T, RandomAccessible< T > >[] interpolatorFactories = new InterpolatorFactory[ numInterpolationMethods ];
-	{
-		interpolatorFactories[ iNearestNeighborMethod ] = new NearestNeighborInterpolatorFactory<>();
-		interpolatorFactories[ iNLinearMethod ] = new ClampingNLinearInterpolatorFactory<>();
-	}
+	protected final DefaultInterpolators< T > interpolators;
 
 	public AbstractSource( final T type, final String name )
 	{
 		this.type = type;
 		this.name = name;
+		interpolators = new DefaultInterpolators<>();
 	}
 
 	public AbstractSource( final Supplier< T > typeSupplier, final String name )
@@ -85,7 +71,7 @@ public abstract class AbstractSource< T extends NumericType< T > > implements So
 	@Override
 	public RealRandomAccessible< T > getInterpolatedSource( final int t, final int level, final Interpolation method )
 	{
-		return Views.interpolate( Views.extendZero( getSource( t, level ) ), interpolatorFactories[ method == Interpolation.NLINEAR ? iNLinearMethod : iNearestNeighborMethod ] );
+		return Views.interpolate( Views.extendZero( getSource( t, level ) ), interpolators.get( method ) );
 	}
 
 	@Override
