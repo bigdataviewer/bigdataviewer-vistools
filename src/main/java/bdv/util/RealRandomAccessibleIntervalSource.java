@@ -31,9 +31,9 @@ package bdv.util;
 import net.imglib2.Interval;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.realtransform.AffineTransform3D;
-import net.imglib2.type.numeric.NumericType;
+import net.imglib2.type.Type;
 
-public class RealRandomAccessibleIntervalSource< T extends NumericType< T > > extends RealRandomAccessibleSource< T >
+public class RealRandomAccessibleIntervalSource< T extends Type< T > > extends RealRandomAccessibleSource< T >
 {
 	private final Interval interval;
 
