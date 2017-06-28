@@ -28,55 +28,100 @@
  */
 package bdv.util;
 
+import java.util.Arrays;
+
 import bdv.viewer.Interpolation;
+import net.imglib2.Interval;
+import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.NumericType;
+import net.imglib2.util.Intervals;
 import net.imglib2.view.Views;
 
-public class RandomAccessibleIntervalSource< T extends NumericType< T > > extends AbstractSource< T >
+public class RandomAccessibleSource4D< T extends NumericType< T > > extends AbstractSource< T >
 {
-	private final RandomAccessibleInterval< T > source;
+	private final RandomAccessible< T > source;
 
-	private final RealRandomAccessible< T >[] interpolatedSources;
+	private final Interval interval;
+
+	private final Interval timeSliceInterval;
+
+	protected int currentTimePointIndex;
+
+	private RandomAccessibleInterval< T > currentSource;
+
+	private final RealRandomAccessible< T >[] currentInterpolatedSources;
 
 	private final AffineTransform3D sourceTransform;
 
-	public RandomAccessibleIntervalSource(
-			final RandomAccessibleInterval< T > img,
+	public RandomAccessibleSource4D(
+			final RandomAccessible< T > img,
+			final Interval interval,
 			final T type,
 			final String name )
 	{
-		this( img, type, new AffineTransform3D(), name );
+		this( img, interval, type, new AffineTransform3D(), name );
 	}
 
-	public RandomAccessibleIntervalSource(
-			final RandomAccessibleInterval< T > img,
+	public RandomAccessibleSource4D(
+			final RandomAccessible< T > img,
+			final Interval interval,
 			final T type,
 			final AffineTransform3D sourceTransform,
 			final String name )
 	{
 		super( type, name );
 		this.source = img;
+		this.interval = interval;
+		this.timeSliceInterval = Intervals.createMinMax(
+				interval.min( 0 ), interval.min( 1 ), interval.min( 2 ),
+				interval.max( 0 ), interval.max( 1 ), interval.max( 2 ) );
 		this.sourceTransform = sourceTransform;
-		interpolatedSources = new RealRandomAccessible[ Interpolation.values().length ];
-		final T zero = getType().createVariable();
-		zero.setZero();
-		for ( final Interpolation method : Interpolation.values() )
-			interpolatedSources[ method.ordinal() ] = Views.interpolate( Views.extendValue( source, zero ), interpolators.get( method ) );
+		currentInterpolatedSources = new RealRandomAccessible[ Interpolation.values().length ];
+		loadTimepoint( 0 );
+	}
+
+	private void loadTimepoint( final int timepointIndex )
+	{
+		currentTimePointIndex = timepointIndex;
+		if ( isPresent( timepointIndex ) )
+		{
+			final T zero = getType().createVariable();
+			zero.setZero();
+			final RandomAccessible< T > slice = Views.hyperSlice( source, 3, timepointIndex );
+			currentSource = Views.interval( slice, timeSliceInterval );
+			for ( final Interpolation method : Interpolation.values() )
+				currentInterpolatedSources[ method.ordinal() ] = Views.interpolate( slice, interpolators.get( method ) );
+		}
+		else
+		{
+			currentSource = null;
+			Arrays.fill( currentInterpolatedSources, null );
+		}
+	}
+
+	@Override
+	public boolean isPresent( final int t )
+	{
+		return interval.min( 3 ) <= t && t <= interval.max( 3 );
 	}
 
 	@Override
 	public RandomAccessibleInterval< T > getSource( final int t, final int level )
 	{
-		return source;
+		if ( t != currentTimePointIndex )
+			loadTimepoint( t );
+		return currentSource;
 	}
 
 	@Override
 	public RealRandomAccessible< T > getInterpolatedSource( final int t, final int level, final Interpolation method )
 	{
-		return interpolatedSources[ method.ordinal() ];
+		if ( t != currentTimePointIndex )
+			loadTimepoint( t );
+		return currentInterpolatedSources[ method.ordinal() ];
 	}
 
 	@Override

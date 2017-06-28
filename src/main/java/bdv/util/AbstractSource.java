@@ -28,60 +28,68 @@
  */
 package bdv.util;
 
+import java.util.function.Supplier;
+
 import bdv.viewer.Interpolation;
-import net.imglib2.RandomAccessibleInterval;
+import bdv.viewer.Source;
+import mpicbg.spim.data.sequence.VoxelDimensions;
 import net.imglib2.RealRandomAccessible;
-import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.NumericType;
 import net.imglib2.view.Views;
 
-public class RandomAccessibleIntervalSource< T extends NumericType< T > > extends AbstractSource< T >
+public abstract class AbstractSource< T extends NumericType< T > > implements Source< T >
 {
-	private final RandomAccessibleInterval< T > source;
+	protected final T type;
 
-	private final RealRandomAccessible< T >[] interpolatedSources;
+	protected final String name;
 
-	private final AffineTransform3D sourceTransform;
+	protected final DefaultInterpolators< T > interpolators;
 
-	public RandomAccessibleIntervalSource(
-			final RandomAccessibleInterval< T > img,
-			final T type,
-			final String name )
+	public AbstractSource( final T type, final String name )
 	{
-		this( img, type, new AffineTransform3D(), name );
+		this.type = type;
+		this.name = name;
+		interpolators = new DefaultInterpolators<>();
 	}
 
-	public RandomAccessibleIntervalSource(
-			final RandomAccessibleInterval< T > img,
-			final T type,
-			final AffineTransform3D sourceTransform,
-			final String name )
+	public AbstractSource( final Supplier< T > typeSupplier, final String name )
 	{
-		super( type, name );
-		this.source = img;
-		this.sourceTransform = sourceTransform;
-		interpolatedSources = new RealRandomAccessible[ Interpolation.values().length ];
-		final T zero = getType().createVariable();
-		zero.setZero();
-		for ( final Interpolation method : Interpolation.values() )
-			interpolatedSources[ method.ordinal() ] = Views.interpolate( Views.extendValue( source, zero ), interpolators.get( method ) );
+		this( typeSupplier.get(), name );
 	}
 
 	@Override
-	public RandomAccessibleInterval< T > getSource( final int t, final int level )
+	public boolean isPresent( final int t )
 	{
-		return source;
+		return true;
+	}
+
+	@Override
+	public T getType()
+	{
+		return type;
 	}
 
 	@Override
 	public RealRandomAccessible< T > getInterpolatedSource( final int t, final int level, final Interpolation method )
 	{
-		return interpolatedSources[ method.ordinal() ];
+		return Views.interpolate( Views.extendZero( getSource( t, level ) ), interpolators.get( method ) );
 	}
 
 	@Override
-	public synchronized void getSourceTransform( final int t, final int level, final AffineTransform3D transform )
+	public String getName()
 	{
-		transform.set( sourceTransform );
+		return name;
+	}
+
+	@Override
+	public VoxelDimensions getVoxelDimensions()
+	{
+		return null;
+	}
+
+	@Override
+	public int getNumMipmapLevels()
+	{
+		return 1;
 	}
 }
