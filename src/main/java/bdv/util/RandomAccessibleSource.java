@@ -34,10 +34,10 @@ import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.realtransform.AffineTransform3D;
-import net.imglib2.type.numeric.NumericType;
+import net.imglib2.type.Type;
 import net.imglib2.view.Views;
 
-public class RandomAccessibleSource< T extends NumericType< T > > extends AbstractSource< T >
+public class RandomAccessibleSource< T extends Type< T > > extends AbstractSource< T >
 {
 	private final RandomAccessible< T > source;
 

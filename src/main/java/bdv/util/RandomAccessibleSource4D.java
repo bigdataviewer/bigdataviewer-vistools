@@ -36,11 +36,11 @@ import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.realtransform.AffineTransform3D;
-import net.imglib2.type.numeric.NumericType;
+import net.imglib2.type.Type;
 import net.imglib2.util.Intervals;
 import net.imglib2.view.Views;
 
-public class RandomAccessibleSource4D< T extends NumericType< T > > extends AbstractSource< T >
+public class RandomAccessibleSource4D< T extends Type< T > > extends AbstractSource< T >
 {
 	private final RandomAccessible< T > source;
 
@@ -88,8 +88,6 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > extends Abst
 		currentTimePointIndex = timepointIndex;
 		if ( isPresent( timepointIndex ) )
 		{
-			final T zero = getType().createVariable();
-			zero.setZero();
 			final RandomAccessible< T > slice = Views.hyperSlice( source, 3, timepointIndex );
 			currentSource = Views.interval( slice, timeSliceInterval );
 			for ( final Interpolation method : Interpolation.values() )
