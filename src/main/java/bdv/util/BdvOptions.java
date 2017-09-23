@@ -127,6 +127,18 @@ public class BdvOptions
 		return this;
 	}
 
+	/**
+	 * Set how many source groups there are initially.
+	 *
+	 * @param n
+	 *            How many source groups to create initially.
+	 */
+	public BdvOptions numSourceGroups( final int n )
+	{
+		values.numSourceGroups = n;
+		return this;
+	}
+
 	public BdvOptions transformEventHandlerFactory( final TransformEventHandlerFactory< AffineTransform3D > f )
 	{
 		values.transformEventHandlerFactory = f;
@@ -260,6 +272,8 @@ public class BdvOptions
 
 		private int numRenderingThreads = 3;
 
+		private int numSourceGroups = 10;
+
 		private TransformEventHandlerFactory< AffineTransform3D > transformEventHandlerFactory = BehaviourTransformEventHandler3D.factory();
 
 		private AccumulateProjectorFactory< ARGBType > accumulateProjectorFactory = AccumulateProjectorARGB.factory;
@@ -289,6 +303,7 @@ public class BdvOptions
 					.targetRenderNanos( targetRenderNanos )
 					.doubleBuffered( doubleBuffered )
 					.numRenderingThreads( numRenderingThreads )
+					.numSourceGroups( numSourceGroups )
 					.transformEventHandlerFactory( transformEventHandlerFactory )
 					.accumulateProjectorFactory( accumulateProjectorFactory )
 					.inputTriggerConfig( inputTriggerConfig )
@@ -308,6 +323,7 @@ public class BdvOptions
 					.targetRenderNanos( targetRenderNanos )
 					.doubleBuffered( doubleBuffered )
 					.numRenderingThreads( numRenderingThreads )
+					.numSourceGroups( numSourceGroups )
 					.transformEventHandlerFactory( transformEventHandlerFactory )
 					.accumulateProjectorFactory( accumulateProjectorFactory )
 					.inputTriggerConfig( inputTriggerConfig );
