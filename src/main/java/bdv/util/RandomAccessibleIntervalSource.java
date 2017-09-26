@@ -32,10 +32,10 @@ import bdv.viewer.Interpolation;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.realtransform.AffineTransform3D;
-import net.imglib2.type.numeric.NumericType;
+import net.imglib2.type.Type;
 import net.imglib2.view.Views;
 
-public class RandomAccessibleIntervalSource< T extends NumericType< T > > extends AbstractSource< T >
+public class RandomAccessibleIntervalSource< T extends Type< T > > extends AbstractSource< T >
 {
 	private final RandomAccessibleInterval< T > source;
 
@@ -61,10 +61,8 @@ public class RandomAccessibleIntervalSource< T extends NumericType< T > > extend
 		this.source = img;
 		this.sourceTransform = sourceTransform;
 		interpolatedSources = new RealRandomAccessible[ Interpolation.values().length ];
-		final T zero = getType().createVariable();
-		zero.setZero();
 		for ( final Interpolation method : Interpolation.values() )
-			interpolatedSources[ method.ordinal() ] = Views.interpolate( Views.extendValue( source, zero ), interpolators.get( method ) );
+			interpolatedSources[ method.ordinal() ] = Views.interpolate( Views.extendValue( source, extension.copy() ), interpolators.get( method ) );
 	}
 
 	@Override

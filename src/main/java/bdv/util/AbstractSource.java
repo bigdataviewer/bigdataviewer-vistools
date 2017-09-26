@@ -34,22 +34,27 @@ import bdv.viewer.Interpolation;
 import bdv.viewer.Source;
 import mpicbg.spim.data.sequence.VoxelDimensions;
 import net.imglib2.RealRandomAccessible;
+import net.imglib2.interpolation.randomaccess.NearestNeighborInterpolatorFactory;
+import net.imglib2.type.Type;
 import net.imglib2.type.numeric.NumericType;
 import net.imglib2.view.Views;
 
-public abstract class AbstractSource< T extends NumericType< T > > implements Source< T >
+public abstract class AbstractSource< T extends Type< T > > implements Source< T >
 {
-	protected final T type;
+	protected final T extension;
 
 	protected final String name;
 
-	protected final DefaultInterpolators< T > interpolators;
+	protected final InterpolationFunction<T> interpolators;
 
-	public AbstractSource( final T type, final String name )
+	public AbstractSource( final T extension, final String name )
 	{
-		this.type = type;
+		this.extension = extension;
 		this.name = name;
-		interpolators = new DefaultInterpolators<>();
+		if(extension instanceof NumericType)
+			interpolators = new DefaultInterpolators();
+		else
+			interpolators = (interpolation -> new NearestNeighborInterpolatorFactory<>());
 	}
 
 	public AbstractSource( final Supplier< T > typeSupplier, final String name )
@@ -66,13 +71,13 @@ public abstract class AbstractSource< T extends NumericType< T > > implements So
 	@Override
 	public T getType()
 	{
-		return type;
+		return extension;
 	}
 
 	@Override
 	public RealRandomAccessible< T > getInterpolatedSource( final int t, final int level, final Interpolation method )
 	{
-		return Views.interpolate( Views.extendZero( getSource( t, level ) ), interpolators.get( method ) );
+		return Views.interpolate( Views.extendValue( getSource( t, level ), extension ), interpolators.apply( method ) );
 	}
 
 	@Override

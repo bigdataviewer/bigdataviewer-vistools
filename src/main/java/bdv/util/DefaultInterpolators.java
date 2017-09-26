@@ -1,7 +1,5 @@
 package bdv.util;
 
-import java.util.function.Function;
-
 import bdv.viewer.Interpolation;
 import net.imglib2.RandomAccessible;
 import net.imglib2.interpolation.InterpolatorFactory;
@@ -9,7 +7,7 @@ import net.imglib2.interpolation.randomaccess.ClampingNLinearInterpolatorFactory
 import net.imglib2.interpolation.randomaccess.NearestNeighborInterpolatorFactory;
 import net.imglib2.type.numeric.NumericType;
 
-public class DefaultInterpolators< T extends NumericType< T > > implements Function< Interpolation, InterpolatorFactory< T, RandomAccessible< T > > >
+public class DefaultInterpolators< T extends NumericType< T > > implements InterpolationFunction< T >
 {
 	private final InterpolatorFactory< T, RandomAccessible< T > >[] factories;
 
@@ -21,6 +19,7 @@ public class DefaultInterpolators< T extends NumericType< T > > implements Funct
 		factories[ Interpolation.NLINEAR.ordinal() ] = new ClampingNLinearInterpolatorFactory<>();
 	}
 
+	@Override
 	public InterpolatorFactory< T, RandomAccessible< T > > get( final Interpolation method )
 	{
 		return factories[ method.ordinal() ];
@@ -29,11 +28,5 @@ public class DefaultInterpolators< T extends NumericType< T > > implements Funct
 	public int size()
 	{
 		return factories.length;
-	}
-
-	@Override
-	public InterpolatorFactory< T, RandomAccessible< T > > apply( final Interpolation t )
-	{
-		return get( t );
 	}
 }

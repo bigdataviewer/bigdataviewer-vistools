@@ -36,9 +36,9 @@ import mpicbg.spim.data.sequence.VoxelDimensions;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
 import net.imglib2.realtransform.AffineTransform3D;
-import net.imglib2.type.numeric.NumericType;
+import net.imglib2.type.Type;
 
-public class VolatileRandomAccessibleIntervalMipmapSource< T extends NumericType< T >, V extends Volatile< T > & NumericType< V > > extends AbstractSource< V >
+public class VolatileRandomAccessibleIntervalMipmapSource< T extends Type< T >, V extends Volatile< T > & Type< V > > extends AbstractSource< V >
 {
 	private final RandomAccessibleIntervalMipmapSource< T > source;
 
