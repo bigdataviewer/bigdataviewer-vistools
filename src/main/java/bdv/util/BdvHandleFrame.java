@@ -13,6 +13,7 @@ import bdv.cache.CacheControl.CacheControls;
 import bdv.export.ProgressWriter;
 import bdv.export.ProgressWriterConsole;
 import bdv.tools.brightness.ConverterSetup;
+import bdv.tools.transformation.ManualTransformationEditor;
 import bdv.viewer.DisplayMode;
 import bdv.viewer.NavigationActions;
 import bdv.viewer.SourceAndConverter;
@@ -53,6 +54,12 @@ public class BdvHandleFrame extends BdvHandle
 			setupAssignments = null;
 			bdvSources.clear();
 		}
+	}
+
+	@Override
+	public ManualTransformationEditor getManualTransformEditor()
+	{
+		return bdv.getManualTransformEditor();
 	}
 
 	@Override

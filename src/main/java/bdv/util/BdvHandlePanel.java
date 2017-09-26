@@ -121,6 +121,7 @@ public class BdvHandlePanel extends BdvHandle
 		viewer.setDisplayMode( DisplayMode.FUSED );
 	}
 
+	@Override
 	public ManualTransformationEditor getManualTransformEditor()
 	{
 		return manualTransformationEditor;

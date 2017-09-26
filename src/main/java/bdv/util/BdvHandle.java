@@ -11,6 +11,7 @@ import bdv.tools.InitializeViewerState;
 import bdv.tools.brightness.ConverterSetup;
 import bdv.tools.brightness.MinMaxGroup;
 import bdv.tools.brightness.SetupAssignments;
+import bdv.tools.transformation.ManualTransformationEditor;
 import bdv.viewer.SourceAndConverter;
 import bdv.viewer.TimePointListener;
 import bdv.viewer.ViewerPanel;
@@ -76,6 +77,8 @@ public abstract class BdvHandle implements Bdv
 
 	@Override
 	public abstract void close();
+
+	public abstract ManualTransformationEditor getManualTransformEditor();
 
 	public abstract InputActionBindings getKeybindings();
 
