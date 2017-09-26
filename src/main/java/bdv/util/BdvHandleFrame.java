@@ -56,12 +56,14 @@ public class BdvHandleFrame extends BdvHandle
 	}
 
 	@Override
-	public InputActionBindings getKeybindings() {
+	public InputActionBindings getKeybindings()
+	{
 		return bdv.getViewerFrame().getKeybindings();
 	}
 
 	@Override
-	public TriggerBehaviourBindings getTriggerbindings() {
+	public TriggerBehaviourBindings getTriggerbindings()
+	{
 		return bdv.getViewerFrame().getTriggerbindings();
 	}
 
