@@ -48,7 +48,7 @@ public class BehaviourTransformEventHandlerPlanar implements BehaviourTransformE
 	/**
 	 * Current source to screen transform.
 	 */
-	private final AffineTransform3D affine = new AffineTransform3D();
+	protected final AffineTransform3D affine = new AffineTransform3D();
 
 	/**
 	 * Whom to notify when the {@link #affine current transform} is changed.
@@ -58,26 +58,26 @@ public class BehaviourTransformEventHandlerPlanar implements BehaviourTransformE
 	/**
 	 * Copy of {@link #affine current transform} when mouse dragging started.
 	 */
-	final private AffineTransform3D affineDragStart = new AffineTransform3D();
+	final protected AffineTransform3D affineDragStart = new AffineTransform3D();
 
 	/**
 	 * Coordinates where mouse dragging started.
 	 */
-	private double oX, oY;
+	protected double oX, oY;
 
 	/**
 	 * The screen size of the canvas (the component displaying the image and
 	 * generating mouse events).
 	 */
-	private int canvasW = 1, canvasH = 1;
+	protected int canvasW = 1, canvasH = 1;
 
 	/**
 	 * Screen coordinates to keep centered while zooming or rotating with the
 	 * keyboard. These are set to <em>(canvasW/2, canvasH/2)</em>
 	 */
-	private int centerX = 0, centerY = 0;
+	protected int centerX = 0, centerY = 0;
 
-	private final Behaviours behaviours;
+	protected final Behaviours behaviours;
 
 	public BehaviourTransformEventHandlerPlanar( final TransformListener< AffineTransform3D > listener, final InputTriggerConfig config )
 	{
@@ -184,7 +184,7 @@ public class BehaviourTransformEventHandlerPlanar implements BehaviourTransformE
 	/**
 	 * One step of rotation (radian).
 	 */
-	final private static double step = Math.PI / 180;
+	final protected static double step = Math.PI / 180;
 
 	private void scale( final double s, final double x, final double y )
 	{
