@@ -31,10 +31,12 @@ package bdv.util;
 import java.util.function.Supplier;
 
 import bdv.util.volatiles.SharedQueue;
+import bdv.util.volatiles.VolatileTypeMatcher;
 import mpicbg.spim.data.sequence.VoxelDimensions;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
 import net.imglib2.realtransform.AffineTransform3D;
+import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.NumericType;
 
 public class RandomAccessibleIntervalMipmapSource< T extends NumericType< T > > extends AbstractSource< T >
@@ -102,5 +104,15 @@ public class RandomAccessibleIntervalMipmapSource< T extends NumericType< T > > 
 	public < V extends Volatile< T > & NumericType< V > > VolatileRandomAccessibleIntervalMipmapSource< T, V > asVolatile( final Supplier< V > vTypeSupplier, final SharedQueue queue )
 	{
 		return new VolatileRandomAccessibleIntervalMipmapSource<>( this, vTypeSupplier, queue );
+	}
+
+	@SuppressWarnings( { "unchecked", "rawtypes" } )
+	public < V extends Volatile< T > & NumericType< V > > VolatileRandomAccessibleIntervalMipmapSource< T, V > asVolatile( final SharedQueue queue )
+	{
+		final T t = getType();
+		if ( t instanceof NativeType )
+			return new VolatileRandomAccessibleIntervalMipmapSource<>( this, ( V )VolatileTypeMatcher.getVolatileTypeForType( ( NativeType )getType() ), queue );
+		else
+			throw new UnsupportedOperationException( "This method only works for sources of NativeType." );
 	}
 }
