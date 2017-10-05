@@ -88,6 +88,9 @@
 		<license.licenseName>bsd_2</license.licenseName>
 		<license.copyrightOwners>BigDataViewer developers.</license.copyrightOwners>
 		<license.projectName>BigDataViewer quick visualization API.</license.projectName>
+
+		<!-- NB: Deploy releases to the ImageJ Maven repository. -->
+		<releaseProfiles>deploy-to-imagej</releaseProfiles>
 	</properties>
 
 	<repositories>
