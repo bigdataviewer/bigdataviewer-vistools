@@ -35,6 +35,8 @@ import bdv.util.volatiles.VolatileViews;
 import mpicbg.spim.data.sequence.VoxelDimensions;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
+import net.imglib2.cache.volatiles.CacheHints;
+import net.imglib2.cache.volatiles.LoadingStrategy;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.NumericType;
 
@@ -65,7 +67,7 @@ public class VolatileRandomAccessibleIntervalMipmapSource< T extends NumericType
 	@Override
 	public RandomAccessibleInterval< V > getSource( final int t, final int level )
 	{
-		return VolatileViews.wrapAsVolatile( source.getSource( t, level ), queue );
+		return VolatileViews.wrapAsVolatile( source.getSource( t, level ), queue, new CacheHints( LoadingStrategy.VOLATILE, level, true ) );
 	}
 
 	@Override
