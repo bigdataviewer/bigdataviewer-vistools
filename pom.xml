@@ -104,7 +104,7 @@
 		<dependency>
 			<groupId>sc.fiji</groupId>
 			<artifactId>bigdataviewer-core</artifactId>
-			<version>4.3.0</version>
+			<version>4.3.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.imglib2</groupId>
