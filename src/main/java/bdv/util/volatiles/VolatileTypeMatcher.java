@@ -11,16 +11,16 @@ import net.imglib2.type.numeric.integer.UnsignedLongType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.type.numeric.real.FloatType;
-import net.imglib2.type.volatiles.VolatileARGBType;
-import net.imglib2.type.volatiles.VolatileByteType;
-import net.imglib2.type.volatiles.VolatileDoubleType;
-import net.imglib2.type.volatiles.VolatileFloatType;
-import net.imglib2.type.volatiles.VolatileIntType;
-import net.imglib2.type.volatiles.VolatileShortType;
-import net.imglib2.type.volatiles.VolatileUnsignedByteType;
-import net.imglib2.type.volatiles.VolatileUnsignedIntType;
-import net.imglib2.type.volatiles.VolatileUnsignedLongType;
-import net.imglib2.type.volatiles.VolatileUnsignedShortType;
+import net.imglib2.type.numeric.VolatileARGBType;
+import net.imglib2.type.numeric.integer.VolatileByteType;
+import net.imglib2.type.numeric.real.VolatileDoubleType;
+import net.imglib2.type.numeric.real.VolatileFloatType;
+import net.imglib2.type.numeric.integer.VolatileIntType;
+import net.imglib2.type.numeric.integer.VolatileShortType;
+import net.imglib2.type.numeric.integer.VolatileUnsignedByteType;
+import net.imglib2.type.numeric.integer.VolatileUnsignedIntType;
+import net.imglib2.type.numeric.integer.VolatileUnsignedLongType;
+import net.imglib2.type.numeric.integer.VolatileUnsignedShortType;
 
 public class VolatileTypeMatcher
 {
