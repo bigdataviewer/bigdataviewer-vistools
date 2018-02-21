@@ -3,6 +3,7 @@ package bdv.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.WeakHashMap;
 
 import bdv.BigDataViewer;
 import bdv.ViewerImgLoader;
@@ -313,7 +314,7 @@ public class BdvFunctions
 		return getUnusedSetupId( bdv.getSetupAssignments() );
 	}
 
-	private static final TObjectIntHashMap< SetupAssignments > maxIds = new TObjectIntHashMap<>( 20, 0.75f, 0 );
+	private static final WeakHashMap< SetupAssignments, Integer > maxIds = new WeakHashMap<>(  );
 
 	private static final SetupAssignments nullSetupAssignmentsKey = new SetupAssignments( new ArrayList<>(), 0, 1 );
 
@@ -322,7 +323,7 @@ public class BdvFunctions
 	{
 		if ( setupAssignments == null )
 			setupAssignments = nullSetupAssignmentsKey;
-		int maxId = maxIds.get( setupAssignments );
+		int maxId = maxIds.getOrDefault( setupAssignments, 0 );
 		for ( final ConverterSetup setup : setupAssignments.getConverterSetups() )
 			maxId = Math.max( setup.getSetupId(), maxId );
 		++maxId;
