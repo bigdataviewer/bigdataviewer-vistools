@@ -150,5 +150,9 @@ public class BdvHandlePanel extends BdvHandle
 
 	@Override
 	public void close()
-	{}
+	{
+		viewer.stop();
+		brightnessDialog.dispose();
+		activeSourcesDialog.dispose();
+	}
 }
