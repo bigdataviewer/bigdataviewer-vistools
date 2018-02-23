@@ -21,6 +21,7 @@ public enum AxisOrder
 	XYZT  ( 4, -1, false, false ), // --> XYZT
 	XYZCT ( 5,  3, false, false ), // --> XYZT
 	XYZTC ( 5,  4, false, false ), // --> XYZT
+	XYCZT ( 5,  2, false, false ), // --> XYCZT
 	XY    ( 2, -1, true,  false ), // --> XY   --> XYZ
 	XYC   ( 3,  2, true,  false ), // --> XY   --> XYZ
 	XYT   ( 3, -1, true,  true ),  // --> XYT  --> XYTZ --> XYZT
