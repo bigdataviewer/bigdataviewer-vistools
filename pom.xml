@@ -93,7 +93,7 @@
 		<releaseProfiles>deploy-to-imagej</releaseProfiles>
 		
 		<bigdataviewer-core.version>4.3.2</bigdataviewer-core.version>
-		<ui-behaviour.version>1.3.0</ui-behaviour.version>
+		<ui-behaviour.version>1.7.1</ui-behaviour.version>
 	</properties>
 
 	<repositories>
