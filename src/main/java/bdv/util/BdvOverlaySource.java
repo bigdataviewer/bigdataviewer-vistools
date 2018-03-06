@@ -22,6 +22,11 @@ public class BdvOverlaySource< O extends OverlayRenderer > extends BdvSource
 
 	protected final O overlay;
 
+	public O getOverlay()
+	{
+		return overlay;
+	}
+
 	protected BdvOverlaySource(
 			final BdvHandle bdv,
 			final int numTimepoints,
