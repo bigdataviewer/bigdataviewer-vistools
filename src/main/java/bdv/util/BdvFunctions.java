@@ -55,7 +55,7 @@ import net.imglib2.view.Views;
  */
 public class BdvFunctions
 {
-	public static < T extends NumericType< T > > BdvStackSource< T > show(
+	public static < T > BdvStackSource< T > show(
 			final RandomAccessibleInterval< T > img,
 			final String name )
 	{
@@ -63,7 +63,7 @@ public class BdvFunctions
 	}
 
 	@SuppressWarnings( "unchecked" )
-	public static < T extends NumericType< T > > BdvStackSource< T > show(
+	public static < T > BdvStackSource< T > show(
 			final RandomAccessibleInterval< T > img,
 			final String name,
 			final BdvOptions options )
@@ -84,7 +84,7 @@ public class BdvFunctions
 		else
 			type = Util.getTypeFromInterval( img );
 
-		return addRandomAccessibleInterval( handle, img, type, name, axisOrder, sourceTransform );
+		return addRandomAccessibleInterval( handle, ( RandomAccessibleInterval ) img, ( NumericType ) type, name, axisOrder, sourceTransform );
 	}
 
 	public static < T extends NumericType< T > > BdvStackSource< T > show(
