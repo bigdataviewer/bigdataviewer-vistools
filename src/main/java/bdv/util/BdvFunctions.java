@@ -344,7 +344,7 @@ public class BdvFunctions
 	 * @param handle
 	 *            handle to add the {@code img} to.
 	 * @param img
-	 *            {@link RealRandomAccessibleInterval} to add.
+	 *            {@link RandomAccessibleInterval} to add.
 	 * @param type
 	 *            instance of the {@code img} type.
 	 * @param name
