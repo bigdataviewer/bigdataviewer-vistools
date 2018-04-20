@@ -52,6 +52,7 @@ public class RandomAccessibleIntervalMipmapSource< T extends NumericType< T > > 
 			final T type,
 			final double[][] mipmapScales,
 			final VoxelDimensions voxelDimensions,
+			final AffineTransform3D sourceTransform,
 			final String name )
 	{
 		super( type, name );
@@ -66,10 +67,21 @@ public class RandomAccessibleIntervalMipmapSource< T extends NumericType< T > > 
 					mipmapScales[ s ][ 0 ], 0, 0, 0.5 * ( mipmapScales[ s ][ 0 ] - 1 ),
 					0, mipmapScales[ s ][ 1 ], 0, 0.5 * ( mipmapScales[ s ][ 1 ] - 1 ),
 					0, 0, mipmapScales[ s ][ 2 ], 0.5 * ( mipmapScales[ s ][ 2 ] - 1 ) );
+			mipmapTransform.preConcatenate(sourceTransform);
 			mipmapTransforms[ s ] = mipmapTransform;
 		}
 
 		this.voxelDimensions = voxelDimensions;
+	}
+
+	public RandomAccessibleIntervalMipmapSource(
+			final RandomAccessibleInterval< T >[] imgs,
+			final T type,
+			final double[][] mipmapScales,
+			final VoxelDimensions voxelDimensions,
+			final String name )
+	{
+		this(imgs, type, mipmapScales, voxelDimensions, new AffineTransform3D(), name);
 	}
 
 	@Override
