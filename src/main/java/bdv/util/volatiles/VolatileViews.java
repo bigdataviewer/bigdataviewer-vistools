@@ -1,18 +1,20 @@
 package bdv.util.volatiles;
 
+import java.util.Set;
+
 import bdv.img.cache.CreateInvalidVolatileCell;
 import bdv.img.cache.VolatileCachedCellImg;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
 import net.imglib2.cache.Cache;
-import net.imglib2.cache.img.AccessFlags;
 import net.imglib2.cache.img.CachedCellImg;
 import net.imglib2.cache.ref.WeakRefVolatileCache;
 import net.imglib2.cache.volatiles.CacheHints;
 import net.imglib2.cache.volatiles.CreateInvalid;
 import net.imglib2.cache.volatiles.LoadingStrategy;
 import net.imglib2.cache.volatiles.VolatileCache;
+import net.imglib2.img.basictypeaccess.AccessFlags;
 import net.imglib2.img.basictypeaccess.volatiles.VolatileArrayDataAccess;
 import net.imglib2.img.cell.Cell;
 import net.imglib2.img.cell.CellGrid;
@@ -129,8 +131,8 @@ public class VolatileViews
 		final CellGrid grid = cachedCellImg.getCellGrid();
 		final Cache< Long, Cell< A > > cache = cachedCellImg.getCache();
 
-		final AccessFlags[] flags = AccessFlags.of( cachedCellImg.getAccessType() );
-		if ( !AccessFlags.isVolatile( flags ) )
+		final Set< AccessFlags > flags = AccessFlags.ofAccess( cachedCellImg.getAccessType() );
+		if ( !flags.contains( AccessFlags.VOLATILE ) )
 			throw new IllegalArgumentException( "underlying " + CachedCellImg.class.getSimpleName() + " must have volatile access type" );
 
 		final V vtype = ( V ) VolatileTypeMatcher.getVolatileTypeForType( type );
@@ -147,7 +149,7 @@ public class VolatileViews
 	private static < T extends NativeType< T >, A extends VolatileArrayDataAccess< A > > VolatileCachedCellImg< T, A > createVolatileCachedCellImg(
 			final CellGrid grid,
 			final T type,
-			final AccessFlags[] accessFlags,
+			final Set< AccessFlags > accessFlags,
 			final Cache< Long, Cell< A > > cache,
 			final SharedQueue queue,
 			final CacheHints hints )
@@ -158,4 +160,3 @@ public class VolatileViews
 		return volatileImg;
 	}
 }
-
