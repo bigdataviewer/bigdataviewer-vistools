@@ -1,18 +1,23 @@
 package bdv.util.volatiles;
 
+import static net.imglib2.img.basictypeaccess.AccessFlags.DIRTY;
+import static net.imglib2.img.basictypeaccess.AccessFlags.VOLATILE;
+
+import java.util.Set;
+
 import bdv.img.cache.CreateInvalidVolatileCell;
 import bdv.img.cache.VolatileCachedCellImg;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
 import net.imglib2.cache.Cache;
-import net.imglib2.cache.img.AccessFlags;
 import net.imglib2.cache.img.CachedCellImg;
 import net.imglib2.cache.ref.WeakRefVolatileCache;
 import net.imglib2.cache.volatiles.CacheHints;
 import net.imglib2.cache.volatiles.CreateInvalid;
 import net.imglib2.cache.volatiles.LoadingStrategy;
 import net.imglib2.cache.volatiles.VolatileCache;
+import net.imglib2.img.basictypeaccess.AccessFlags;
 import net.imglib2.img.basictypeaccess.volatiles.VolatileArrayDataAccess;
 import net.imglib2.img.cell.Cell;
 import net.imglib2.img.cell.CellGrid;
@@ -129,9 +134,10 @@ public class VolatileViews
 		final CellGrid grid = cachedCellImg.getCellGrid();
 		final Cache< Long, Cell< A > > cache = cachedCellImg.getCache();
 
-		final AccessFlags[] flags = AccessFlags.of( cachedCellImg.getAccessType() );
-		if ( !AccessFlags.isVolatile( flags ) )
+		final Set< AccessFlags > flags = AccessFlags.ofAccess( cachedCellImg.getAccessType() );
+		if ( !flags.contains( VOLATILE ) )
 			throw new IllegalArgumentException( "underlying " + CachedCellImg.class.getSimpleName() + " must have volatile access type" );
+		final boolean dirty = flags.contains( DIRTY );
 
 		final V vtype = ( V ) VolatileTypeMatcher.getVolatileTypeForType( type );
 		if ( queue == null )
@@ -139,7 +145,7 @@ public class VolatileViews
 		if ( hints == null )
 			hints = new CacheHints( LoadingStrategy.VOLATILE, 0, false );
 		@SuppressWarnings( "rawtypes" )
-		final VolatileCachedCellImg< V, ? > img = createVolatileCachedCellImg( grid, vtype, flags, ( Cache ) cache, queue, hints );
+		final VolatileCachedCellImg< V, ? > img = createVolatileCachedCellImg( grid, vtype, dirty, ( Cache ) cache, queue, hints );
 
 		return new VolatileViewData<>( img, queue, type, vtype );
 	}
@@ -147,12 +153,12 @@ public class VolatileViews
 	private static < T extends NativeType< T >, A extends VolatileArrayDataAccess< A > > VolatileCachedCellImg< T, A > createVolatileCachedCellImg(
 			final CellGrid grid,
 			final T type,
-			final AccessFlags[] accessFlags,
+			final boolean dirty,
 			final Cache< Long, Cell< A > > cache,
 			final SharedQueue queue,
 			final CacheHints hints )
 	{
-		final CreateInvalid< Long, Cell< A > > createInvalid = CreateInvalidVolatileCell.get( grid, type, accessFlags );
+		final CreateInvalid< Long, Cell< A > > createInvalid = CreateInvalidVolatileCell.get( grid, type, dirty );
 		final VolatileCache< Long, Cell< A > > volatileCache = new WeakRefVolatileCache<>( cache, queue, createInvalid );
 		final VolatileCachedCellImg< T, A > volatileImg = new VolatileCachedCellImg<>( grid, type, hints, volatileCache.unchecked()::get );
 		return volatileImg;

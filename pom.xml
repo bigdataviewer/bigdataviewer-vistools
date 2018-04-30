@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>19.2.0</version>
+		<version>20.4.0</version>
 		<relativePath />
 	</parent>
 
@@ -91,9 +91,10 @@
 
 		<!-- NB: Deploy releases to the ImageJ Maven repository. -->
 		<releaseProfiles>deploy-to-imagej</releaseProfiles>
-		
-		<bigdataviewer-core.version>4.3.2</bigdataviewer-core.version>
-		<ui-behaviour.version>1.7.1</ui-behaviour.version>
+
+		<imglib2.version>5.1.0</imglib2.version>
+		<imglib2-cache.version>1.0.0-beta-8</imglib2-cache.version>
+		<bigdataviewer-core.version>5.0.0</bigdataviewer-core.version>
 	</properties>
 
 	<repositories>
@@ -107,7 +108,6 @@
 		<dependency>
 			<groupId>sc.fiji</groupId>
 			<artifactId>bigdataviewer-core</artifactId>
-			<version>${bigdataviewer-core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.imglib2</groupId>
@@ -128,7 +128,6 @@
 		<dependency>
 			<groupId>org.scijava</groupId>
 			<artifactId>ui-behaviour</artifactId>
-			<version>${ui-behaviour.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
