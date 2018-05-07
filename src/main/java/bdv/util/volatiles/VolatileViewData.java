@@ -31,7 +31,7 @@ public class VolatileViewData< T, V extends Volatile< T > >
 
 	private final CacheControl cacheControl;
 
-	private final Runnable clearCache;
+	private final CacheControlUnsafe cacheControlUsnafe;
 
 	private final T type;
 
@@ -40,13 +40,13 @@ public class VolatileViewData< T, V extends Volatile< T > >
 	public VolatileViewData(
 			final RandomAccessible< V > img,
 			final CacheControl cacheControl,
-			final Runnable clearCache,
+			final CacheControlUnsafe cacheControlUsnafe,
 			final T type,
 			final V volatileType )
 	{
 		this.img = img;
 		this.cacheControl = cacheControl;
-		this.clearCache = clearCache;
+		this.cacheControlUsnafe = cacheControlUsnafe;
 		this.type = type;
 		this.volatileType = volatileType;
 	}
@@ -74,15 +74,15 @@ public class VolatileViewData< T, V extends Volatile< T > >
 	}
 
 	/**
-	 * Get a handle to the {@link Cache#invalidateAll()} method of the
-	 * underlying {@link Cache}.
+	 * Get the {@link CacheControlUnsafe} for the {@link CachedCellImg}(s) at the
+	 * bottom of the view cascade.
 	 *
-	 * @return a handle to the {@link Cache#invalidateAll()} method of the
-	 *         underlying {@link Cache}.
+	 * @return the {@link CacheControlUnsafe} for the {@link CachedCellImg}(s) at the
+	 *         bottom of the view cascade
 	 */
-	public Runnable getClearCache()
+	public CacheControlUnsafe getCacheControlUnsafe()
 	{
-		return this.clearCache;
+		return this.cacheControlUsnafe;
 	}
 
 	/**

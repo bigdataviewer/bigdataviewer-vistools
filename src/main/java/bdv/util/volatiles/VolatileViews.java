@@ -108,7 +108,7 @@ public class VolatileViews
 			return new VolatileViewData<>(
 					new IntervalView<>( sourceData.getImg(), view ),
 					sourceData.getCacheControl(),
-					sourceData.getClearCache(),
+					sourceData.getCacheControlUnsafe(),
 					sourceData.getType(),
 					sourceData.getVolatileType() );
 		}
@@ -119,7 +119,7 @@ public class VolatileViews
 			return new VolatileViewData<>(
 					new MixedTransformView<>( sourceData.getImg(), view.getTransformToSource() ),
 					sourceData.getCacheControl(),
-					sourceData.getClearCache(),
+					sourceData.getCacheControlUnsafe(),
 					sourceData.getType(),
 					sourceData.getVolatileType() );
 		}
