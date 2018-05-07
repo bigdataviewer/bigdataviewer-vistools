@@ -31,6 +31,7 @@ import net.imglib2.view.MixedTransformView;
  * BigDataViewer while loading asynchronously.
  *
  * @author Tobias Pietzsch
+ * @author Philipp Hanslovsky
  */
 public class VolatileViews
 {
@@ -107,6 +108,7 @@ public class VolatileViews
 			return new VolatileViewData<>(
 					new IntervalView<>( sourceData.getImg(), view ),
 					sourceData.getCacheControl(),
+					sourceData.getClearCache(),
 					sourceData.getType(),
 					sourceData.getVolatileType() );
 		}
@@ -117,6 +119,7 @@ public class VolatileViews
 			return new VolatileViewData<>(
 					new MixedTransformView<>( sourceData.getImg(), view.getTransformToSource() ),
 					sourceData.getCacheControl(),
+					sourceData.getClearCache(),
 					sourceData.getType(),
 					sourceData.getVolatileType() );
 		}
@@ -147,7 +150,7 @@ public class VolatileViews
 		@SuppressWarnings( "rawtypes" )
 		final VolatileCachedCellImg< V, ? > img = createVolatileCachedCellImg( grid, vtype, dirty, ( Cache ) cache, queue, hints );
 
-		return new VolatileViewData<>( img, queue, type, vtype );
+		return new VolatileViewData<>( img, queue, cache::invalidateAll, type, vtype );
 	}
 
 	private static < T extends NativeType< T >, A extends VolatileArrayDataAccess< A > > VolatileCachedCellImg< T, A > createVolatileCachedCellImg(
