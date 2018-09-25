@@ -2,6 +2,7 @@ package bdv.util;
 
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.scijava.ui.behaviour.io.InputTriggerConfig;
@@ -33,8 +34,9 @@ public class BdvHandleFrame extends BdvHandle
 	{
 		super( options );
 		frameTitle = options.values.getFrameTitle();
-		bdv = null;
 		cacheControls = new CacheControls();
+
+		createViewer( Collections.emptyList(), Collections.emptyList(), 1 );
 	}
 
 	public BigDataViewer getBigDataViewer()
