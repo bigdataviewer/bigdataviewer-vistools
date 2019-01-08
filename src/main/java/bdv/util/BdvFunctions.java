@@ -170,18 +170,31 @@ public class BdvFunctions
 		return show( source, Bdv.options() );
 	}
 
-	// TODO version with numTimepoints argument
 	public static < T > BdvStackSource< T > show(
 			final Source< T > source,
+			final BdvOptions options )
+	{
+		return show( source, 1, options );
+	}
+
+	public static < T > BdvStackSource< T > show(
+			final Source< T > source,
+			final int numTimePoints )
+	{
+		return show( source, numTimePoints, Bdv.options() );
+	}
+
+	public static < T > BdvStackSource< T > show(
+			final Source< T > source,
+			final int numTimePoints,
 			final BdvOptions options )
 	{
 		final Bdv bdv = options.values.addTo();
 		final BdvHandle handle = ( bdv == null )
 				? new BdvHandleFrame( options )
 				: bdv.getBdvHandle();
-		final int numTimepoints = 1;
 		@SuppressWarnings( { "unchecked", "rawtypes" } )
-		final BdvStackSource< T > stackSource = addSource( handle, ( Source ) source, numTimepoints );
+		final BdvStackSource< T > stackSource = addSource( handle, ( Source ) source, numTimePoints );
 		return stackSource;
 	}
 
