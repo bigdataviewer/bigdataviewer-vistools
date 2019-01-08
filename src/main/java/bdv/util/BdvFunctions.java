@@ -174,14 +174,7 @@ public class BdvFunctions
 			final Source< T > source,
 			final BdvOptions options )
 	{
-		final Bdv bdv = options.values.addTo();
-		final BdvHandle handle = ( bdv == null )
-				? new BdvHandleFrame( options )
-				: bdv.getBdvHandle();
-		final int numTimePoints = 1;
-		@SuppressWarnings( { "unchecked", "rawtypes" } )
-		final BdvStackSource< T > stackSource = addSource( handle, ( Source ) source, numTimePoints );
-		return stackSource;
+		return show( source, 1, options );
 	}
 
 	public static < T > BdvStackSource< T > show(
