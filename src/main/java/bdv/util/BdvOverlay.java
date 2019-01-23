@@ -23,7 +23,7 @@ import net.imglib2.ui.OverlayRenderer;
  * {@link #getCurrentTransform3D(AffineTransform3D)}. They can access the
  * user-set display range and color via {@link #info}.
  *
- * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
+ * @author Tobias Pietzsch
  */
 public abstract class BdvOverlay implements OverlayRenderer
 {
