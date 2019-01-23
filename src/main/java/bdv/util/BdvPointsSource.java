@@ -2,11 +2,11 @@ package bdv.util;
 
 import java.util.List;
 
-import bdv.viewer.SourceAndConverter;
 import net.imglib2.RealLocalizable;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.ARGBType;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
+
+import bdv.viewer.SourceAndConverter;
 
 public class BdvPointsSource extends BdvOverlaySource< PointsOverlay >
 {
@@ -14,7 +14,7 @@ public class BdvPointsSource extends BdvOverlaySource< PointsOverlay >
 			final BdvHandle bdv,
 			final int numTimepoints,
 			final PlaceHolderConverterSetup setup,
-			final SourceAndConverter< UnsignedShortType > source,
+			final SourceAndConverter< Void > source,
 			final PlaceHolderOverlayInfo info,
 			final PointsOverlay overlay )
 	{
@@ -31,6 +31,7 @@ public class BdvPointsSource extends BdvOverlaySource< PointsOverlay >
 		overlay.setSourceTransform( t );
 	}
 
+	@Override
 	public void setColor( final ARGBType color )
 	{
 		setup.setColor( color );

@@ -3,7 +3,6 @@ package bdv.util;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.realtransform.AffineTransform3D;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 import bdv.viewer.Interpolation;
 import bdv.viewer.Source;
@@ -23,10 +22,8 @@ import mpicbg.spim.data.sequence.VoxelDimensions;
  *
  * @author Tobias Pietzsch
  */
-public final class PlaceHolderSource implements Source< UnsignedShortType >
+public final class PlaceHolderSource implements Source< Void >
 {
-	private final UnsignedShortType type = new UnsignedShortType();
-
 	private final String name;
 
 	public PlaceHolderSource( final String name )
@@ -35,9 +32,9 @@ public final class PlaceHolderSource implements Source< UnsignedShortType >
 	}
 
 	@Override
-	public UnsignedShortType getType()
+	public Void getType()
 	{
-		return type;
+		return null;
 	}
 
 	@Override
@@ -65,13 +62,13 @@ public final class PlaceHolderSource implements Source< UnsignedShortType >
 	}
 
 	@Override
-	public RandomAccessibleInterval< UnsignedShortType > getSource( final int t, final int level )
+	public RandomAccessibleInterval< Void > getSource( final int t, final int level )
 	{
 		return null;
 	}
 
 	@Override
-	public RealRandomAccessible< UnsignedShortType > getInterpolatedSource( final int t, final int level, final Interpolation method )
+	public RealRandomAccessible< Void > getInterpolatedSource( final int t, final int level, final Interpolation method )
 	{
 		return null;
 	}

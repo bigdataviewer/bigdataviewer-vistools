@@ -3,20 +3,20 @@ package bdv.util;
 import java.util.Arrays;
 import java.util.List;
 
+import net.imglib2.type.numeric.ARGBType;
+import net.imglib2.ui.OverlayRenderer;
+
 import bdv.tools.brightness.MinMaxGroup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.viewer.SourceAndConverter;
 import bdv.viewer.state.SourceState;
 import bdv.viewer.state.ViewerState;
-import net.imglib2.type.numeric.ARGBType;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-import net.imglib2.ui.OverlayRenderer;
 
 public class BdvOverlaySource< O extends OverlayRenderer > extends BdvSource
 {
 	protected final PlaceHolderConverterSetup setup;
 
-	private final SourceAndConverter< UnsignedShortType > source;
+	private final SourceAndConverter< Void > source;
 
 	private final PlaceHolderOverlayInfo info;
 
@@ -31,7 +31,7 @@ public class BdvOverlaySource< O extends OverlayRenderer > extends BdvSource
 			final BdvHandle bdv,
 			final int numTimepoints,
 			final PlaceHolderConverterSetup setup,
-			final SourceAndConverter< UnsignedShortType > source,
+			final SourceAndConverter< Void > source,
 			final PlaceHolderOverlayInfo info,
 			final O overlay )
 	{

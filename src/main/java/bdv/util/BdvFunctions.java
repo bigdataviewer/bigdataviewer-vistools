@@ -5,23 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.WeakHashMap;
 
-import bdv.BigDataViewer;
-import bdv.ViewerImgLoader;
-import bdv.img.cache.VolatileGlobalCellCache;
-import bdv.spimdata.WrapBasicImgLoader;
-import bdv.tools.brightness.ConverterSetup;
-import bdv.tools.brightness.RealARGBColorConverterSetup;
-import bdv.tools.brightness.SetupAssignments;
-import bdv.tools.transformation.TransformedSource;
-import bdv.util.VirtualChannels.VirtualChannel;
-import bdv.util.volatiles.VolatileView;
-import bdv.util.volatiles.VolatileViewData;
-import bdv.viewer.RequestRepaint;
-import bdv.viewer.Source;
-import bdv.viewer.SourceAndConverter;
-import gnu.trove.map.hash.TObjectIntHashMap;
-import mpicbg.spim.data.generic.AbstractSpimData;
-import mpicbg.spim.data.generic.sequence.AbstractSequenceDescription;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessible;
@@ -38,11 +21,27 @@ import net.imglib2.type.Type;
 import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.NumericType;
 import net.imglib2.type.numeric.RealType;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.type.volatiles.VolatileARGBType;
 import net.imglib2.util.Pair;
 import net.imglib2.util.Util;
 import net.imglib2.view.Views;
+
+import bdv.BigDataViewer;
+import bdv.ViewerImgLoader;
+import bdv.img.cache.VolatileGlobalCellCache;
+import bdv.spimdata.WrapBasicImgLoader;
+import bdv.tools.brightness.ConverterSetup;
+import bdv.tools.brightness.RealARGBColorConverterSetup;
+import bdv.tools.brightness.SetupAssignments;
+import bdv.tools.transformation.TransformedSource;
+import bdv.util.VirtualChannels.VirtualChannel;
+import bdv.util.volatiles.VolatileView;
+import bdv.util.volatiles.VolatileViewData;
+import bdv.viewer.RequestRepaint;
+import bdv.viewer.Source;
+import bdv.viewer.SourceAndConverter;
+import mpicbg.spim.data.generic.AbstractSpimData;
+import mpicbg.spim.data.generic.sequence.AbstractSequenceDescription;
 
 /**
  * all show methods return a {@link Bdv} which can be used to add more stuff to the same window
@@ -261,10 +260,10 @@ public class BdvFunctions
 		final ARGBType defaultColor = new ARGBType( 0xff00ff00 );
 		final PlaceHolderConverterSetup setup = new PlaceHolderConverterSetup( setupId, 0, 255, defaultColor );
 		final PlaceHolderSource source = new PlaceHolderSource( name );
-		final SourceAndConverter< UnsignedShortType > soc = new SourceAndConverter<>( source, null );
+		final SourceAndConverter< Void > soc = new SourceAndConverter<>( source, null );
 
 		final List< ConverterSetup > converterSetups = new ArrayList<>( Arrays.asList( setup ) );
-		final List< SourceAndConverter< UnsignedShortType > > sources = new ArrayList<>( Arrays.asList( soc ) );
+		final List< SourceAndConverter< Void > > sources = new ArrayList<>( Arrays.asList( soc ) );
 
 		final int numTimepoints = 1;
 		handle.add( converterSetups, sources, numTimepoints );
@@ -303,10 +302,10 @@ public class BdvFunctions
 		final ARGBType defaultColor = new ARGBType( 0xff00ff00 );
 		final PlaceHolderConverterSetup setup = new PlaceHolderConverterSetup( setupId, 0, 255, defaultColor );
 		final PlaceHolderSource source = new PlaceHolderSource( name );
-		final SourceAndConverter< UnsignedShortType > soc = new SourceAndConverter<>( source, null );
+		final SourceAndConverter< Void > soc = new SourceAndConverter<>( source, null );
 
 		final List< ConverterSetup > converterSetups = new ArrayList<>( Arrays.asList( setup ) );
-		final List< SourceAndConverter< UnsignedShortType > > sources = new ArrayList<>( Arrays.asList( soc ) );
+		final List< SourceAndConverter< Void > > sources = new ArrayList<>( Arrays.asList( soc ) );
 
 		final int numTimepoints = 1;
 		handle.add( converterSetups, sources, numTimepoints );
