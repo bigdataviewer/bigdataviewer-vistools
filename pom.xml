@@ -59,6 +59,36 @@
 			<url>https://imagej.net/User:Saalfeld</url>
 			<properties><id>axtimwalde</id></properties>
 		</contributor>
+		<contributor>
+			<name>Christian Tischer</name>
+			<properties><id>tischi</id></properties>
+		</contributor>
+		<contributor>
+			<name>Igor Pisarev</name>
+		</contributor>
+		<contributor>
+			<name>Jan Eglinger</name>
+			<url>http://imagej.net/User:Eglinger</url>
+			<properties><id>imagejan</id></properties>
+		</contributor>
+		<contributor>
+			<name>Matthias Arzt</name>
+			<url>http://imagej.net/User:Maarzt</url>
+			<properties><id>maarzt</id></properties>
+		</contributor>
+		<contributor>
+			<name>Philipp Hanslovsky</name>
+			<url>http://imagej.net/User:Hanslovsky</url>
+			<properties><id>hanslovsky</id></properties>
+		</contributor>
+		<contributor>
+			<name>Vanessa Leite</name>
+		</contributor>
+		<contributor>
+			<name>Tim-Oliver Buchholz</name>
+			<url>https://imagej.net/User:Tibuch</url>
+			<properties><id>tibuch</id></properties>
+		</contributor>
 	</contributors>
 
 	<mailingLists>
