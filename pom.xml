@@ -119,6 +119,8 @@
 		<license.copyrightOwners>BigDataViewer developers.</license.copyrightOwners>
 		<license.projectName>BigDataViewer quick visualization API.</license.projectName>
 
+		<bigdataviewer-core.version>6.0.0</bigdataviewer-core.version>
+
 		<!-- NB: Deploy releases to the ImageJ Maven repository. -->
 		<releaseProfiles>deploy-to-imagej</releaseProfiles>
 	</properties>
