@@ -326,21 +326,10 @@ public class BdvFunctions
 		return getUnusedSetupId( bdv.getSetupAssignments() );
 	}
 
-	private static final WeakHashMap< SetupAssignments, Integer > maxIds = new WeakHashMap<>(  );
-
-	private static final SetupAssignments nullSetupAssignmentsKey = new SetupAssignments( new ArrayList<>(), 0, 1 );
-
 	// TODO: move to BdvFunctionUtils
 	public static synchronized int getUnusedSetupId( SetupAssignments setupAssignments )
 	{
-		if ( setupAssignments == null )
-			setupAssignments = nullSetupAssignmentsKey;
-		int maxId = maxIds.getOrDefault( setupAssignments, 0 );
-		for ( final ConverterSetup setup : setupAssignments.getConverterSetups() )
-			maxId = Math.max( setup.getSetupId(), maxId );
-		++maxId;
-		maxIds.put( setupAssignments, maxId );
-		return maxId;
+		return SetupAssignments.getUnusedSetupId( setupAssignments );
 	}
 
 
