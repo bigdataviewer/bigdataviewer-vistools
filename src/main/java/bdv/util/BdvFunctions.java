@@ -3,12 +3,12 @@ package bdv.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.WeakHashMap;
 
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.Volatile;
@@ -26,10 +26,15 @@ import net.imglib2.util.Pair;
 import net.imglib2.util.Util;
 import net.imglib2.view.Views;
 
+import org.scijava.ui.behaviour.io.InputTriggerConfig;
+
 import bdv.BigDataViewer;
 import bdv.ViewerImgLoader;
 import bdv.img.cache.VolatileGlobalCellCache;
 import bdv.spimdata.WrapBasicImgLoader;
+import bdv.tools.boundingbox.BoxSelectionOptions;
+import bdv.tools.boundingbox.TransformedBoxSelectionDialog;
+import bdv.tools.boundingbox.TransformedRealBoxSelectionDialog;
 import bdv.tools.brightness.ConverterSetup;
 import bdv.tools.brightness.RealARGBColorConverterSetup;
 import bdv.tools.brightness.SetupAssignments;
@@ -327,15 +332,78 @@ public class BdvFunctions
 	}
 
 	// TODO: move to BdvFunctionUtils
-	public static synchronized int getUnusedSetupId( SetupAssignments setupAssignments )
+	public static synchronized int getUnusedSetupId( final SetupAssignments setupAssignments )
 	{
 		return SetupAssignments.getUnusedSetupId( setupAssignments );
 	}
 
+	public static TransformedRealBoxSelectionDialog.Result selectRealBox(
+			final Bdv bdv,
+			final AffineTransform3D boxTransform,
+			final RealInterval initialInterval,
+			final RealInterval rangeInterval )
+	{
+		return selectRealBox( bdv, boxTransform, initialInterval, rangeInterval, BoxSelectionOptions.options() );
+	}
 
+	public static TransformedRealBoxSelectionDialog.Result selectRealBox(
+			final Bdv bdv,
+			final AffineTransform3D boxTransform,
+			final RealInterval initialInterval,
+			final RealInterval rangeInterval,
+			final BoxSelectionOptions options )
+	{
+		final BdvHandle handle = bdv.getBdvHandle();
 
+		InputTriggerConfig keyConfig = options.values.getInputTriggerConfig();
+		if ( keyConfig == null )
+			keyConfig = new InputTriggerConfig();
 
+		return new TransformedRealBoxSelectionDialog(
+				handle.getViewerPanel(),
+				handle.getSetupAssignments(),
+				keyConfig,
+				handle.getTriggerbindings(),
+				boxTransform,
+				initialInterval,
+				rangeInterval,
+				options
+		).getResult();
+	}
 
+	public static TransformedBoxSelectionDialog.Result selectBox(
+			final Bdv bdv,
+			final AffineTransform3D boxTransform,
+			final Interval initialInterval,
+			final Interval rangeInterval )
+	{
+		return selectBox( bdv, boxTransform, initialInterval, rangeInterval, BoxSelectionOptions.options() );
+	}
+
+	public static TransformedBoxSelectionDialog.Result selectBox(
+			final Bdv bdv,
+			final AffineTransform3D boxTransform,
+			final Interval initialInterval,
+			final Interval rangeInterval,
+			final BoxSelectionOptions options )
+	{
+		final BdvHandle handle = bdv.getBdvHandle();
+
+		InputTriggerConfig keyConfig = options.values.getInputTriggerConfig();
+		if ( keyConfig == null )
+			keyConfig = new InputTriggerConfig();
+
+		return new TransformedBoxSelectionDialog(
+				handle.getViewerPanel(),
+				handle.getSetupAssignments(),
+				keyConfig,
+				handle.getTriggerbindings(),
+				boxTransform,
+				initialInterval,
+				rangeInterval,
+				options
+		).getResult();
+	}
 
 	/**
 	 * Add the given {@link RandomAccessibleInterval} {@code img} to the given

@@ -357,6 +357,11 @@ public class BdvOptions
 			return axisOrder;
 		}
 
+		public InputTriggerConfig getInputTriggerConfig()
+		{
+			return inputTriggerConfig;
+		}
+
 		public Bdv addTo()
 		{
 			return addTo;
