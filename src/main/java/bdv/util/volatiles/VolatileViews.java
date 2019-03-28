@@ -5,8 +5,6 @@ import static net.imglib2.img.basictypeaccess.AccessFlags.VOLATILE;
 
 import java.util.Set;
 
-import bdv.img.cache.CreateInvalidVolatileCell;
-import bdv.img.cache.VolatileCachedCellImg;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
@@ -17,6 +15,7 @@ import net.imglib2.cache.volatiles.CacheHints;
 import net.imglib2.cache.volatiles.CreateInvalid;
 import net.imglib2.cache.volatiles.LoadingStrategy;
 import net.imglib2.cache.volatiles.VolatileCache;
+import net.imglib2.img.WrappedImg;
 import net.imglib2.img.basictypeaccess.AccessFlags;
 import net.imglib2.img.basictypeaccess.volatiles.VolatileArrayDataAccess;
 import net.imglib2.img.cell.Cell;
@@ -24,6 +23,9 @@ import net.imglib2.img.cell.CellGrid;
 import net.imglib2.type.NativeType;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.MixedTransformView;
+
+import bdv.img.cache.CreateInvalidVolatileCell;
+import bdv.img.cache.VolatileCachedCellImg;
 
 /**
  * Wrap view cascades ending in {@link CachedCellImg} as volatile views.
@@ -119,6 +121,10 @@ public class VolatileViews
 					sourceData.getCacheControl(),
 					sourceData.getType(),
 					sourceData.getVolatileType() );
+		}
+		else if ( rai instanceof WrappedImg )
+		{
+			return wrapAsVolatileViewData( ( ( WrappedImg< T > ) rai ).getImg(), queue, hints );
 		}
 
 		throw new IllegalArgumentException();
