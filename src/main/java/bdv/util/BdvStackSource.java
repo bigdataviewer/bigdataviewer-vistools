@@ -112,11 +112,11 @@ public class BdvStackSource< T > extends BdvSource
 //	{
 //		return type;
 //	}
-//
-//	public List< ConverterSetup > getConverterSetups()
-//	{
-//		return converterSetups;
-//	}
+
+	public List< ConverterSetup > getConverterSetups()
+	{
+		return converterSetups;
+	}
 
 	public List< SourceAndConverter< T > > getSources()
 	{
