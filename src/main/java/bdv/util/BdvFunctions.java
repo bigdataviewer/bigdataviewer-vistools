@@ -1,7 +1,7 @@
 package bdv.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import net.imglib2.FinalInterval;
@@ -11,10 +11,7 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealRandomAccessible;
-import net.imglib2.Volatile;
 import net.imglib2.converter.Converter;
-import net.imglib2.display.RealARGBColorConverter;
-import net.imglib2.display.ScaledARGBConverter;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.realtransform.RealViews;
 import net.imglib2.type.Type;
@@ -36,13 +33,11 @@ import bdv.tools.boundingbox.BoxSelectionOptions;
 import bdv.tools.boundingbox.TransformedBoxSelectionDialog;
 import bdv.tools.boundingbox.TransformedRealBoxSelectionDialog;
 import bdv.tools.brightness.ConverterSetup;
-import bdv.tools.brightness.RealARGBColorConverterSetup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.tools.transformation.TransformedSource;
 import bdv.util.VirtualChannels.VirtualChannel;
 import bdv.util.volatiles.VolatileView;
 import bdv.util.volatiles.VolatileViewData;
-import bdv.viewer.RequestRepaint;
 import bdv.viewer.Source;
 import bdv.viewer.SourceAndConverter;
 import mpicbg.spim.data.generic.AbstractSpimData;
@@ -66,7 +61,7 @@ public class BdvFunctions
 		return show( img, name, Bdv.options() );
 	}
 
-	@SuppressWarnings( "unchecked" )
+	@SuppressWarnings( { "unchecked", "rawtypes" } )
 	public static < T > BdvStackSource< T > show(
 			final RandomAccessibleInterval< T > img,
 			final String name,
@@ -224,21 +219,13 @@ public class BdvFunctions
 		cache.clearCache();
 
 		WrapBasicImgLoader.wrapImgLoaderIfNecessary( spimData );
-		final ArrayList< ConverterSetup > converterSetups = new ArrayList<>();
 		final ArrayList< SourceAndConverter< ? > > sources = new ArrayList<>();
-		BigDataViewer.initSetups( spimData, converterSetups, sources );
-		if ( converterSetups.size() != sources.size() )
-			throw new UnsupportedOperationException( "BigDataViewer.initSetups did not behave as expected" );
+		BigDataViewer.initSetups( spimData, new ArrayList<>(), sources );
 
 		final List< BdvStackSource< ? > > bdvSources = new ArrayList<>();
-		for ( int i = 0; i < sources.size(); i++ )
-		{
-			bdvSources.add( addSpimDataSource(
-					handle,
-					sources.get( i ),
-					converterSetups.get( i ),
-					numTimepoints ) );
-		}
+		for ( final SourceAndConverter< ? > source : sources )
+			bdvSources.add( addSpimDataSource( handle, source, numTimepoints ) );
+
 		WrapBasicImgLoader.removeWrapperIfPresent( spimData );
 		return bdvSources;
 	}
@@ -267,8 +254,8 @@ public class BdvFunctions
 		final PlaceHolderSource source = new PlaceHolderSource( name );
 		final SourceAndConverter< Void > soc = new SourceAndConverter<>( source, null );
 
-		final List< ConverterSetup > converterSetups = new ArrayList<>( Arrays.asList( setup ) );
-		final List< SourceAndConverter< Void > > sources = new ArrayList<>( Arrays.asList( soc ) );
+		final List< ConverterSetup > converterSetups = new ArrayList<>( Collections.singletonList( setup ) );
+		final List< SourceAndConverter< Void > > sources = new ArrayList<>( Collections.singletonList( soc ) );
 
 		final int numTimepoints = 1;
 		handle.add( converterSetups, sources, numTimepoints );
@@ -309,8 +296,8 @@ public class BdvFunctions
 		final PlaceHolderSource source = new PlaceHolderSource( name );
 		final SourceAndConverter< Void > soc = new SourceAndConverter<>( source, null );
 
-		final List< ConverterSetup > converterSetups = new ArrayList<>( Arrays.asList( setup ) );
-		final List< SourceAndConverter< Void > > sources = new ArrayList<>( Arrays.asList( soc ) );
+		final List< ConverterSetup > converterSetups = new ArrayList<>( Collections.singletonList( setup ) );
+		final List< SourceAndConverter< Void > > sources = new ArrayList<>( Collections.singletonList( soc ) );
 
 		final int numTimepoints = 1;
 		handle.add( converterSetups, sources, numTimepoints );
@@ -448,7 +435,7 @@ public class BdvFunctions
 			{
 				s = new RandomAccessibleIntervalSource<>( stack, type, sourceTransform, name );
 			}
-			addSourceToListsGenericType( s, handle.getUnusedSetupId(), numTimepoints, type, converterSetups, sources );
+			addSourceToListsGenericType( s, handle.getUnusedSetupId(), converterSetups, sources );
 		}
 		handle.add( converterSetups, sources, numTimepoints );
 		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, numTimepoints, type, converterSetups, sources );
@@ -506,7 +493,7 @@ public class BdvFunctions
 				s = new RandomAccessibleSource4D<>( stack, stackInterval, type, sourceTransform, name );
 			else
 				s = new RandomAccessibleSource<>( stack, stackInterval, type, sourceTransform, name );
-			addSourceToListsGenericType( s, handle.getUnusedSetupId(), numTimepoints, type, converterSetups, sources );
+			addSourceToListsGenericType( s, handle.getUnusedSetupId(), converterSetups, sources );
 		}
 
 		handle.add( converterSetups, sources, numTimepoints );
@@ -576,7 +563,7 @@ public class BdvFunctions
 	 * @return a new {@link BdvStackSource} handle for the newly added
 	 *         {@code source}.
 	 */
-	@SuppressWarnings( { "rawtypes", "unchecked" } )
+	@SuppressWarnings( "rawtypes" )
 	private static < T > BdvStackSource< T > addSource(
 			final BdvHandle handle,
 			final Source< T > source,
@@ -585,7 +572,7 @@ public class BdvFunctions
 		final T type = source.getType();
 		final List< ConverterSetup > converterSetups = new ArrayList<>();
 		final List< SourceAndConverter< T > > sources = new ArrayList<>();
-		addSourceToListsGenericType( source, handle.getUnusedSetupId(), numTimepoints, type, converterSetups, sources );
+		addSourceToListsGenericType( source, handle.getUnusedSetupId(), converterSetups, sources );
 		handle.add( converterSetups, sources, numTimepoints );
 		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, numTimepoints, type, converterSetups, sources );
 		handle.addBdvSource( bdvSource );
@@ -602,10 +589,6 @@ public class BdvFunctions
 	 *            source to add.
 	 * @param setupId
 	 *            id of the new source for use in {@link SetupAssignments}.
-	 * @param numTimepoints
-	 *            the number of timepoints of the source.
-	 * @param type
-	 *            instance of the {@code img} type.
 	 * @param converterSetups
 	 *            list of {@link ConverterSetup}s to which the source should be
 	 *            added.
@@ -617,17 +600,12 @@ public class BdvFunctions
 	private static < T > void addSourceToListsGenericType(
 			final Source< T > source,
 			final int setupId,
-			final int numTimepoints,
-			final T type,
 			final List< ConverterSetup > converterSetups,
 			final List< SourceAndConverter< T > > sources )
 	{
-		if ( type instanceof RealType )
-			addSourceToListsRealType( ( Source ) source, setupId, ( List ) converterSetups, ( List ) sources );
-		else if ( type instanceof ARGBType )
-			addSourceToListsARGBType( ( Source ) source, setupId, ( List ) converterSetups, ( List ) sources );
-		else if ( type instanceof VolatileARGBType )
-			addSourceToListsVolatileARGBType( ( Source ) source, setupId, ( List ) converterSetups, ( List ) sources );
+		final T type = source.getType();
+		if ( type instanceof RealType || type instanceof ARGBType || type instanceof VolatileARGBType )
+			addSourceToListsNumericType( ( Source ) source, setupId, converterSetups, ( List ) sources );
 		else
 			throw new IllegalArgumentException( "Unknown source type. Expected RealType, ARGBType, or VolatileARGBType" );
 	}
@@ -635,8 +613,8 @@ public class BdvFunctions
 	/**
 	 * Add the given {@code source} to the lists of {@code converterSetups}
 	 * (using specified {@code setupId}) and {@code sources}. For this, the
-	 * {@code source} is wrapped with a {@link RealARGBColorConverter} and into
-	 * a {@link TransformedSource}.
+	 * {@code source} is wrapped with an appropriate {@link Converter} to
+	 * {@link ARGBType} and into a {@link TransformedSource}.
 	 *
 	 * @param source
 	 *            source to add.
@@ -649,163 +627,31 @@ public class BdvFunctions
 	 *            list of {@link SourceAndConverter}s to which the source should
 	 *            be added.
 	 */
-	private static < T extends RealType< T > > void addSourceToListsRealType(
+	private static < T extends NumericType< T > > void addSourceToListsNumericType(
 			final Source< T > source,
 			final int setupId,
 			final List< ConverterSetup > converterSetups,
 			final List< SourceAndConverter< T > > sources )
 	{
-		final T type = Util.getTypeFromInterval( source.getSource( 0, 0 ) );
-		final double typeMin = Math.max( 0, Math.min( type.getMinValue(), 65535 ) );
-		final double typeMax = Math.max( 0, Math.min( type.getMaxValue(), 65535 ) );
-		final RealARGBColorConverter< T > converter ;
-		if ( source.getType() instanceof Volatile )
-			converter = new RealARGBColorConverter.Imp0<>( typeMin, typeMax );
-		else
-			converter = new RealARGBColorConverter.Imp1<>( typeMin, typeMax );
-		converter.setColor( new ARGBType( 0xffffffff ) );
-
-		final TransformedSource< T > ts = new TransformedSource<>( source );
-		final SourceAndConverter< T > soc = new SourceAndConverter<>( ts, converter );
-
-		final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
-
-		converterSetups.add( setup );
-		sources.add( soc );
-	}
-
-	/**
-	 * Add the given {@code source} to the lists of {@code converterSetups}
-	 * (using specified {@code setupId}) and {@code sources}. For this, the
-	 * {@code source} is wrapped with a {@link ScaledARGBConverter.ARGB} and
-	 * into a {@link TransformedSource}.
-	 *
-	 * @param source
-	 *            source to add.
-	 * @param setupId
-	 *            id of the new source for use in {@link SetupAssignments}.
-	 * @param converterSetups
-	 *            list of {@link ConverterSetup}s to which the source should be
-	 *            added.
-	 * @param sources
-	 *            list of {@link SourceAndConverter}s to which the source should
-	 *            be added.
-	 */
-	private static void addSourceToListsARGBType(
-			final Source< ARGBType > source,
-			final int setupId,
-			final List< ConverterSetup > converterSetups,
-			final List< SourceAndConverter< ARGBType > > sources )
-	{
-		final TransformedSource< ARGBType > ts = new TransformedSource<>( source );
-		final ScaledARGBConverter.ARGB converter = new ScaledARGBConverter.ARGB( 0, 255 );
-		final SourceAndConverter< ARGBType > soc = new SourceAndConverter<>( ts, converter );
-
-		final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
-
-		converterSetups.add( setup );
-		sources.add( soc );
-	}
-
-	/**
-	 * Add the given {@code source} to the lists of {@code converterSetups}
-	 * (using specified {@code setupId}) and {@code sources}. For this, the
-	 * {@code source} is wrapped with a {@link ScaledARGBConverter.ARGB} and
-	 * into a {@link TransformedSource}.
-	 *
-	 * @param source
-	 *            source to add.
-	 * @param setupId
-	 *            id of the new source for use in {@link SetupAssignments}.
-	 * @param converterSetups
-	 *            list of {@link ConverterSetup}s to which the source should be
-	 *            added.
-	 * @param sources
-	 *            list of {@link SourceAndConverter}s to which the source should
-	 *            be added.
-	 */
-	private static void addSourceToListsVolatileARGBType(
-			final Source< VolatileARGBType > source,
-			final int setupId,
-			final List< ConverterSetup > converterSetups,
-			final List< SourceAndConverter< VolatileARGBType > > sources )
-	{
-		final TransformedSource< VolatileARGBType > ts = new TransformedSource<>( source );
-		final ScaledARGBConverter.VolatileARGB converter = new ScaledARGBConverter.VolatileARGB( 0, 255 );
-		final SourceAndConverter< VolatileARGBType > soc = new SourceAndConverter<>( ts, converter );
-
-		final RealARGBColorConverterSetup setup = new RealARGBColorConverterSetup( setupId, converter );
-
-		converterSetups.add( setup );
+		final T type = source.getType();
+		final SourceAndConverter< T > soc = BigDataViewer.wrapWithTransformedSource(
+				new SourceAndConverter<>( source, BigDataViewer.createConverterToARGB( type ) ) );
+		converterSetups.add( BigDataViewer.createConverterSetup( soc, setupId ) );
 		sources.add( soc );
 	}
 
 	private static < T > BdvStackSource< T > addSpimDataSource(
 			final BdvHandle handle,
 			final SourceAndConverter< T > source,
-			final ConverterSetup setup,
 			final int numTimepoints )
 	{
-		final int setupId = handle.getUnusedSetupId();
-		final ConverterSetup wrappedConverterSetup = new ConverterSetup()
-		{
-			@Override
-			public boolean supportsColor()
-			{
-				return setup.supportsColor();
-			}
-
-			@Override
-			public void setViewer( final RequestRepaint viewer )
-			{
-				setup.setViewer( viewer );
-			}
-
-			@Override
-			public void setDisplayRange( final double min, final double max )
-			{
-				setup.setDisplayRange( min, max );
-			}
-
-			@Override
-			public void setColor( final ARGBType color )
-			{
-				setup.setColor( color );
-			}
-
-			@Override
-			public int getSetupId()
-			{
-				return setupId;
-			}
-
-			@Override
-			public double getDisplayRangeMin()
-			{
-				return setup.getDisplayRangeMin();
-			}
-
-			@Override
-			public double getDisplayRangeMax()
-			{
-				return setup.getDisplayRangeMax();
-			}
-
-			@Override
-			public ARGBType getColor()
-			{
-				return setup.getColor();
-			}
-		};
-
-		final List< ConverterSetup > converterSetups = new ArrayList<>();
-		final List< SourceAndConverter< T > > sources = new ArrayList<>();
-		converterSetups.add( wrappedConverterSetup );
-		sources.add( source );
-		handle.add( converterSetups, sources, numTimepoints );
+		final ConverterSetup setup = BigDataViewer.createConverterSetup( source, handle.getUnusedSetupId() );
+		final List< ConverterSetup > setups = Collections.singletonList( setup );
+		final List< SourceAndConverter< T > > sources = Collections.singletonList( source );
+		handle.add( setups, sources, numTimepoints );
 
 		final T type = source.getSpimSource().getType();
-		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, numTimepoints, type, converterSetups, sources );
+		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, numTimepoints, type, setups, sources );
 		handle.addBdvSource( bdvSource );
 
 		return bdvSource;
