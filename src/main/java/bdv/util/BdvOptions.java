@@ -28,6 +28,8 @@
  */
 package bdv.util;
 
+import java.awt.Dimension;
+
 import org.scijava.ui.behaviour.io.InputTriggerConfig;
 
 import bdv.BehaviourTransformEventHandler3D;
@@ -350,6 +352,11 @@ public class BdvOptions
 		public boolean hasPreferredSize()
 		{
 			return width > 0 && height > 0;
+		}
+
+		public Dimension getPreferredSize()
+		{
+			return new Dimension( width, height );
 		}
 
 		public AxisOrder axisOrder()

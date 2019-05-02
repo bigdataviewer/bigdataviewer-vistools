@@ -108,6 +108,19 @@ public class BdvStackSource< T > extends BdvSource
 			getBdvHandle().getViewerPanel().getVisibilityAndGrouping().setSourceActive( source.getSpimSource(), isActive );
 	}
 
+	@Override
+	public String getTypeAsString()
+	{
+		return this.type.getClass().getSimpleName();
+	}
+	
+	@Override
+	protected String getName()
+	{
+		return this.sources.get( 0 ).getSpimSource().getName();
+	}
+	
+	
 //	public T getType()
 //	{
 //		return type;

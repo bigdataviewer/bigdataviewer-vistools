@@ -137,6 +137,8 @@ public abstract class BdvHandle implements Bdv
 
 	private boolean initTransformPending;
 
+	private List<SourceChangeListener> sourceChangeListeners = new ArrayList<>();
+
 	protected synchronized void tryInitTransform()
 	{
 		if ( viewer.getDisplay().getWidth() <= 0 || viewer.getDisplay().getHeight() <= 0 )
@@ -193,11 +195,19 @@ public abstract class BdvHandle implements Bdv
 				viewer.removeSource( soc.getSpimSource() );
 	}
 
+	public interface SourceChangeListener
+	{
+		public void addSource( BdvSource source );
+
+		public void removeSource( BdvSource source );
+	}
+
 	void addBdvSource( final BdvSource bdvSource )
 	{
 		bdvSources.add( bdvSource );
 		updateHasPlaceHolderSources();
 		updateNumTimepoints();
+		updateSourceChangeListenersAdd( bdvSource );
 	}
 
 	void removeBdvSource( final BdvSource bdvSource )
@@ -205,6 +215,7 @@ public abstract class BdvHandle implements Bdv
 		bdvSources.remove( bdvSource );
 		updateHasPlaceHolderSources();
 		updateNumTimepoints();
+		updateSourceChangeListernersRemove( bdvSource );
 	}
 
 	void updateHasPlaceHolderSources()
@@ -230,5 +241,24 @@ public abstract class BdvHandle implements Bdv
 	boolean is2D()
 	{
 		return bdvOptions.values.is2D();
+	}
+
+	void addSourceChangeListener( final SourceChangeListener l )
+	{
+		this.sourceChangeListeners.add( l );
+	}
+
+	void updateSourceChangeListenersAdd( final BdvSource source ) {
+		for ( final SourceChangeListener l : sourceChangeListeners )
+		{
+			l.addSource( source );
+		}
+	}
+
+	void updateSourceChangeListernersRemove( final BdvSource source )
+	{
+		for ( final SourceChangeListener l : sourceChangeListeners ) {
+			l.removeSource( source );
+		}
 	}
 }

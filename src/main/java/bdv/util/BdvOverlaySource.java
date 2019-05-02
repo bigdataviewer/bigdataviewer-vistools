@@ -105,4 +105,15 @@ public class BdvOverlaySource< O extends OverlayRenderer > extends BdvSource
 	{
 		getBdvHandle().getViewerPanel().getVisibilityAndGrouping().setSourceActive( source.getSpimSource(), isActive );
 	}
+	
+	@Override
+	public String getTypeAsString()
+	{
+		return overlay.getClass().getSimpleName();
+	}
+	
+	protected String getName()
+	{
+		return source.getSpimSource().getName();
+	}
 }
