@@ -15,7 +15,7 @@
 
 	<name>BigDataViewer Visualization Tools</name>
 	<description>Helpers to use BigDataViewer as quick visualization in other projects</description>
-	<url>http://github.com/bigdataviewer/bigdataviewer-vistools</url>
+	<url>https://github.com/bigdataviewer/bigdataviewer-vistools</url>
 	<inceptionYear>2016</inceptionYear>
 	<organization>
 		<name>BigDataViewer</name>
@@ -24,7 +24,7 @@
 	<licenses>
 		<license>
 			<name>Simplified BSD License</name>
-			<url>http://opensource.org/licenses/BSD-2-Clause</url>
+			<url>https://opensource.org/licenses/BSD-2-Clause</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
