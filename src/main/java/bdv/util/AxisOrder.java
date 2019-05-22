@@ -27,6 +27,7 @@ public enum AxisOrder
 	XYT   ( 3, -1, true,  true ),  // --> XYT  --> XYTZ --> XYZT
 	XYCT  ( 4,  2, true,  true ),  // --> XYT  --> XYTZ --> XYZT
 	XYTC  ( 4,  3, true,  true ),  // --> XYT  --> XYTZ --> XYZT
+	XYCZ  ( 4,  2, false, false ), // --> XYCZ
 	DEFAULT ( 0, 0, true, true );
 
 	final int numDimensions;
