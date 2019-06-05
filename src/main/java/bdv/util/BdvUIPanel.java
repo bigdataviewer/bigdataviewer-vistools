@@ -275,6 +275,18 @@ public class BdvUIPanel extends BdvHandle
 	}
 
 	/**
+	 * Get the JPanel of a previously added card.
+	 * 
+	 * @param name
+	 *            of the card panel
+	 * @return the panel
+	 */
+	public JPanel getCard( final String name )
+	{
+		return controls.getCards().get( name );
+	}
+
+	/**
 	 * The selection and grouping dialog of the BdvUIPanel can be embedded in
 	 * other UIs. This dialog also contains color & brightness settings.
 	 * 
