@@ -380,6 +380,12 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 			@Override
 			public void visibilityChanged( Event e )
 			{
+				if ( e.id == VisibilityAndGrouping.Event.CURRENT_SOURCE_CHANGED ) {
+					sourcesComboBox.setSelectedIndex( visGro.getCurrentSource() );
+				}
+				if ( e.id == VisibilityAndGrouping.Event.CURRENT_GROUP_CHANGED ) {
+					groupesComboBox.setSelectedIndex( visGro.getCurrentGroup() );
+				}
 				if ( e.id == VisibilityAndGrouping.Event.DISPLAY_MODE_CHANGED )
 				{
 					final DisplayMode mode = visGro.getDisplayMode();
