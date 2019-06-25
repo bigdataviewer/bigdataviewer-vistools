@@ -56,6 +56,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicArrowButton;
@@ -380,59 +381,63 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 			@Override
 			public void visibilityChanged( Event e )
 			{
-				if ( e.id == VisibilityAndGrouping.Event.CURRENT_SOURCE_CHANGED ) {
-					sourcesComboBox.setSelectedIndex( visGro.getCurrentSource() );
-				}
-				if ( e.id == VisibilityAndGrouping.Event.CURRENT_GROUP_CHANGED ) {
-					groupesComboBox.setSelectedIndex( visGro.getCurrentGroup() );
-				}
-				if ( e.id == VisibilityAndGrouping.Event.DISPLAY_MODE_CHANGED )
-				{
-					final DisplayMode mode = visGro.getDisplayMode();
-					if ( mode.equals( DisplayMode.FUSEDGROUP ) )
+				SwingUtilities.invokeLater( () -> {
+					if ( e.id == VisibilityAndGrouping.Event.CURRENT_SOURCE_CHANGED )
 					{
-						singleGroupModeCheckbox.setSelected( false );
-						singleSourceModeCheckbox.setSelected( false );
-						singleSourceMode = false;
-
-						setEnableVisibilityIcons( true );
-
-						setSelectedIndex( 1 );
+						sourcesComboBox.setSelectedIndex( visGro.getCurrentSource() );
 					}
-					else if ( mode.equals( DisplayMode.FUSED ) )
+					if ( e.id == VisibilityAndGrouping.Event.CURRENT_GROUP_CHANGED )
 					{
-						singleGroupModeCheckbox.setSelected( false );
-						singleSourceModeCheckbox.setSelected( false );
-						singleSourceMode = false;
-
-						setEnableVisibilityIcons( true );
-
-						setSelectedIndex( 0 );
+						groupesComboBox.setSelectedIndex( visGro.getCurrentGroup() );
 					}
-					else if ( mode.equals( DisplayMode.GROUP ) )
+					if ( e.id == VisibilityAndGrouping.Event.DISPLAY_MODE_CHANGED )
 					{
-						singleGroupModeCheckbox.setSelected( true );
-						singleSourceModeCheckbox.setSelected( true );
-						singleSourceMode = true;
+						final DisplayMode mode = visGro.getDisplayMode();
+						if ( mode.equals( DisplayMode.FUSEDGROUP ) )
+						{
+							singleGroupModeCheckbox.setSelected( false );
+							singleSourceModeCheckbox.setSelected( false );
+							singleSourceMode = false;
 
-						setEnableVisibilityIcons( false );
+							setEnableVisibilityIcons( true );
 
-						setSelectedIndex( 1 );
+							setSelectedIndex( 1 );
+						}
+						else if ( mode.equals( DisplayMode.FUSED ) )
+						{
+							singleGroupModeCheckbox.setSelected( false );
+							singleSourceModeCheckbox.setSelected( false );
+							singleSourceMode = false;
+
+							setEnableVisibilityIcons( true );
+
+							setSelectedIndex( 0 );
+						}
+						else if ( mode.equals( DisplayMode.GROUP ) )
+						{
+							singleGroupModeCheckbox.setSelected( true );
+							singleSourceModeCheckbox.setSelected( true );
+							singleSourceMode = true;
+
+							setEnableVisibilityIcons( false );
+
+							setSelectedIndex( 1 );
+						}
+						else
+						{
+							singleGroupModeCheckbox.setSelected( true );
+							singleSourceModeCheckbox.setSelected( true );
+							sourceVisibilityLabel.setEnabled( false );
+							singleSourceMode = true;
+
+							setEnableVisibilityIcons( false );
+
+							setSelectedIndex( 0 );
+						}
+						sourcesComboBox.repaint();
+						groupesComboBox.repaint();
 					}
-					else
-					{
-						singleGroupModeCheckbox.setSelected( true );
-						singleSourceModeCheckbox.setSelected( true );
-						sourceVisibilityLabel.setEnabled( false );
-						singleSourceMode = true;
-
-						setEnableVisibilityIcons( false );
-
-						setSelectedIndex( 0 );
-					}
-					sourcesComboBox.repaint();
-					groupesComboBox.repaint();
-				}
+				} );
 			}
 		} );
 	}
