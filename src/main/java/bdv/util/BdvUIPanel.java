@@ -316,4 +316,14 @@ public class BdvUIPanel extends BdvHandle
 	{
 		return this.interpolationPanel;
 	}
+
+	/**
+	 * Toggle card fold.
+	 * 
+	 * @param cardName
+	 */
+	public void toggleCard( final String cardName )
+	{
+		controls.toggleCardFold( cardName );
+	}
 }
