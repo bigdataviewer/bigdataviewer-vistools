@@ -495,6 +495,7 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 		}
 		sourcesComboBox.removeItem( source.getName() );
 		sourceLookup.remove( source.getName() );
+		sourceIdx.remove( source.getName() );
 	}
 
 	private void setEnableVisibilityIcons( final boolean active )
