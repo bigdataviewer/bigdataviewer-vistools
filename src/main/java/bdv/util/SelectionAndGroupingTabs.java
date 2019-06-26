@@ -672,37 +672,30 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 				{
 					sourcesComboBox.setToolTipText( ( String ) sourcesComboBox.getSelectedItem() );
 					final BdvSource p = sourceLookup.get( sourcesComboBox.getSelectedItem() );
-					if ( p instanceof BdvOverlaySource )
+					notifySelectionChangeListeners( false );
+					if ( p != null )
 					{
-						notifySelectionChangeListeners( true );
-					}
-					else
-					{
-						notifySelectionChangeListeners( false );
-						if ( p != null )
+						intensitySlider.setSource( sourcesComboBox.getSelectedIndex() );
+						visGro.setCurrentSource( sourcesComboBox.getSelectedIndex() );
+						ConverterSetup setup = setupAssignments.getConverterSetups()
+								.get( sourcesComboBox.getSelectedIndex() );
+						colorButton.setBackground( getColor( setup ) );
+						if ( !singleSourceMode )
 						{
-							intensitySlider.setSource( sourcesComboBox.getSelectedIndex() );
-							visGro.setCurrentSource( sourcesComboBox.getSelectedIndex() );
-							ConverterSetup setup = setupAssignments.getConverterSetups()
-									.get( sourcesComboBox.getSelectedIndex() );
-							colorButton.setBackground( getColor( setup ) );
-							if ( !singleSourceMode )
+							sourceVisibilityLabel.setEnabled( true );
+							if ( visGro.isSourceActive( sourcesComboBox.getSelectedIndex() ) )
 							{
-								sourceVisibilityLabel.setEnabled( true );
-								if ( visGro.isSourceActive( sourcesComboBox.getSelectedIndex() ) )
-								{
-									sourceVisibilityLabel.setIcon( visibleIcon );
-								}
-								else
-								{
-									sourceVisibilityLabel.setIcon( notVisibleIcon );
-								}
+								sourceVisibilityLabel.setIcon( visibleIcon );
 							}
 							else
 							{
-								sourceVisibilityLabel.setIcon( visibleIcon );
-								sourceVisibilityLabel.setEnabled( false );
+								sourceVisibilityLabel.setIcon( notVisibleIcon );
 							}
+						}
+						else
+						{
+							sourceVisibilityLabel.setIcon( visibleIcon );
+							sourceVisibilityLabel.setEnabled( false );
 						}
 					}
 				}
