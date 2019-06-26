@@ -95,17 +95,24 @@ public class IntensityMouseOverOverlay< L, I extends IntegerType< I > >
 	 */
 	private void printValueUnderMouse()
 	{
-		final RealPoint pos = new RealPoint( 3 );
-		viewer.getGlobalMouseCoordinates( pos );
-
-		final ViewerState state = viewer.getState();
-
-		final int currentSourceIndex = viewer.getVisibilityAndGrouping().getCurrentSource();
-		if ( currentSourceIndex >= 0 )
+		int sourceIdx = viewer.getVisibilityAndGrouping().getCurrentSource();
+		if ( sourceIdx >= 0 )
 		{
-			final SourceState< ? > sourceState = state.getSources().get( currentSourceIndex );
-			final Source< ? > spimSource = sourceState.getSpimSource();
-			typedPrintValueUnderMouse( spimSource, state, pos );
+			if ( !( viewer.getVisibilityAndGrouping().getSources().get( sourceIdx ).getSpimSource() instanceof PlaceHolderSource ) )
+			{
+				final RealPoint pos = new RealPoint( 3 );
+				viewer.getGlobalMouseCoordinates( pos );
+
+				final ViewerState state = viewer.getState();
+
+				final int currentSourceIndex = sourceIdx;
+				if ( currentSourceIndex >= 0 )
+				{
+					final SourceState< ? > sourceState = state.getSources().get( currentSourceIndex );
+					final Source< ? > spimSource = sourceState.getSpimSource();
+					typedPrintValueUnderMouse( spimSource, state, pos );
+				}
+			}
 		}
 	}
 
