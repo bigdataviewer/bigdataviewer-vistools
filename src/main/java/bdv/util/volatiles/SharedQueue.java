@@ -17,7 +17,7 @@ public class SharedQueue extends BlockingFetchQueues< Callable< ? > > implements
 
 	public SharedQueue( final int numFetcherThreads, final int numPriorities )
 	{
-		super( numPriorities );
+		super( numPriorities, numFetcherThreads );
 		fetcherThreads = new FetcherThreads( this, numFetcherThreads );
 	}
 
