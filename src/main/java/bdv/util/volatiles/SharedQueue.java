@@ -28,9 +28,8 @@ public class SharedQueue extends BlockingFetchQueues< Callable< ? > > implements
 
 	public void shutdown()
 	{
-		// TODO
-		// fetcherThreads.shutdown()
-		System.err.println( getClass().getSimpleName() + ".shutdown() not implemented yet" );
+		fetcherThreads.shutdown();
+		clear();
 	}
 
 	@Override
