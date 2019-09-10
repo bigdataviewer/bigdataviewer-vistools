@@ -9,6 +9,7 @@ import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
 import net.imglib2.cache.Cache;
+import net.imglib2.cache.Invalidate;
 import net.imglib2.cache.img.CachedCellImg;
 import net.imglib2.cache.ref.WeakRefVolatileCache;
 import net.imglib2.cache.volatiles.CacheHints;
@@ -21,6 +22,8 @@ import net.imglib2.img.basictypeaccess.volatiles.VolatileArrayDataAccess;
 import net.imglib2.img.cell.Cell;
 import net.imglib2.img.cell.CellGrid;
 import net.imglib2.type.NativeType;
+import net.imglib2.util.Pair;
+import net.imglib2.util.ValuePair;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.MixedTransformView;
 
@@ -110,7 +113,8 @@ public class VolatileViews
 					new IntervalView<>( sourceData.getImg(), view ),
 					sourceData.getCacheControl(),
 					sourceData.getType(),
-					sourceData.getVolatileType() );
+					sourceData.getVolatileType(),
+					sourceData.getInvalidate() );
 		}
 		else if ( rai instanceof MixedTransformView )
 		{
@@ -120,7 +124,8 @@ public class VolatileViews
 					new MixedTransformView<>( sourceData.getImg(), view.getTransformToSource() ),
 					sourceData.getCacheControl(),
 					sourceData.getType(),
-					sourceData.getVolatileType() );
+					sourceData.getVolatileType(),
+					sourceData.getInvalidate() );
 		}
 		else if ( rai instanceof WrappedImg )
 		{
@@ -151,12 +156,12 @@ public class VolatileViews
 		if ( hints == null )
 			hints = new CacheHints( LoadingStrategy.VOLATILE, 0, false );
 		@SuppressWarnings( "rawtypes" )
-		final VolatileCachedCellImg< V, ? > img = createVolatileCachedCellImg( grid, vtype, dirty, ( Cache ) cache, queue, hints );
+		final Pair< VolatileCachedCellImg< V, ? >, Invalidate > img = createVolatileCachedCellImg( grid, vtype, dirty, ( Cache ) cache, queue, hints );
 
-		return new VolatileViewData<>( img, queue, type, vtype );
+		return new VolatileViewData<>( img.getA(), queue, type, vtype, img.getB() );
 	}
 
-	private static < T extends NativeType< T >, A extends VolatileArrayDataAccess< A > > VolatileCachedCellImg< T, A > createVolatileCachedCellImg(
+	private static < T extends NativeType< T >, A extends VolatileArrayDataAccess< A > > Pair< VolatileCachedCellImg< T, A >, Invalidate< ? > > createVolatileCachedCellImg(
 			final CellGrid grid,
 			final T type,
 			final boolean dirty,
@@ -167,7 +172,7 @@ public class VolatileViews
 		final CreateInvalid< Long, Cell< A > > createInvalid = CreateInvalidVolatileCell.get( grid, type, dirty );
 		final VolatileCache< Long, Cell< A > > volatileCache = new WeakRefVolatileCache<>( cache, queue, createInvalid );
 		final VolatileCachedCellImg< T, A > volatileImg = new VolatileCachedCellImg<>( grid, type, hints, volatileCache.unchecked()::get );
-		return volatileImg;
+		return new ValuePair<>( volatileImg, volatileCache );
 	}
 }
 

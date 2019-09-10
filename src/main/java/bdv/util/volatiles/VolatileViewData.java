@@ -4,6 +4,7 @@ import bdv.cache.CacheControl;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
+import net.imglib2.cache.Invalidate;
 import net.imglib2.cache.img.CachedCellImg;
 
 /**
@@ -33,16 +34,20 @@ public class VolatileViewData< T, V extends Volatile< T > >
 
 	private final V volatileType;
 
+	private final Invalidate< ? > invalidate;
+
 	public VolatileViewData(
 			final RandomAccessible< V > img,
 			final CacheControl cacheControl,
 			final T type,
-			final V volatileType )
+			final V volatileType,
+			final Invalidate< ? > invalidate )
 	{
 		this.img = img;
 		this.cacheControl = cacheControl;
 		this.type = type;
 		this.volatileType = volatileType;
+		this.invalidate = invalidate;
 	}
 
 	/**
@@ -85,5 +90,10 @@ public class VolatileViewData< T, V extends Volatile< T > >
 	public V getVolatileType()
 	{
 		return volatileType;
+	}
+
+	public Invalidate< ? > getInvalidate()
+	{
+		return this.invalidate;
 	}
 }
