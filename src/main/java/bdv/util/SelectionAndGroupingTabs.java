@@ -34,6 +34,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -388,7 +390,7 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 					}
 					if ( e.id == VisibilityAndGrouping.Event.CURRENT_GROUP_CHANGED )
 					{
-						groupesComboBox.setSelectedIndex( visGro.getCurrentGroup() );
+						groupesComboBox.setSelectedIndex( visGro.getCurrentGroup() + 1 );
 					}
 					if ( e.id == VisibilityAndGrouping.Event.DISPLAY_MODE_CHANGED )
 					{
@@ -662,13 +664,12 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 		} );
 
 		// add action listener to source combobox
-		sourcesComboBox.addActionListener( new ActionListener()
+		sourcesComboBox.addItemListener( new ItemListener()
 		{
-
 			@Override
-			public void actionPerformed( ActionEvent e )
+			public void itemStateChanged( final ItemEvent e )
 			{
-				if ( e.getSource() == sourcesComboBox )
+				if ( e.getStateChange() == ItemEvent.SELECTED )
 				{
 					sourcesComboBox.setToolTipText( ( String ) sourcesComboBox.getSelectedItem() );
 					final BdvSource p = sourceLookup.get( sourcesComboBox.getSelectedItem() );
@@ -856,15 +857,14 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 		// Action listener handling the current group and updating selected and
 		// remaining sources.
 		// Also handles new group creation.
-		groupesComboBox.addActionListener( new ActionListener()
+		groupesComboBox.addItemListener( new ItemListener()
 		{
-
 			@Override
-			public void actionPerformed( ActionEvent ev )
+			public void itemStateChanged( final ItemEvent e )
 			{
-				if ( ev.getSource() == groupesComboBox )
+				if ( e.getStateChange() == ItemEvent.SELECTED )
 				{
-					Object selection = groupesComboBox.getSelectedItem();
+					final Object selection = e.getItem();
 					if ( selection != null && selection instanceof String )
 					{
 						final String s = ( String ) selection;
