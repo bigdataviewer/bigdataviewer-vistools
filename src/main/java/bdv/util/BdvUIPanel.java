@@ -71,7 +71,7 @@ public class BdvUIPanel extends BdvHandle
 
 	private final TriggerBehaviourBindings triggerbindings;
 
-	private SelectionAndGroupingDialog selectionAndGroupingDialog;
+	private SelectionAndGroupingTabs selectionAndGroupingPanel;
 
 	private JSplitPane splitPane;
 
@@ -133,7 +133,7 @@ public class BdvUIPanel extends BdvHandle
 
 		viewer.setDisplayMode( DisplayMode.FUSED );
 
-		selectionAndGroupingDialog = new SelectionAndGroupingDialog( viewer, viewer.getVisibilityAndGrouping(),
+		selectionAndGroupingPanel = new SelectionAndGroupingTabs( viewer, viewer.getVisibilityAndGrouping(),
 				manualTransformationEditor, setupAssignments );
 
 		final NavigationActions navactions = new NavigationActions( inputTriggerConfig );
@@ -150,15 +150,15 @@ public class BdvUIPanel extends BdvHandle
 		bdvactions.install( keyBindings, "bdv" );
 		bdvactions.bookmarks( bookmarksEditor );
 		bdvactions.manualTransform( manualTransformationEditor );
-		this.addSourceChangeListener( selectionAndGroupingDialog.getSelectionAndGrouping() );
+		this.addSourceChangeListener( selectionAndGroupingPanel );
 
 		splitPane = createSplitPane();
 		controls = new CardPanel();
 
-		controls.addNewCard( new JLabel( "Selection" ), true, selectionAndGroupingDialog.getSelectionAndGrouping() );
+		controls.addNewCard( new JLabel( "Selection" ), true, selectionAndGroupingPanel );
 
 		transformationPanel = new TransformationPanel( triggerbindings, manualTransformationEditor, viewer );
-		selectionAndGroupingDialog.getSelectionAndGrouping().addSelectionChangeListener( transformationPanel );
+		selectionAndGroupingPanel.addSelectionChangeListener( transformationPanel );
 		this.addSourceChangeListener( transformationPanel );
 		controls.addNewCard( new JLabel( "Navigation" ), true, transformationPanel );
 
@@ -296,7 +296,7 @@ public class BdvUIPanel extends BdvHandle
 	 */
 	public SelectionAndGroupingTabs getSelectionAndGroupingPanel()
 	{
-		return this.selectionAndGroupingDialog.getSelectionAndGrouping();
+		return this.selectionAndGroupingPanel;
 	}
 
 	/**
