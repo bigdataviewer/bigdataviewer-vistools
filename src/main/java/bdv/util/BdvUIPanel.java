@@ -173,9 +173,6 @@ public class BdvUIPanel extends BdvHandle
 		BigDataViewerActions actions = new BigDataViewerActions( inputTriggerConfig );
 		actions.dialog( helpDialog );
 		actions.install( keyBindings, "bdv" );
-
-		if ( dialogOwner != null )
-			dialogOwner.add( splitPane );
 	}
 
 	private void addStuff( final ViewerPanel viewer, JPanel controls )
@@ -258,6 +255,11 @@ public class BdvUIPanel extends BdvHandle
 	public void close()
 	{
 		viewer.stop();
+	}
+
+	public JSplitPane getSplitPane()
+	{
+		return splitPane;
 	}
 
 	/**
