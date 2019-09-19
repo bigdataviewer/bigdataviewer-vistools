@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,56 +26,53 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package bdv.util;
+package bdv.util.uipanel;
 
 import java.awt.Color;
-import java.awt.Graphics;
 
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
- * 
- * A custom colored tabbed pane UI.
- * 
+ *
+ * A panel displaying information about the currently selected source.
+ *
  * @author Tim-Oliver Buchholz, CSBD/MPI-CBG Dresden
  *
  */
-public class CustomTabbedPaneUI extends BasicTabbedPaneUI {
+public class InformationPanel extends JPanel
+{
 
-	@Override
-	protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {
-		super.paintContentBorder(g, tabPlacement, selectedIndex);
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Display type information.
+	 */
+	private final JLabel type;
+
+	/**
+	 * An information panel displaying information about the currently selected
+	 * source.
+	 *
+	 * @param es
+	 *            the event-service
+	 */
+	public InformationPanel()
+	{
+
+		this.setLayout( new MigLayout( "fillx", "[][grow]", "" ) );
+		this.setBackground( Color.white );
+		this.add( new JLabel( "Type:" ) );
+
+		type = new JLabel( "type" );
+		type.setBackground( Color.WHITE );
+		this.add( type, "growx, wrap" );
 	}
 
-	@Override
-	protected void installDefaults() {
-		super.installDefaults();
-		highlight = Color.lightGray;
-		lightHighlight = Color.lightGray;
-		shadow = Color.lightGray;
-		darkShadow = Color.white;
-		focus = Color.white;
-
+	public void setType( final String type )
+	{
+		this.type.setText( type );
 	}
-
-	@Override
-	protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h,
-			boolean isSelected) {
-		g.setColor(Color.white);
-		switch (tabPlacement) {
-		case LEFT:
-			g.fillRect(x + 1, y + 1, w - 1, h - 3);
-			break;
-		case RIGHT:
-			g.fillRect(x, y + 1, w - 2, h - 3);
-			break;
-		case BOTTOM:
-			g.fillRect(x + 1, y, w - 3, h - 1);
-			break;
-		case TOP:
-		default:
-			g.fillRect(x + 1, y + 1, w - 3, h - 1);
-		}
-	}
-
 }

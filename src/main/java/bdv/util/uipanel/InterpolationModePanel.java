@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,7 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package bdv.util;
+package bdv.util.uipanel;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -42,9 +42,9 @@ import bdv.viewer.ViewerPanel;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * 
+ *
  * This panel holds the {@link Interpolation} mode selection.
- * 
+ *
  * @author Tim-Oliver Buchholz, CSBD/MPI-CBG Dresden
  *
  */
@@ -55,10 +55,10 @@ public class InterpolationModePanel extends JPanel
 
 	/**
 	 * Showing the different {@link Interpolation} modes.
-	 * 
+	 *
 	 * Note: This dialog component listens to changes comming from the
 	 * {@link ViewerPanel}.
-	 * 
+	 *
 	 * @param es
 	 *            the event-service
 	 * @param viewer

@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,8 +26,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package bdv.util;
+package bdv.util.uipanel;
 
+import bdv.util.Affine3DHelpers;
+import bdv.util.BdvSource;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,7 +51,7 @@ import bdv.tools.transformation.ManualTransformActiveListener;
 import bdv.tools.transformation.ManualTransformationEditor;
 import bdv.tools.transformation.TransformedSource;
 import bdv.util.BdvHandle.SourceChangeListener;
-import bdv.util.SelectionAndGroupingTabs.SelectionChangeListener;
+import bdv.util.uipanel.SelectionAndGroupingTabs.SelectionChangeListener;
 import bdv.viewer.DisplayMode;
 import bdv.viewer.Source;
 import bdv.viewer.ViewerPanel;
@@ -63,9 +65,9 @@ import net.imglib2.util.LinAlgHelpers;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * 
+ *
  * Offering the different transformation option of the {@link BigDataViewer}.
- * 
+ *
  * @author Tim-Oliver Buchholz, CSBD/MPI-CBG Dresden
  */
 public class TransformationPanel extends JPanel implements SourceChangeListener, SelectionChangeListener
@@ -97,7 +99,7 @@ public class TransformationPanel extends JPanel implements SourceChangeListener,
 
 	/**
 	 * Panel holding the controls of the viewer and individual transformation.
-	 * 
+	 *
 	 * @param es
 	 *            the event-service
 	 * @param controller
@@ -239,7 +241,7 @@ public class TransformationPanel extends JPanel implements SourceChangeListener,
 
 	/**
 	 * Extract the transformation of the source with sourceIdx.
-	 * 
+	 *
 	 * @param sourceIdx
 	 *            index of the source
 	 * @return transformation
@@ -296,7 +298,7 @@ public class TransformationPanel extends JPanel implements SourceChangeListener,
 
 	/**
 	 * Compute initial transformation.
-	 * 
+	 *
 	 * @return the transformation.
 	 */
 	private AffineTransform3D createViewerInitTransformation()
@@ -373,7 +375,7 @@ public class TransformationPanel extends JPanel implements SourceChangeListener,
 
 	/**
 	 * Initialize and configure rotation check box.
-	 * 
+	 *
 	 * @param rotation
 	 */
 	private void setupRotationCheckBox( final JCheckBox rotation )
@@ -463,7 +465,7 @@ public class TransformationPanel extends JPanel implements SourceChangeListener,
 
 	/**
 	 * Initialize and configure translation check box.
-	 * 
+	 *
 	 * @param translation
 	 */
 	private void setupTranslationCheckBox( final JCheckBox translation )
@@ -493,7 +495,7 @@ public class TransformationPanel extends JPanel implements SourceChangeListener,
 
 	/**
 	 * Change text dependent on transformation handler.
-	 * 
+	 *
 	 * @param active
 	 */
 	private void manualTransformation( final boolean active )

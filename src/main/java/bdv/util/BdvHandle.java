@@ -84,10 +84,13 @@ public abstract class BdvHandle implements Bdv
 
 	public abstract TriggerBehaviourBindings getTriggerbindings();
 
-	abstract boolean createViewer(
+	protected boolean createViewer(
 			final List< ? extends ConverterSetup > converterSetups,
 			final List< ? extends SourceAndConverter< ? > > sources,
-			final int numTimepoints );
+			final int numTimepoints )
+	{
+		throw new UnsupportedOperationException();
+	}
 
 	void add(
 			final List< ? extends ConverterSetup > converterSetups,
@@ -243,12 +246,13 @@ public abstract class BdvHandle implements Bdv
 		return bdvOptions.values.is2D();
 	}
 
-	void addSourceChangeListener( final SourceChangeListener l )
+	protected void addSourceChangeListener( final SourceChangeListener l )
 	{
 		this.sourceChangeListeners.add( l );
 	}
 
-	void updateSourceChangeListenersAdd( final BdvSource source ) {
+	void updateSourceChangeListenersAdd( final BdvSource source )
+	{
 		for ( final SourceChangeListener l : sourceChangeListeners )
 		{
 			l.addSource( source );
@@ -257,7 +261,8 @@ public abstract class BdvHandle implements Bdv
 
 	void updateSourceChangeListernersRemove( final BdvSource source )
 	{
-		for ( final SourceChangeListener l : sourceChangeListeners ) {
+		for ( final SourceChangeListener l : sourceChangeListeners )
+		{
 			l.removeSource( source );
 		}
 	}

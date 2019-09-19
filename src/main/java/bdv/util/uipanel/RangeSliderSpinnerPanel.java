@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,8 +26,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package bdv.util;
+package bdv.util.uipanel;
 
+import bdv.util.BdvSource;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -54,20 +55,20 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import bdv.tools.brightness.SetupAssignments;
-import bdv.uicomponents.rangeslider.RangeSlider;
+import bdv.util.uipanel.rangeslider.RangeSlider;
 import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * 
+ *
  * A panel holding a two-knob range slider with a lower- and upper-value
  * spinner.
- * 
+ *
  * The bounds can be dynamically changed by either entering smaller/larger
  * values into the spinner or resizing the range-slider to the current positions
  * with a resize-button.
- * 
+ *
  * @author Tim-Oliver Buchholz, CSBD/MPI-CBG Dresden
  *
  */
@@ -200,7 +201,7 @@ public class RangeSliderSpinnerPanel extends JPanel
 
 	/**
 	 * A range slider panel with two knobs and min/max spinners.
-	 * 
+	 *
 	 */
 	public RangeSliderSpinnerPanel( final SetupAssignments setupAssignments, final Map< String, BdvSource > sourceLookup )
 	{
@@ -581,7 +582,7 @@ public class RangeSliderSpinnerPanel extends JPanel
 
 	/**
 	 * Set display range in setup-assignments.
-	 * 
+	 *
 	 * @param min
 	 *            of display range
 	 * @param max
@@ -603,7 +604,7 @@ public class RangeSliderSpinnerPanel extends JPanel
 
 	/**
 	 * Convert range-slider position to upper-value.
-	 * 
+	 *
 	 * @param pos
 	 *            of range-slider
 	 * @return value
@@ -617,7 +618,7 @@ public class RangeSliderSpinnerPanel extends JPanel
 
 	/**
 	 * Convert range-slider position to lower-value.
-	 * 
+	 *
 	 * @param pos
 	 *            of range-slider
 	 * @return value

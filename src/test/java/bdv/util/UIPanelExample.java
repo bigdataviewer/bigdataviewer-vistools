@@ -1,5 +1,6 @@
 package bdv.util;
 
+import bdv.util.uipanel.BdvUIPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.Random;

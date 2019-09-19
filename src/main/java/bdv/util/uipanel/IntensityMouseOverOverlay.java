@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,8 +26,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package bdv.util;
+package bdv.util.uipanel;
 
+import bdv.util.PlaceHolderSource;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -52,13 +53,13 @@ import net.imglib2.type.numeric.RealType;
 import net.imglib2.ui.OverlayRenderer;
 
 /**
- * 
+ *
  * An overlay which shows the intensity value at the mouse position of the
  * current source.
- * 
+ *
  * Note: Value is only displayed if {@link DisplayMode} is
  * {@link DisplayMode#FUSED} or {@link DisplayMode#SINGLE}.
- * 
+ *
  * @author Tim-Oliver Buchholz, CSBD/MPI-CBG Dresden
  *
  */
@@ -77,7 +78,7 @@ public class IntensityMouseOverOverlay< L, I extends IntegerType< I > >
 
 	/**
 	 * Overlay painting the source intensity at the mouse position.
-	 * 
+	 *
 	 * @param viewerPanel
 	 *            of the BDV
 	 * @param convs
@@ -119,7 +120,7 @@ public class IntensityMouseOverOverlay< L, I extends IntegerType< I > >
 	/**
 	 * Extract the value for the source corresponding to the orientation of the
 	 * viewer.
-	 * 
+	 *
 	 * @param source
 	 *            to get the value from
 	 * @param state
@@ -162,14 +163,14 @@ public class IntensityMouseOverOverlay< L, I extends IntegerType< I > >
 
 	/**
 	 * The overlay painting the information.
-	 * 
+	 *
 	 * The information strings are underlyed with a light black rectangle to
 	 * improve readability in front of light images.
-	 * 
+	 *
 	 * Note: {@link ViewerPanel#getSourceInfoOverlayRenderer()} the mouse
 	 * coordinates are painted here because the underlying rectangle has to be
 	 * painted first.
-	 * 
+	 *
 	 * @author Tim-Oliver Buchholz, CSBD/MPI-CBG Dresden
 	 *
 	 */

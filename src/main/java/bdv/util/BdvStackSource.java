@@ -109,18 +109,17 @@ public class BdvStackSource< T > extends BdvSource
 	}
 
 	@Override
-	public String getTypeAsString()
+	public String getTypeAsString() // TODO
 	{
 		return this.type.getClass().getSimpleName();
 	}
-	
+
 	@Override
-	protected String getName()
+	public String getName() // TODO
 	{
 		return this.sources.get( 0 ).getSpimSource().getName();
 	}
-	
-	
+
 //	public T getType()
 //	{
 //		return type;

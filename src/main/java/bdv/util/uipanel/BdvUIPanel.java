@@ -1,5 +1,7 @@
-package bdv.util;
+package bdv.util.uipanel;
 
+import bdv.util.BdvHandle;
+import bdv.util.BdvOptions;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -51,10 +53,10 @@ import net.imglib2.ui.TransformEventHandlerFactory;
  * allows locking of rotation/translation, and a new Interpolation UI-Component.
  * It is also possible to get the JPanels of the three components and integrate
  * them into a different UI-setup.
- * 
+ *
  * Note: It is possible to add additional panels to the existing UI-Panel via
  * {@link #addNewCard(String, boolean, JComponent)}.
- * 
+ *
  * @author Tim-Oliver Buchholz, CSBD/MPI-CBG Dresden
  *
  */
@@ -190,7 +192,7 @@ public class BdvUIPanel extends BdvHandle
 
 	/**
 	 * Create splitpane.
-	 * 
+	 *
 	 * @return splitpane
 	 */
 	private JSplitPane createSplitPane()
@@ -204,7 +206,7 @@ public class BdvUIPanel extends BdvHandle
 				{
 
 					/**
-					 * 
+					 *
 					 */
 					private static final long serialVersionUID = 1L;
 
@@ -245,13 +247,6 @@ public class BdvUIPanel extends BdvHandle
 	}
 
 	@Override
-	boolean createViewer( final List< ? extends ConverterSetup > converterSetups,
-			final List< ? extends SourceAndConverter< ? > > sources, final int numTimepoints )
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public void close()
 	{
 		viewer.stop();
@@ -264,7 +259,7 @@ public class BdvUIPanel extends BdvHandle
 
 	/**
 	 * Adds a new JComponent to this BdvUIPanel.
-	 * 
+	 *
 	 * @param name
 	 *            displayed as title of the card
 	 * @param open
@@ -278,7 +273,7 @@ public class BdvUIPanel extends BdvHandle
 
 	/**
 	 * Get the JPanel of a previously added card.
-	 * 
+	 *
 	 * @param name
 	 *            of the card panel
 	 * @return the panel
@@ -291,7 +286,7 @@ public class BdvUIPanel extends BdvHandle
 	/**
 	 * The selection and grouping dialog of the BdvUIPanel can be embedded in
 	 * other UIs. This dialog also contains color & brightness settings.
-	 * 
+	 *
 	 * @return selection and grouping dialog
 	 */
 	public SelectionAndGroupingTabs getSelectionAndGroupingPanel()
@@ -302,7 +297,7 @@ public class BdvUIPanel extends BdvHandle
 	/**
 	 * The transformation dialog. This enables locking of rotation/translation
 	 * as well as changing the initial transformation of the sources.
-	 * 
+	 *
 	 * @return transformation dialog
 	 */
 	public TransformationPanel getTransformationPanel()
@@ -311,7 +306,7 @@ public class BdvUIPanel extends BdvHandle
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the interpolation mode selection panel
 	 */
 	public InterpolationModePanel getInterpolationPanel()
@@ -321,7 +316,7 @@ public class BdvUIPanel extends BdvHandle
 
 	/**
 	 * Toggle card fold.
-	 * 
+	 *
 	 * @param cardName
 	 */
 	public void toggleCard( final String cardName )

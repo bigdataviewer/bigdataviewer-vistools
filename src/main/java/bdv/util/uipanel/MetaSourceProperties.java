@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,15 +26,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package bdv.util;
+package bdv.util.uipanel;
 
 import java.awt.Color;
 import java.util.Set;
 
 /**
- * 
+ *
  * SourceProperties holds all information about a source added to the UI.
- * 
+ *
  * @author Tim-Oliver Buchholz, CSBD/MPI-CBG Dresden
  *
  */
@@ -50,7 +50,7 @@ public class MetaSourceProperties {
 
 	/**
 	 * Information about a specific source.
-	 * 
+	 *
 	 * @param sourceName of the source
 	 * @param sourceID of the source
 	 * @param sourceType type
@@ -74,7 +74,7 @@ public class MetaSourceProperties {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return source name
 	 */
 	public String getSourceName() {
@@ -82,16 +82,16 @@ public class MetaSourceProperties {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return source ID
 	 */
 	public int getSourceID() {
 		return sourceID;
 	}
-	
+
 	/**
 	 * Set sourceID
-	 * 
+	 *
 	 * @param id of the source
 	 */
 	public void setSourceID(final int id) {
@@ -99,7 +99,7 @@ public class MetaSourceProperties {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return type of the source
 	 */
 	public String getSourceType() {
@@ -108,7 +108,7 @@ public class MetaSourceProperties {
 
 	/**
 	 * Names of the groups to which this source is assigned.
-	 * 
+	 *
 	 * @return names of the groups
 	 */
 	public Set<String> getGroupNames() {
@@ -117,7 +117,7 @@ public class MetaSourceProperties {
 
 	/**
 	 * Adds a group to this source.
-	 * 
+	 *
 	 * @param groupName to assign this source to
 	 * @param groupID to assign this source to
 	 */
@@ -127,7 +127,7 @@ public class MetaSourceProperties {
 
 	/**
 	 * Remove group from this source.
-	 * 
+	 *
 	 * @param groupName from which this source is removed
 	 * @param groupID from which this source is removed
 	 */
@@ -136,7 +136,7 @@ public class MetaSourceProperties {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return color of the source
 	 */
 	public Color getColor() {
@@ -144,7 +144,7 @@ public class MetaSourceProperties {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param color
 	 *            of the source
 	 */
@@ -153,7 +153,7 @@ public class MetaSourceProperties {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return dimensions of the source
 	 */
 	public String getDims() {
@@ -161,7 +161,7 @@ public class MetaSourceProperties {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return visibility
 	 */
 	public boolean isVisible() {
@@ -170,7 +170,7 @@ public class MetaSourceProperties {
 
 	/**
 	 * Set visibility.
-	 * 
+	 *
 	 * @param visibility of this source
 	 */
 	public void setVisible(final boolean visibility) {
@@ -178,7 +178,7 @@ public class MetaSourceProperties {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return labeling status
 	 */
 	public boolean isLabeling() {

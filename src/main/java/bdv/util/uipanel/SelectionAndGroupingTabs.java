@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,8 +26,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package bdv.util;
+package bdv.util.uipanel;
 
+import bdv.util.BdvHandle;
+import bdv.util.BdvSource;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -81,7 +83,7 @@ import net.miginfocom.swing.MigLayout;
 
 /**
  * The tabbed pane with all BDV-UI components.
- * 
+ *
  * @author Tim-Oliver Buchholz, CSBD/MPI-CBG Dresden
  *
  */
@@ -89,7 +91,7 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -229,7 +231,7 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 	/**
 	 * This class holds the selection and grouping tab of the big data viewer
 	 * UI.
-	 * 
+	 *
 	 * @param es
 	 *            the event service
 	 * @param bdvHandlePanel
@@ -276,9 +278,9 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 
 	/**
 	 * Add tabs source and group to tabbed pane.
-	 * 
+	 *
 	 * Also notify the bdv handle of tab switches.
-	 * 
+	 *
 	 * @param es
 	 *            event service
 	 * @param bdvHandlePanel
@@ -359,7 +361,7 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 	/**
 	 * Link the components to the BDV handle components to keep the state of bdv
 	 * and UI consistent.
-	 * 
+	 *
 	 * @param visibilityAndGrouping
 	 * @param manualTransformationEditor
 	 */
@@ -446,10 +448,10 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 
 	/**
 	 * Add information of new source to the UI.
-	 * 
+	 *
 	 * Put it into the corresponding group, set visibility and add it to the
 	 * source selection.
-	 * 
+	 *
 	 */
 	public synchronized void addSource( final BdvSource p )
 	{
@@ -539,7 +541,7 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 
 	/**
 	 * Toggle component enable.
-	 * 
+	 *
 	 * @param active
 	 *            state
 	 */
@@ -567,7 +569,7 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 
 	/**
 	 * Build the source control panel.
-	 * 
+	 *
 	 * @param bdvHandlePanel
 	 *            the bdv handle
 	 * @return the source contorl panel
@@ -752,7 +754,7 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 
 	/**
 	 * Build the group control panel.
-	 * 
+	 *
 	 * @return the group control panel
 	 */
 	private Component createGroupControl()
@@ -825,7 +827,7 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 				{
 
 					/**
-					 * 
+					 *
 					 */
 					private static final long serialVersionUID = 1L;
 
@@ -1159,7 +1161,7 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 	{
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 
@@ -1203,7 +1205,7 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 	{
 
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 
@@ -1261,7 +1263,7 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 
 	/**
 	 * Ugly hack to get correct group index.
-	 * 
+	 *
 	 * @param groupName
 	 *            to get index of
 	 * @return index
@@ -1275,7 +1277,7 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 
 	/**
 	 * Ugly hack to get correct source index.
-	 * 
+	 *
 	 * @param sourceName
 	 *            to get index of
 	 * @return index

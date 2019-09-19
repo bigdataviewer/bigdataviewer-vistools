@@ -75,7 +75,7 @@ public class BdvHandleFrame extends BdvHandle
 	}
 
 	@Override
-	boolean createViewer(
+	protected boolean createViewer(
 			final List< ? extends ConverterSetup > converterSetups,
 			final List< ? extends SourceAndConverter< ? > > sources,
 			final int numTimepoints )

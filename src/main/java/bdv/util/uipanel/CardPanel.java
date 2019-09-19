@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,7 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package bdv.util;
+package bdv.util.uipanel;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -45,7 +45,7 @@ import net.miginfocom.swing.MigLayout;
 
 /**
  * Panel which holds named Cards which can be opened and closed.
- * 
+ *
  * @author Tim-Oliver Buchholz, CSBD/MPI-CBG Dresden
  *
  */
@@ -108,7 +108,7 @@ public class CardPanel extends JPanel
 
 	/**
 	 * Add a new card to this card panel.
-	 * 
+	 *
 	 * @param name
 	 *            of the card
 	 * @param open
@@ -156,7 +156,7 @@ public class CardPanel extends JPanel
 
 	/**
 	 * Remove card with this name.
-	 * 
+	 *
 	 * @param name
 	 *            of the card to remove
 	 */
@@ -174,9 +174,9 @@ public class CardPanel extends JPanel
 	 * Get all added JPanels. This includes the Selection&Grouping with the
 	 * intensity sliders panel, the transformation manipulation panel, and the
 	 * interpolation mode panel.
-	 * 
+	 *
 	 * The panels can be accessed via their label string.
-	 * 
+	 *
 	 * @return added cards
 	 */
 	public Map< String, JPanel > getCards()
@@ -279,7 +279,7 @@ public class CardPanel extends JPanel
 
 	/**
 	 * Toggle card open/close.
-	 * 
+	 *
 	 * @param name
 	 *            of the card to toggle.
 	 */
@@ -294,7 +294,7 @@ public class CardPanel extends JPanel
 
 	/**
 	 * Set mouse-listener active. If not active, the card can't be toggled.
-	 * 
+	 *
 	 * @param name
 	 *            of the card
 	 * @param active

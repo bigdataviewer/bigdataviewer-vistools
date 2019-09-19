@@ -6,13 +6,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -26,15 +26,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-package bdv.util;
+package bdv.util.uipanel;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * 
+ *
  * GroupProperties holds all information about a group added to the UI.
- * 
+ *
  * @author Tim-Oliver Buchholz, CSBD/MPI-CBG Dresden
  *
  */
@@ -45,7 +45,7 @@ public class GroupProperties {
 
 	/**
 	 * Information about a specific group.
-	 * 
+	 *
 	 * @param groupName name of the group
 	 * @param sourceName name of the source to add
 	 * @param visibility of this group
@@ -59,7 +59,7 @@ public class GroupProperties {
 
 	/**
 	 * Creates an empty group with no source.
-	 * 
+	 *
 	 * @param groupName name of the group
 	 * @param visibility of the group
 	 */
@@ -70,7 +70,7 @@ public class GroupProperties {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return group name
 	 */
 	public String getGroupName() {
@@ -79,7 +79,7 @@ public class GroupProperties {
 
 	/**
 	 * Names of all sources assigned to this group.
-	 * 
+	 *
 	 * @return names of the sources
 	 */
 	public Set<String> getSourceNames() {
@@ -88,7 +88,7 @@ public class GroupProperties {
 
 	/**
 	 * Add a source to this group.
-	 * 
+	 *
 	 * @param sourceName name of the source to add
 	 */
 	public void addSource(final String sourceName) {
@@ -97,7 +97,7 @@ public class GroupProperties {
 
 	/**
 	 * Remove a source from this group.
-	 * 
+	 *
 	 * @param sourceName of the source to remove
 	 */
 	public void removeSource(final String sourceName) {
@@ -105,7 +105,7 @@ public class GroupProperties {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return visibility
 	 */
 	public boolean isVisible() {
@@ -114,7 +114,7 @@ public class GroupProperties {
 
 	/**
 	 * Set visibility.
-	 * 
+	 *
 	 * @param visibility of this group
 	 */
 	public void setVisible(final boolean visibility) {

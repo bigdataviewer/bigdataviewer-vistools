@@ -140,15 +140,6 @@ public class BdvHandlePanel extends BdvHandle
 	}
 
 	@Override
-	boolean createViewer(
-			final List< ? extends ConverterSetup > converterSetups,
-			final List< ? extends SourceAndConverter< ? > > sources,
-			final int numTimepoints )
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public void close()
 	{
 		viewer.stop();
