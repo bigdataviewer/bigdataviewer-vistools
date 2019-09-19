@@ -152,7 +152,7 @@ public class BdvUIPanel extends BdvHandle
 		bdvactions.install( keyBindings, "bdv" );
 		bdvactions.bookmarks( bookmarksEditor );
 		bdvactions.manualTransform( manualTransformationEditor );
-		this.addSourceChangeListener( selectionAndGroupingPanel );
+		this.sourceChangeListeners().add( selectionAndGroupingPanel );
 
 		splitPane = createSplitPane();
 		controls = new CardPanel();
@@ -161,7 +161,7 @@ public class BdvUIPanel extends BdvHandle
 
 		transformationPanel = new TransformationPanel( triggerbindings, manualTransformationEditor, viewer );
 		selectionAndGroupingPanel.addSelectionChangeListener( transformationPanel );
-		this.addSourceChangeListener( transformationPanel );
+		this.sourceChangeListeners().add( transformationPanel );
 		controls.addNewCard( new JLabel( "Navigation" ), true, transformationPanel );
 
 		interpolationPanel = new InterpolationModePanel( viewer );

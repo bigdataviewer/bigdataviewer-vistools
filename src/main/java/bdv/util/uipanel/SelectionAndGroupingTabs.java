@@ -453,7 +453,7 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 	 * source selection.
 	 *
 	 */
-	public synchronized void addSource( final BdvSource p )
+	public synchronized void sourceAdded( final BdvSource p )
 	{
 		int srcIdx = sourceIdx.size();
 
@@ -490,7 +490,7 @@ public class SelectionAndGroupingTabs extends JTabbedPane implements BdvHandle.S
 	/**
 	 * Remove source.
 	 */
-	public synchronized void removeSource( final BdvSource source )
+	public synchronized void sourceRemoved( final BdvSource source )
 	{
 		intensitySlider.removeSource( source );
 		for ( final GroupProperties group : groupLookup.values() )

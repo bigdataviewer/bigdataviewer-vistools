@@ -511,14 +511,14 @@ public class TransformationPanel extends JPanel implements SourceChangeListener,
 	}
 
 	@Override
-	public void addSource( BdvSource source )
+	public void sourceAdded( final BdvSource source )
 	{
 		transformationLookup.put( source.getName(),
 				getInitialTransformation( viewerPanel.getVisibilityAndGrouping().getCurrentSource() ) );
 	}
 
 	@Override
-	public void removeSource( BdvSource source )
+	public void sourceRemoved( final BdvSource source )
 	{
 		transformationLookup.remove( source.getName() );
 	}

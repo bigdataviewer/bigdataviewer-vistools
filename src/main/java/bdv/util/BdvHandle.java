@@ -1,11 +1,5 @@
 package bdv.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.scijava.ui.behaviour.util.InputActionBindings;
-import org.scijava.ui.behaviour.util.TriggerBehaviourBindings;
-
 import bdv.cache.CacheControl.CacheControls;
 import bdv.tools.InitializeViewerState;
 import bdv.tools.brightness.ConverterSetup;
@@ -16,9 +10,14 @@ import bdv.viewer.SourceAndConverter;
 import bdv.viewer.TimePointListener;
 import bdv.viewer.ViewerPanel;
 import bdv.viewer.VisibilityAndGrouping.UpdateListener;
+import java.util.ArrayList;
+import java.util.List;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.ui.OverlayRenderer;
 import net.imglib2.ui.TransformListener;
+import org.scijava.listeners.Listeners;
+import org.scijava.ui.behaviour.util.InputActionBindings;
+import org.scijava.ui.behaviour.util.TriggerBehaviourBindings;
 
 /**
  * Represents a BigDataViewer frame or panel and can be used to get to the bdv
@@ -140,8 +139,6 @@ public abstract class BdvHandle implements Bdv
 
 	private boolean initTransformPending;
 
-	private List<SourceChangeListener> sourceChangeListeners = new ArrayList<>();
-
 	protected synchronized void tryInitTransform()
 	{
 		if ( viewer.getDisplay().getWidth() <= 0 || viewer.getDisplay().getHeight() <= 0 )
@@ -200,9 +197,26 @@ public abstract class BdvHandle implements Bdv
 
 	public interface SourceChangeListener
 	{
-		public void addSource( BdvSource source );
+		void sourceAdded( final BdvSource source );
 
-		public void removeSource( BdvSource source );
+		void sourceRemoved( final BdvSource source );
+	}
+
+	private final Listeners.List< SourceChangeListener > sourceChangeListeners = new Listeners.SynchronizedList<>();
+
+	protected Listeners< SourceChangeListener > sourceChangeListeners()
+	{
+		return sourceChangeListeners;
+	}
+
+	void notifySourceAdded( final BdvSource source )
+	{
+		sourceChangeListeners.list.forEach( l -> l.sourceAdded( source ) );
+	}
+
+	void notifySourceRemoved( final BdvSource source )
+	{
+		sourceChangeListeners.list.forEach( l -> l.sourceRemoved( source ) );
 	}
 
 	void addBdvSource( final BdvSource bdvSource )
@@ -210,7 +224,7 @@ public abstract class BdvHandle implements Bdv
 		bdvSources.add( bdvSource );
 		updateHasPlaceHolderSources();
 		updateNumTimepoints();
-		updateSourceChangeListenersAdd( bdvSource );
+		notifySourceAdded( bdvSource );
 	}
 
 	void removeBdvSource( final BdvSource bdvSource )
@@ -218,7 +232,7 @@ public abstract class BdvHandle implements Bdv
 		bdvSources.remove( bdvSource );
 		updateHasPlaceHolderSources();
 		updateNumTimepoints();
-		updateSourceChangeListernersRemove( bdvSource );
+		notifySourceRemoved( bdvSource );
 	}
 
 	void updateHasPlaceHolderSources()
@@ -244,26 +258,5 @@ public abstract class BdvHandle implements Bdv
 	boolean is2D()
 	{
 		return bdvOptions.values.is2D();
-	}
-
-	protected void addSourceChangeListener( final SourceChangeListener l )
-	{
-		this.sourceChangeListeners.add( l );
-	}
-
-	void updateSourceChangeListenersAdd( final BdvSource source )
-	{
-		for ( final SourceChangeListener l : sourceChangeListeners )
-		{
-			l.addSource( source );
-		}
-	}
-
-	void updateSourceChangeListernersRemove( final BdvSource source )
-	{
-		for ( final SourceChangeListener l : sourceChangeListeners )
-		{
-			l.removeSource( source );
-		}
 	}
 }
