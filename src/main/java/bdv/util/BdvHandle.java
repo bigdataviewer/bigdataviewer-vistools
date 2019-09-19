@@ -132,9 +132,6 @@ public abstract class BdvHandle implements Bdv
 				tryInitTransform();
 			}
 		}
-
-		updateHasPlaceHolderSources();
-		updateNumTimepoints();
 	}
 
 	private boolean initTransformPending;
