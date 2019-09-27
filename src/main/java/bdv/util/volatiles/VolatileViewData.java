@@ -1,13 +1,13 @@
 package bdv.util.volatiles;
 
+import java.util.function.Predicate;
+
 import bdv.cache.CacheControl;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
 import net.imglib2.cache.Invalidate;
 import net.imglib2.cache.img.CachedCellImg;
-
-import java.util.function.Predicate;
 
 /**
  * Metadata associated with a {@link VolatileView}. It comprises the types
@@ -100,17 +100,20 @@ public class VolatileViewData< T, V extends Volatile< T > > implements Invalidat
 	}
 
 	@Override
-	public void invalidate(Long key) {
-		this.invalidate.invalidate(key);
+	public void invalidate( Long key )
+	{
+		this.invalidate.invalidate( key );
 	}
 
 	@Override
-	public void invalidateIf(long parallelismThreshold, Predicate<Long> condition) {
-		this.invalidate.invalidateIf(parallelismThreshold, condition);
+	public void invalidateIf( long parallelismThreshold, Predicate< Long > condition )
+	{
+		this.invalidate.invalidateIf( parallelismThreshold, condition );
 	}
 
 	@Override
-	public void invalidateAll(long parallelismThreshold) {
-		this.invalidate.invalidateAll(parallelismThreshold);
+	public void invalidateAll( long parallelismThreshold )
+	{
+		this.invalidate.invalidateAll( parallelismThreshold );
 	}
 }

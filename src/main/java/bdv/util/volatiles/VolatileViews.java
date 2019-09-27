@@ -1,7 +1,10 @@
 package bdv.util.volatiles;
 
-import bdv.img.cache.CreateInvalidVolatileCell;
-import bdv.img.cache.VolatileCachedCellImg;
+import static net.imglib2.img.basictypeaccess.AccessFlags.DIRTY;
+import static net.imglib2.img.basictypeaccess.AccessFlags.VOLATILE;
+
+import java.util.Set;
+
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
@@ -21,10 +24,8 @@ import net.imglib2.type.NativeType;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.MixedTransformView;
 
-import java.util.Set;
-
-import static net.imglib2.img.basictypeaccess.AccessFlags.DIRTY;
-import static net.imglib2.img.basictypeaccess.AccessFlags.VOLATILE;
+import bdv.img.cache.CreateInvalidVolatileCell;
+import bdv.img.cache.VolatileCachedCellImg;
 
 /**
  * Wrap view cascades ending in {@link CachedCellImg} as volatile views.
@@ -152,14 +153,14 @@ public class VolatileViews
 		if ( hints == null )
 			hints = new CacheHints( LoadingStrategy.VOLATILE, 0, false );
 		@SuppressWarnings( "rawtypes" )
-		final VolatileCache<Long, Cell<? extends VolatileArrayDataAccess< ? >>> volatileCache = createVolatileCache( grid, vtype, dirty, ( Cache ) cache, queue );
+		final VolatileCache< Long, Cell< ? extends VolatileArrayDataAccess< ? > > > volatileCache = createVolatileCache( grid, vtype, dirty, ( Cache ) cache, queue );
 
 		final VolatileCachedCellImg< V, ? extends VolatileArrayDataAccess< ? > > volatileImg = new VolatileCachedCellImg<>( grid, vtype, hints, volatileCache.unchecked()::get );
 
 		return new VolatileViewData<>( volatileImg, queue, type, vtype, volatileCache );
 	}
 
-	private static < T extends NativeType< T >, A extends VolatileArrayDataAccess< A > > VolatileCache<Long, Cell<A>> createVolatileCache(
+	private static < T extends NativeType< T >, A extends VolatileArrayDataAccess< A > > VolatileCache< Long, Cell< A > > createVolatileCache(
 			final CellGrid grid,
 			final T type,
 			final boolean dirty,

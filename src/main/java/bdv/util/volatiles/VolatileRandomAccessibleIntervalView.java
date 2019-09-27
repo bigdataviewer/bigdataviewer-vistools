@@ -1,5 +1,7 @@
 package bdv.util.volatiles;
 
+import java.util.function.Predicate;
+
 import net.imglib2.AbstractWrappedInterval;
 import net.imglib2.Interval;
 import net.imglib2.RandomAccess;
@@ -7,11 +9,9 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
 import net.imglib2.cache.Invalidate;
 
-import java.util.function.Predicate;
-
 public class VolatileRandomAccessibleIntervalView< T, V extends Volatile< T > >
-	extends AbstractWrappedInterval< RandomAccessibleInterval< V > >
-	implements VolatileView< T, V >, RandomAccessibleInterval< V >, Invalidate< Long >
+		extends AbstractWrappedInterval< RandomAccessibleInterval< V > >
+		implements VolatileView< T, V >, RandomAccessibleInterval< V >, Invalidate< Long >
 {
 	private final VolatileViewData< T, V > viewData;
 
@@ -41,17 +41,20 @@ public class VolatileRandomAccessibleIntervalView< T, V extends Volatile< T > >
 	}
 
 	@Override
-	public void invalidate(Long key) {
-		this.viewData.invalidate(key);
+	public void invalidate( Long key )
+	{
+		this.viewData.invalidate( key );
 	}
 
 	@Override
-	public void invalidateIf(long parallelismThreshold, Predicate<Long> condition) {
-		this.viewData.invalidateIf(parallelismThreshold, condition);
+	public void invalidateIf( long parallelismThreshold, Predicate< Long > condition )
+	{
+		this.viewData.invalidateIf( parallelismThreshold, condition );
 	}
 
 	@Override
-	public void invalidateAll(long parallelismThreshold) {
-		this.viewData.invalidateAll(parallelismThreshold);
+	public void invalidateAll( long parallelismThreshold )
+	{
+		this.viewData.invalidateAll( parallelismThreshold );
 	}
 }
