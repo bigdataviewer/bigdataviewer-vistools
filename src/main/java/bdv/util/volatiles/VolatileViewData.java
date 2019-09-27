@@ -7,6 +7,8 @@ import net.imglib2.Volatile;
 import net.imglib2.cache.Invalidate;
 import net.imglib2.cache.img.CachedCellImg;
 
+import java.util.function.Predicate;
+
 /**
  * Metadata associated with a {@link VolatileView}. It comprises the types
  * of the original and volatile image, a {@link CacheControl} for the
@@ -24,7 +26,7 @@ import net.imglib2.cache.img.CachedCellImg;
  *
  * @author Tobias Pietzsch
  */
-public class VolatileViewData< T, V extends Volatile< T > >
+public class VolatileViewData< T, V extends Volatile< T > > implements Invalidate< Long >
 {
 	private final RandomAccessible< V > img;
 
@@ -34,14 +36,14 @@ public class VolatileViewData< T, V extends Volatile< T > >
 
 	private final V volatileType;
 
-	private final Invalidate< ? > invalidate;
+	private final Invalidate< Long > invalidate;
 
 	public VolatileViewData(
 			final RandomAccessible< V > img,
 			final CacheControl cacheControl,
 			final T type,
 			final V volatileType,
-			final Invalidate< ? > invalidate )
+			final Invalidate< Long > invalidate )
 	{
 		this.img = img;
 		this.cacheControl = cacheControl;
@@ -92,8 +94,23 @@ public class VolatileViewData< T, V extends Volatile< T > >
 		return volatileType;
 	}
 
-	public Invalidate< ? > getInvalidate()
+	public Invalidate< Long > getInvalidate()
 	{
 		return this.invalidate;
+	}
+
+	@Override
+	public void invalidate(Long key) {
+		this.invalidate.invalidate(key);
+	}
+
+	@Override
+	public void invalidateIf(long parallelismThreshold, Predicate<Long> condition) {
+		this.invalidate.invalidateIf(parallelismThreshold, condition);
+	}
+
+	@Override
+	public void invalidateAll(long parallelismThreshold) {
+		this.invalidate.invalidateAll(parallelismThreshold);
 	}
 }
