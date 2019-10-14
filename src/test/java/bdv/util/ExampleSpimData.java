@@ -9,7 +9,9 @@ public class ExampleSpimData
 	public static void main( final String[] args ) throws SpimDataException
 	{
 		System.setProperty( "apple.laf.useScreenMenuBar", "true" );
-		final String xmlFilename = "/Users/pietzsch/workspace/data/111010_weber_full.xml";
+		DatasetHelper.getDataset(DatasetHelper.BDV_HisYFP_SPIM_H5); // Download hdf5 - > cached on hard drive
+		DatasetHelper.getDataset(DatasetHelper.BDV_Drosophila_H5); // Download hdf5 - > cached on hard drive
+		final String xmlFilename = DatasetHelper.getDataset(DatasetHelper.BDV_HisYFP_SPIM_XML).getAbsolutePath();
 		final SpimDataMinimal spimData = new XmlIoSpimDataMinimal().load( xmlFilename );
 		BdvFunctions.show( spimData );
 	}
