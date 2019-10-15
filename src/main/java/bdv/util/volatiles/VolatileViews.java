@@ -5,6 +5,7 @@ import static net.imglib2.img.basictypeaccess.AccessFlags.VOLATILE;
 
 import java.util.Set;
 
+import bdv.viewer.Source;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
@@ -82,7 +83,26 @@ public class VolatileViews
 		return new VolatileRandomAccessibleView<>( viewData );
 	}
 
-	// ==============================================================
+	/**
+	 * Tests whether a source can be wrapped as a Volatile Source
+	 * Assumes src.getSource(0,0) is valid
+	 * @param src
+	 * @return
+	 */
+	public static boolean isSourceWrappableAsVolatile(final Source src) {
+		// We need to get an instance of a RandomAccessibleInterval class from the source
+		// We could ask for a valid timepoint as an argument of this function ...
+		// We assume anyway that all Random Accessible Interval are backed by the same class
+		if (!src.isPresent(0)) {
+			return false;
+		}
+		try {
+			wrapAsVolatileViewData(src.getSource(0,0),null,null);
+			return true;
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
+	}
 
 	@SuppressWarnings( "unchecked" )
 	private static < T, V extends Volatile< T > > VolatileViewData< T, V > wrapAsVolatileViewData(
@@ -125,9 +145,11 @@ public class VolatileViews
 		else if ( rai instanceof WrappedImg )
 		{
 			return wrapAsVolatileViewData( ( ( WrappedImg< T > ) rai ).getImg(), queue, hints );
+		} else {
+
 		}
 
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Could not wrap as Volatile rai of class:"+rai.getClass());
 	}
 
 	@SuppressWarnings( "unchecked" )

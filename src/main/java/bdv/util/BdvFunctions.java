@@ -4,16 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.imglib2.FinalInterval;
-import net.imglib2.Interval;
-import net.imglib2.RandomAccessible;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.RealInterval;
-import net.imglib2.RealLocalizable;
-import net.imglib2.RealRandomAccessible;
+import bdv.util.volatiles.*;
+import net.imglib2.*;
 import net.imglib2.converter.Converter;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.realtransform.RealViews;
+import net.imglib2.type.NativeType;
 import net.imglib2.type.Type;
 import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.NumericType;
@@ -36,8 +32,6 @@ import bdv.tools.brightness.ConverterSetup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.tools.transformation.TransformedSource;
 import bdv.util.VirtualChannels.VirtualChannel;
-import bdv.util.volatiles.VolatileView;
-import bdv.util.volatiles.VolatileViewData;
 import bdv.viewer.Source;
 import bdv.viewer.SourceAndConverter;
 import mpicbg.spim.data.generic.AbstractSpimData;
@@ -627,15 +621,34 @@ public class BdvFunctions
 	 *            list of {@link SourceAndConverter}s to which the source should
 	 *            be added.
 	 */
-	private static < T extends NumericType< T > > void addSourceToListsNumericType(
+
+	private static < T extends NumericType< T >, V extends Volatile< T > & NumericType< V >> void addSourceToListsNumericType(
 			final Source< T > source,
 			final int setupId,
 			final List< ConverterSetup > converterSetups,
-			final List< SourceAndConverter< T > > sources )
+			final List< SourceAndConverter< T > > sources)
 	{
 		final T type = source.getType();
+		final SourceAndConverter< ? extends Volatile< T > > volatileSourceAndConverter;
+		/*
+		 * Attempt to wrap source as volatile, if possible and if necessary (= not already volatile)
+		 */
+		if ((type instanceof NativeType)
+			&&(!(type instanceof Volatile))
+			&&(VolatileViews.isSourceWrappableAsVolatile(source))) {
+			//System.out.println("source.getSource(0,0) class = "+source.getSource(0,0).getClass());
+			//System.out.println("Attempt to wrap " + type.getClass() + " Source : " + source.getClass() + " of type " + source.getType().getClass());
+			final NativeType<?> vType = VolatileTypeMatcher.getVolatileTypeForType((NativeType) type);
+			System.out.println("into a " + vType.getClass());
+			Source<V> volatileSource = new VolatileSource<>(source, (V) vType, new SharedQueue(1));
+			volatileSourceAndConverter =
+						new SourceAndConverter<>(volatileSource, (Converter<V, ARGBType>) BigDataViewer.createConverterToARGB(type));
+		} else {
+			volatileSourceAndConverter = null;
+		}
+
 		final SourceAndConverter< T > soc = BigDataViewer.wrapWithTransformedSource(
-				new SourceAndConverter<>( source, BigDataViewer.createConverterToARGB( type ) ) );
+				new SourceAndConverter<>( source, BigDataViewer.createConverterToARGB( type ), volatileSourceAndConverter ) );
 		converterSetups.add( BigDataViewer.createConverterSetup( soc, setupId ) );
 		sources.add( soc );
 	}
