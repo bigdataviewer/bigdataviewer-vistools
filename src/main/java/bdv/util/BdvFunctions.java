@@ -633,17 +633,17 @@ public class BdvFunctions
 		/*
 		 * Attempt to wrap source as volatile, if possible and if necessary (= not already volatile)
 		 */
+
 		if ((type instanceof NativeType)
 			&&(!(type instanceof Volatile))
 			&&(VolatileViews.isSourceWrappableAsVolatile(source))) {
-			//System.out.println("source.getSource(0,0) class = "+source.getSource(0,0).getClass());
-			//System.out.println("Attempt to wrap " + type.getClass() + " Source : " + source.getClass() + " of type " + source.getType().getClass());
+			//System.out.println("Wrapping source "+source.getName()+" of type "+source.getType().getClass().getName()+" as volatile.");
 			final NativeType<?> vType = VolatileTypeMatcher.getVolatileTypeForType((NativeType) type);
-			System.out.println("into a " + vType.getClass());
-			Source<V> volatileSource = new VolatileSource<>(source, (V) vType, new SharedQueue(1));
+			Source<V> volatileSource = new VolatileSource<>(source, (V) vType, null, null); //SharedQueue and CachedHints can be optionnally specified here, unsupported
 			volatileSourceAndConverter =
-						new SourceAndConverter<>(volatileSource, (Converter<V, ARGBType>) BigDataViewer.createConverterToARGB(type));
+						new SourceAndConverter<>(volatileSource, BigDataViewer.createConverterToARGB((V) vType));
 		} else {
+			//System.out.println("Cannot wrap source "+source.getName()+" of type "+source.getType().getClass().getName()+" as volatile.");
 			volatileSourceAndConverter = null;
 		}
 
