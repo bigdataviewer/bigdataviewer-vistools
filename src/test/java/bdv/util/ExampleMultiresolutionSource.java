@@ -17,7 +17,7 @@ public class ExampleMultiresolutionSource {
         System.setProperty( "apple.laf.useScreenMenuBar", "true" );
 
         // Make edge display on demand
-        final int[] cellDimensions = new int[] { 16, 16, 16 };
+        final int[] cellDimensions = new int[] { 32, 32, 32 };
 
         // Cached Image Factory Options
         final DiskCachedCellImgOptions factoryOptions = options()
@@ -30,7 +30,7 @@ public class ExampleMultiresolutionSource {
 
         Img<ARGBType>[] multiResolutionImgs = new Img[5];
 
-        long[] imageDimensions = new long[]{2000,2000,2000};
+        long[] imageDimensions = new long[]{1000,1000,1000};
 
         multiResolutionImgs[0] = getHardToComputeImage(factory,imageDimensions,1);
         multiResolutionImgs[1] = getHardToComputeImage(factory,imageDimensions,2);
@@ -73,6 +73,7 @@ public class ExampleMultiresolutionSource {
             // Cursor on output image
             final Cursor<ARGBType> out = cell.localizingCursor();
 
+            Thread.sleep(10);
             // Loops through voxels
             while ( out.hasNext() ) {
                 out.next().set( ARGBType.rgba(out.getIntPosition(0),out.getIntPosition(1),out.getIntPosition(2),255 ));
