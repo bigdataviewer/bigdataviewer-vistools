@@ -12,6 +12,7 @@ import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.converter.Converter;
+import net.imglib2.display.ColorConverter;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.realtransform.RealViews;
 import net.imglib2.type.Type;
@@ -42,6 +43,7 @@ import bdv.viewer.Source;
 import bdv.viewer.SourceAndConverter;
 import mpicbg.spim.data.generic.AbstractSpimData;
 import mpicbg.spim.data.generic.sequence.AbstractSequenceDescription;
+import sun.jvm.hotspot.utilities.AssertionFailure;
 
 /**
  * all show methods return a {@link Bdv} which can be used to add more stuff to the same window
@@ -209,6 +211,9 @@ public class BdvFunctions
 			final int numTimePoints,
 			final BdvOptions options )
 	{
+		if ( ! ( sourceAndConverter.getConverter() instanceof ColorConverter ) )
+			throw new AssertionError( "The Converter in the SourceAndConverter must be a ColorConverter" );
+
 		final Bdv bdv = options.values.addTo();
 		final BdvHandle handle = ( bdv == null )
 				? new BdvHandleFrame( options )
