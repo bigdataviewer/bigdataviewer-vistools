@@ -43,7 +43,6 @@ import bdv.viewer.Source;
 import bdv.viewer.SourceAndConverter;
 import mpicbg.spim.data.generic.AbstractSpimData;
 import mpicbg.spim.data.generic.sequence.AbstractSequenceDescription;
-import sun.jvm.hotspot.utilities.AssertionFailure;
 
 /**
  * all show methods return a {@link Bdv} which can be used to add more stuff to the same window
