@@ -185,6 +185,12 @@ public class BdvFunctions
 	}
 
 	public static < T > BdvStackSource< T > show(
+			final SourceAndConverter< T > sourceAndConverter )
+	{
+		return show( sourceAndConverter, 1, Bdv.options() );
+	}
+
+	public static < T > BdvStackSource< T > show(
 			final SourceAndConverter< T > sourceAndConverter,
 			final int numTimePoints )
 	{
