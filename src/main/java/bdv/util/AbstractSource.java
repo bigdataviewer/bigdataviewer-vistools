@@ -59,7 +59,12 @@ public abstract class AbstractSource< T extends NumericType< T > > implements So
 
 	public AbstractSource( final T type, final String name )
 	{
-		this( type, name, new DefaultVoxelDimensions( 100 )); // don't like this, put a "big" number to be safe
+		/*
+		 * Use DefaultVoxelDimensions with a "large" number of dimensions here.
+		 * The implementation will return the same result for spacing and units
+		 * regardless of the number of dimensions passed here.  Consider revisiting.
+		 */
+		this( type, name, new DefaultVoxelDimensions( 100 ));
 	}
 
 	public AbstractSource( final Supplier< T > typeSupplier, final String name )
