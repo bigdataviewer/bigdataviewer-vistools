@@ -60,11 +60,11 @@ public abstract class AbstractSource< T extends NumericType< T > > implements So
 	public AbstractSource( final T type, final String name )
 	{
 		/*
-		 * Use DefaultVoxelDimensions with a "large" number of dimensions here.
-		 * The implementation will return the same result for spacing and units
-		 * regardless of the number of dimensions passed here.  Consider revisiting.
+		 * We don't know the dimensionality of the source here, but the
+		 * DefaultVoxelDimensionsimplementation will return the same result 
+		 * for spacing and units regardless of the number of dimensions passed. 
 		 */
-		this( type, name, new DefaultVoxelDimensions( 100 ));
+		this( type, name, new DefaultVoxelDimensions( -1 ));
 	}
 
 	public AbstractSource( final Supplier< T > typeSupplier, final String name )
