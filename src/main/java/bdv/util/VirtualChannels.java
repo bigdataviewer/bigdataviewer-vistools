@@ -73,7 +73,7 @@ public class VirtualChannels
 
 			final PlaceHolderOverlayInfo info = new PlaceHolderOverlayInfo( handle.getViewerPanel(), source, setup );
 			coordinator.sharedInfos.add( info );
-			setup.addSetupChangeListener( () -> vc.updateSetupParameters() );
+			setup.setupChangeListeners().add( s -> vc.updateSetupParameters() );
 			info.addVisibilityChangeListener( () -> vc.updateVisibility() );
 			final BdvVirtualChannelSource bdvSource = new BdvVirtualChannelSource( handle, numTimepoints, setup, soc, info, coordinator );
 			handle.addBdvSource( bdvSource );

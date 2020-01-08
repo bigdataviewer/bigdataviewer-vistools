@@ -108,7 +108,7 @@ public abstract class BdvHandle implements Bdv
 				for ( final ConverterSetup setup : converterSetups )
 				{
 					setupAssignments.addSetup( setup );
-					setup.setViewer( viewer );
+					setup.setupChangeListeners().add( s -> viewer.requestRepaint() );
 				}
 
 				final int g = setupAssignments.getMinMaxGroups().size() - 1;
