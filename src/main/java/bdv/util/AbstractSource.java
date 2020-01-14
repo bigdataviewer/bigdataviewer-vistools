@@ -32,6 +32,8 @@ import java.util.function.Supplier;
 
 import bdv.viewer.Interpolation;
 import bdv.viewer.Source;
+import mpicbg.spim.data.sequence.DefaultVoxelDimensions;
+import mpicbg.spim.data.sequence.FinalVoxelDimensions;
 import mpicbg.spim.data.sequence.VoxelDimensions;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.type.numeric.NumericType;
@@ -43,13 +45,26 @@ public abstract class AbstractSource< T extends NumericType< T > > implements So
 
 	protected final String name;
 
+	protected final VoxelDimensions voxelDimensions;
+
 	protected final DefaultInterpolators< T > interpolators;
 
-	public AbstractSource( final T type, final String name )
+	public AbstractSource( final T type, final String name, final VoxelDimensions voxelDimensions )
 	{
 		this.type = type;
 		this.name = name;
+		this.voxelDimensions = voxelDimensions;
 		interpolators = new DefaultInterpolators<>();
+	}
+
+	public AbstractSource( final T type, final String name )
+	{
+		/*
+		 * We don't know the dimensionality of the source here, but the
+		 * DefaultVoxelDimensionsimplementation will return the same result 
+		 * for spacing and units regardless of the number of dimensions passed. 
+		 */
+		this( type, name, new DefaultVoxelDimensions( -1 ));
 	}
 
 	public AbstractSource( final Supplier< T > typeSupplier, final String name )
@@ -84,7 +99,7 @@ public abstract class AbstractSource< T extends NumericType< T > > implements So
 	@Override
 	public VoxelDimensions getVoxelDimensions()
 	{
-		return null;
+		return voxelDimensions;
 	}
 
 	@Override

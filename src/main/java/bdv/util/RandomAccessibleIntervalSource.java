@@ -29,6 +29,7 @@
 package bdv.util;
 
 import bdv.viewer.Interpolation;
+import mpicbg.spim.data.sequence.DefaultVoxelDimensions;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.realtransform.AffineTransform3D;
@@ -57,7 +58,7 @@ public class RandomAccessibleIntervalSource< T extends NumericType< T > > extend
 			final AffineTransform3D sourceTransform,
 			final String name )
 	{
-		super( type, name );
+		super( type, name, new DefaultVoxelDimensions( img.numDimensions() ));
 		this.source = img;
 		this.sourceTransform = sourceTransform;
 		interpolatedSources = new RealRandomAccessible[ Interpolation.values().length ];
