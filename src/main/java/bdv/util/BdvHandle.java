@@ -1,5 +1,8 @@
 package bdv.util;
 
+import bdv.ui.CardPanel;
+import bdv.ui.splitpanel.SplitPanel;
+import bdv.viewer.ConverterSetups;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +12,6 @@ import org.scijava.ui.behaviour.util.TriggerBehaviourBindings;
 import bdv.cache.CacheControl.CacheControls;
 import bdv.tools.InitializeViewerState;
 import bdv.tools.brightness.ConverterSetup;
-import bdv.tools.brightness.MinMaxGroup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.tools.transformation.ManualTransformationEditor;
 import bdv.viewer.SourceAndConverter;
@@ -24,12 +26,19 @@ import net.imglib2.ui.TransformListener;
  * Represents a BigDataViewer frame or panel and can be used to get to the bdv
  * internals.
  *
- * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
+ * @author Tobias Pietzsch
  */
 public abstract class BdvHandle implements Bdv
 {
 	protected ViewerPanel viewer;
 
+	protected CardPanel cards;
+
+	protected SplitPanel splitPanel;
+
+	protected ConverterSetups setups;
+
+	// TODO: Remove
 	protected SetupAssignments setupAssignments;
 
 	protected final ArrayList< BdvSource > bdvSources;
@@ -60,6 +69,23 @@ public abstract class BdvHandle implements Bdv
 		return viewer;
 	}
 
+	public CardPanel getCardPanel()
+	{
+		return cards;
+	}
+
+	public SplitPanel getSplitPanel()
+	{
+		return splitPanel;
+	}
+
+	public ConverterSetups getConverterSetups()
+	{
+		return setups;
+	}
+
+	// TODO: REMOVE
+	@Deprecated
 	public SetupAssignments getSetupAssignments()
 	{
 		return setupAssignments;
@@ -70,6 +96,7 @@ public abstract class BdvHandle implements Bdv
 		return cacheControls;
 	}
 
+	@Deprecated
 	int getUnusedSetupId()
 	{
 		return BdvFunctions.getUnusedSetupId( setupAssignments );
@@ -101,25 +128,32 @@ public abstract class BdvHandle implements Bdv
 		}
 		else
 		{
-			initTransform = ( viewer.getState().numSources() == 0 ) && !sources.isEmpty();
+			initTransform = viewer.state().getSources().isEmpty() && sources != null && !sources.isEmpty();
+
+			if ( converterSetups != null && sources != null && converterSetups.size() != sources.size() )
+				System.err.println( "WARNING! Adding sources to BdvHandle with converterSetups.size() != sources.size()." );
 
 			if ( converterSetups != null )
 			{
-				for ( final ConverterSetup setup : converterSetups )
+				final int numSetups = Math.min( converterSetups.size(), sources.size() );
+				for ( int i = 0; i < numSetups; ++i )
 				{
-					setupAssignments.addSetup( setup );
-					setup.setupChangeListeners().add( s -> viewer.requestRepaint() );
+					final SourceAndConverter< ? > source = sources.get( i );
+					final ConverterSetup setup = converterSetups.get( i );
+					if ( setup != null )
+						setups.put( source, setup );
 				}
 
-				final int g = setupAssignments.getMinMaxGroups().size() - 1;
-				final MinMaxGroup group = setupAssignments.getMinMaxGroups().get( g );
-				for ( final ConverterSetup setup : converterSetups )
-					setupAssignments.moveSetupToGroup( setup, group );
+				// TODO: REMOVE
+				converterSetups.forEach( setupAssignments::addSetup );
 			}
 
 			if ( sources != null )
 				for ( final SourceAndConverter< ? > soc : sources )
-					viewer.addSource( soc );
+				{
+					viewer.state().addSource( soc );
+					viewer.state().setSourceActive( soc, true );
+				}
 		}
 
 		if ( initTransform )
@@ -130,9 +164,6 @@ public abstract class BdvHandle implements Bdv
 				tryInitTransform();
 			}
 		}
-
-		updateHasPlaceHolderSources();
-		updateNumTimepoints();
 	}
 
 	private boolean initTransformPending;
@@ -150,7 +181,7 @@ public abstract class BdvHandle implements Bdv
 			if ( bdvOptions.values.is2D() )
 			{
 				final AffineTransform3D t = new AffineTransform3D();
-				viewer.getState().getViewerTransform( t );
+				viewer.state().getViewerTransform( t );
 				t.set( 0, 2, 3 );
 				viewer.setCurrentViewerTransform( t );
 			}
@@ -162,15 +193,15 @@ public abstract class BdvHandle implements Bdv
 			final List< ? extends SourceAndConverter< ? > > sources,
 			final List< TransformListener< AffineTransform3D > > transformListeners,
 			final List< TimePointListener > timepointListeners,
-			final List< UpdateListener > visibilityUpdateListeners,
+			final List< UpdateListener > visibilityUpdateListeners, // TODO: REMOVE
 			final List< OverlayRenderer > overlays )
 	{
 		if ( viewer == null )
 			return;
 
+		// TODO: REMOVE
 		if ( converterSetups != null )
-			for ( final ConverterSetup setup : converterSetups )
-				setupAssignments.removeSetup( setup );
+			converterSetups.forEach( setupAssignments::removeSetup );
 
 		if ( transformListeners != null )
 			for ( final TransformListener< AffineTransform3D > l : transformListeners )
@@ -180,6 +211,7 @@ public abstract class BdvHandle implements Bdv
 			for ( final TimePointListener l : timepointListeners )
 				viewer.removeTimePointListener( l );
 
+		// TODO: REMOVE
 		if ( visibilityUpdateListeners != null )
 			for ( final UpdateListener l : visibilityUpdateListeners )
 				viewer.getVisibilityAndGrouping().removeUpdateListener( l );

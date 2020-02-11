@@ -52,6 +52,7 @@ public class BdvHandleFrame extends BdvHandle
 			bdv = null;
 			viewer = null;
 			setupAssignments = null;
+			setups = null;
 			bdvSources.clear();
 		}
 	}
@@ -82,6 +83,7 @@ public class BdvHandleFrame extends BdvHandle
 	{
 		final ProgressWriter progressWriter = new ProgressWriterConsole();
 		final ViewerOptions viewerOptions = bdvOptions.values.getViewerOptions();
+		final InputTriggerConfig inputTriggerConfig = BigDataViewer.getInputTriggerConfig( viewerOptions );
 		bdv = new BigDataViewer(
 				new ArrayList<>( converterSetups ),
 				new ArrayList<>( sources ),
@@ -90,13 +92,13 @@ public class BdvHandleFrame extends BdvHandle
 				cacheControls,
 				frameTitle,
 				progressWriter,
-				viewerOptions );
+				viewerOptions.inputTriggerConfig( inputTriggerConfig ) );
 		viewer = bdv.getViewer();
 		setupAssignments = bdv.getSetupAssignments();
+		setups = bdv.getConverterSetups();
 
 		if ( bdvOptions.values.is2D() )
 		{
-			final InputTriggerConfig inputTriggerConfig = BigDataViewer.getInputTriggerConfig( viewerOptions );
 			final InputActionBindings keybindings = bdv.getViewerFrame().getKeybindings();
 			final NavigationActions navactions = new NavigationActions( inputTriggerConfig );
 			navactions.install( keybindings, "navigation" );

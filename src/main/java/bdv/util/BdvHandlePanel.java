@@ -1,5 +1,9 @@
 package bdv.util;
 
+import bdv.ui.BdvDefaultCards;
+import bdv.ui.CardPanel;
+import bdv.ui.splitpanel.SplitPanel;
+import bdv.viewer.ConverterSetups;
 import java.awt.Frame;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -36,6 +40,11 @@ import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.ui.TransformEventHandler;
 import net.imglib2.ui.TransformEventHandlerFactory;
 
+import static bdv.BigDataViewerActions.COLLAPSE_CARDS;
+import static bdv.BigDataViewerActions.COLLAPSE_CARDS_KEYS;
+import static bdv.BigDataViewerActions.EXPAND_CARDS;
+import static bdv.BigDataViewerActions.EXPAND_CARDS_KEYS;
+
 public class BdvHandlePanel extends BdvHandle
 {
 	private final BrightnessDialog brightnessDialog;
@@ -65,7 +74,7 @@ public class BdvHandlePanel extends BdvHandle
 
 		cacheControls = new CacheControls();
 
-		viewer = new ViewerPanel( new ArrayList<>(), 1, cacheControls, viewerOptions );
+		viewer = new ViewerPanel( new ArrayList<>(), 1, cacheControls, viewerOptions.inputTriggerConfig( inputTriggerConfig ) );
 		if ( !options.values.hasPreferredSize() )
 			viewer.getDisplay().setPreferredSize( null );
 		viewer.getDisplay().addComponentListener( new ComponentAdapter()
@@ -78,6 +87,12 @@ public class BdvHandlePanel extends BdvHandle
 		} );
 
 		setupAssignments = new SetupAssignments( new ArrayList<>(), 0, 65535 );
+		setups = new ConverterSetups( viewer.state() );
+		setups.listeners().add( s -> viewer.requestRepaint() );
+
+		cards = new CardPanel();
+		BdvDefaultCards.setup( cards, viewer, setups );
+		splitPanel = new SplitPanel( viewer, cards );
 
 		keybindings = new InputActionBindings();
 		SwingUtilities.replaceUIActionMap( viewer, keybindings.getConcatenatedActionMap() );
@@ -117,6 +132,8 @@ public class BdvHandlePanel extends BdvHandle
 		bdvactions.dialog( activeSourcesDialog );
 		bdvactions.bookmarks( bookmarksEditor );
 		bdvactions.manualTransform( manualTransformationEditor );
+		bdvactions.runnableAction( this::expandAndFocusCardPanel, EXPAND_CARDS, EXPAND_CARDS_KEYS );
+		bdvactions.runnableAction( this::collapseCardPanel, COLLAPSE_CARDS, COLLAPSE_CARDS_KEYS );
 
 		viewer.setDisplayMode( DisplayMode.FUSED );
 	}
@@ -154,5 +171,17 @@ public class BdvHandlePanel extends BdvHandle
 		viewer.stop();
 		brightnessDialog.dispose();
 		activeSourcesDialog.dispose();
+	}
+
+	public void expandAndFocusCardPanel()
+	{
+		splitPanel.setCollapsed( false );
+		splitPanel.getRightComponent().requestFocusInWindow();
+	}
+
+	public void collapseCardPanel()
+	{
+		splitPanel.setCollapsed( true );
+		viewer.requestFocusInWindow();
 	}
 }

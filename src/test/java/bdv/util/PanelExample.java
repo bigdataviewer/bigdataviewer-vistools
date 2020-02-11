@@ -24,7 +24,7 @@ public class PanelExample
 
 		final JFrame frame = new JFrame( "my test frame" );
 		final BdvHandlePanel bdv = new BdvHandlePanel( frame, Bdv.options().is2D() );
-		frame.add( bdv.getViewerPanel(), BorderLayout.CENTER );
+		frame.add( bdv.getSplitPanel(), BorderLayout.CENTER );
 		frame.setPreferredSize( new Dimension( 800, 600 ) );
 		frame.pack();
 		frame.setDefaultCloseOperation( WindowConstants.DISPOSE_ON_CLOSE );
