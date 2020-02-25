@@ -1,14 +1,10 @@
 package bdv.util;
 
-import java.util.Arrays;
-import java.util.List;
-
 import bdv.tools.brightness.MinMaxGroup;
 import bdv.tools.brightness.SetupAssignments;
 import bdv.util.VirtualChannels.ChannelSourceCoordinator;
 import bdv.viewer.SourceAndConverter;
-import bdv.viewer.state.SourceState;
-import bdv.viewer.state.ViewerState;
+import java.util.Collections;
 import net.imglib2.type.numeric.ARGBType;
 
 public class BdvVirtualChannelSource extends BdvSource
@@ -46,11 +42,11 @@ public class BdvVirtualChannelSource extends BdvSource
 	{
 		coordinator.sharedInfos.remove( info );
 		getBdvHandle().remove(
-				Arrays.asList( setup ),
-				Arrays.asList( source ),
-				Arrays.asList( info ),
-				Arrays.asList( info ),
-				Arrays.asList( info ),
+				Collections.singletonList( setup ),
+				Collections.singletonList( source ),
+				Collections.singletonList( info ),
+				Collections.singletonList( info ),
+				Collections.singletonList( info ),
 				null );
 		getBdvHandle().removeBdvSource( this );
 		setBdvHandle( null );
@@ -65,15 +61,15 @@ public class BdvVirtualChannelSource extends BdvSource
 	@Override
 	public void setDisplayRange( final double min, final double max )
 	{
-		final SetupAssignments sa = getBdvHandle().getSetupAssignments();
-		final MinMaxGroup group = sa.getMinMaxGroup( setup );
-		group.getMinBoundedValue().setCurrentValue( min );
-		group.getMaxBoundedValue().setCurrentValue( max );
+		setup.setDisplayRange( min, max );
 	}
 
 	@Override
 	public void setDisplayRangeBounds( final double min, final double max )
 	{
+		getBdvHandle().getConverterSetups().getBounds().setBounds( setup, new Bounds( min, max ) );
+
+		// TODO: REMOVE
 		final SetupAssignments sa = getBdvHandle().getSetupAssignments();
 		final MinMaxGroup group = sa.getMinMaxGroup( setup );
 		group.setRange( min, max );
@@ -88,21 +84,18 @@ public class BdvVirtualChannelSource extends BdvSource
 	@Override
 	public void setCurrent()
 	{
-		getBdvHandle().getViewerPanel().getVisibilityAndGrouping().setCurrentSource( source.getSpimSource() );
+		getBdvHandle().getViewerPanel().state().setCurrentSource( source );
 	}
 
 	@Override
 	public boolean isCurrent()
 	{
-		final ViewerState state = getBdvHandle().getViewerPanel().getState();
-		final List< SourceState< ? > > ss = state.getSources();
-		final int i = state.getCurrentSource();
-		return i >= 0 && i < ss.size() && ss.get( i ).getSpimSource() == source.getSpimSource();
+		return getBdvHandle().getViewerPanel().state().isCurrentSource( source );
 	}
 
 	@Override
 	public void setActive( final boolean isActive )
 	{
-		getBdvHandle().getViewerPanel().getVisibilityAndGrouping().setSourceActive( source.getSpimSource(), isActive );
+		getBdvHandle().getViewerPanel().state().setSourceActive( source, isActive );
 	}
 }

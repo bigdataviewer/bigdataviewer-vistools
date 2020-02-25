@@ -1,5 +1,6 @@
 package bdv.util;
 
+import bdv.viewer.ViewerStateChange;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,6 @@ import bdv.viewer.SourceAndConverter;
 import bdv.viewer.ViewerFrame;
 import bdv.viewer.ViewerOptions;
 import bdv.viewer.ViewerPanel.AlignPlane;
-import bdv.viewer.VisibilityAndGrouping;
-import bdv.viewer.VisibilityAndGrouping.Event;
 
 public class BdvHandleFrame extends BdvHandle
 {
@@ -109,16 +108,10 @@ public class BdvHandleFrame extends BdvHandle
 		}
 
 		// this triggers repaint when PlaceHolderSources are toggled
-		viewer.getVisibilityAndGrouping().addUpdateListener(
-				new VisibilityAndGrouping.UpdateListener()
-				{
-					@Override
-					public void visibilityChanged( final Event e )
-					{
-						if ( hasPlaceHolderSources )
-							viewer.getDisplay().repaint();
-					}
-				} );
+		viewer.state().changeListeners().add( change -> {
+			if ( change == ViewerStateChange.VISIBILITY_CHANGED )
+				viewer.getDisplay().repaint();
+		} );
 
 		viewer.setDisplayMode( DisplayMode.FUSED );
 		bdv.getViewerFrame().setVisible( true );

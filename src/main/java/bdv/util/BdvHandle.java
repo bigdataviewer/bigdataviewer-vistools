@@ -3,6 +3,7 @@ package bdv.util;
 import bdv.ui.CardPanel;
 import bdv.ui.splitpanel.SplitPanel;
 import bdv.viewer.ConverterSetups;
+import bdv.viewer.ViewerStateChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,6 @@ import bdv.tools.transformation.ManualTransformationEditor;
 import bdv.viewer.SourceAndConverter;
 import bdv.viewer.TimePointListener;
 import bdv.viewer.ViewerPanel;
-import bdv.viewer.VisibilityAndGrouping.UpdateListener;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.ui.OverlayRenderer;
 import net.imglib2.ui.TransformListener;
@@ -193,7 +193,7 @@ public abstract class BdvHandle implements Bdv
 			final List< ? extends SourceAndConverter< ? > > sources,
 			final List< TransformListener< AffineTransform3D > > transformListeners,
 			final List< TimePointListener > timepointListeners,
-			final List< UpdateListener > visibilityUpdateListeners, // TODO: REMOVE
+			final List< ViewerStateChangeListener > viewerStateChangeListeners,
 			final List< OverlayRenderer > overlays )
 	{
 		if ( viewer == null )
@@ -211,18 +211,15 @@ public abstract class BdvHandle implements Bdv
 			for ( final TimePointListener l : timepointListeners )
 				viewer.removeTimePointListener( l );
 
-		// TODO: REMOVE
-		if ( visibilityUpdateListeners != null )
-			for ( final UpdateListener l : visibilityUpdateListeners )
-				viewer.getVisibilityAndGrouping().removeUpdateListener( l );
+		if ( viewerStateChangeListeners != null )
+			viewer.state().changeListeners().removeAll( viewerStateChangeListeners );
 
 		if ( overlays != null )
 			for ( final OverlayRenderer o : overlays )
 				viewer.getDisplay().removeOverlayRenderer( o );
 
 		if ( sources != null )
-			for ( final SourceAndConverter< ? > soc : sources )
-				viewer.removeSource( soc.getSpimSource() );
+			viewer.state().removeSources( sources );
 	}
 
 	void addBdvSource( final BdvSource bdvSource )
