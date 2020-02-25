@@ -24,7 +24,7 @@ public class DisplayRangeExample
 
 		final JFrame frame = new JFrame( "my test frame" );
 		final BdvHandlePanel handle = new BdvHandlePanel( frame, Bdv.options() );
-		frame.add( handle.getViewerPanel(), BorderLayout.CENTER );
+		frame.add( handle.getSplitPanel(), BorderLayout.CENTER );
 		frame.setPreferredSize( new Dimension( 800, 600 ) );
 		frame.pack();
 		frame.setDefaultCloseOperation( WindowConstants.DISPOSE_ON_CLOSE );
