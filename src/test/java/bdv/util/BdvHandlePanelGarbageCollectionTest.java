@@ -60,7 +60,7 @@ public class BdvHandlePanelGarbageCollectionTest
 	{
 		BdvHandle handle = new BdvHandlePanel( null, Bdv.options() );
 		BdvFunctions.show( dummyLargeImage(), "Image", BdvOptions.options().addTo( handle ));
-		frame.add(handle.getViewerPanel());
+		frame.add( handle.getSplitPanel() );
 		frame.addWindowListener( new WindowAdapter()
 		{
 			@Override public void windowClosed( WindowEvent e )
