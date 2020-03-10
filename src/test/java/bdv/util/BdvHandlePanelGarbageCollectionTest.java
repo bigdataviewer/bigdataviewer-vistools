@@ -38,6 +38,7 @@ public class BdvHandlePanelGarbageCollectionTest
 		JFrame frame = ( showJFrame( componentAdder ) );
 		try { Thread.sleep( 100 ); } catch ( InterruptedException ignored ) { }
 		closeJFrame(frame);
+		System.gc();
 	}
 
 	private JFrame showJFrame( Consumer< JFrame > componentAdder )
