@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import net.imglib2.type.numeric.ARGBType;
 
+import static bdv.util.AbstractSource.tryCreateVariable;
+
 public class BdvStackSource< T > extends BdvSource
 {
 	private final T type;
@@ -25,7 +27,7 @@ public class BdvStackSource< T > extends BdvSource
 			final List< SourceAndConverter< T > > sources )
 	{
 		super( bdv, numTimepoints );
-		this.type = type;
+		this.type = tryCreateVariable( type );
 		this.converterSetups = converterSetups;
 		this.sources = sources;
 	}

@@ -34,6 +34,7 @@ import bdv.viewer.Interpolation;
 import bdv.viewer.Source;
 import mpicbg.spim.data.sequence.VoxelDimensions;
 import net.imglib2.RealRandomAccessible;
+import net.imglib2.type.Type;
 import net.imglib2.type.numeric.NumericType;
 import net.imglib2.view.Views;
 
@@ -47,7 +48,7 @@ public abstract class AbstractSource< T extends NumericType< T > > implements So
 
 	public AbstractSource( final T type, final String name )
 	{
-		this.type = type;
+		this.type = tryCreateVariable( type );
 		this.name = name;
 		interpolators = new DefaultInterpolators<>();
 	}
@@ -91,5 +92,17 @@ public abstract class AbstractSource< T extends NumericType< T > > implements So
 	public int getNumMipmapLevels()
 	{
 		return 1;
+	}
+
+	static < T > T tryCreateVariable( final T t )
+	{
+		if ( t instanceof Type< ? > )
+		{
+			final Type< ? > type = ( Type< ? > ) t;
+			@SuppressWarnings( "unchecked" )
+			final T copy = ( T ) type.createVariable();
+			return copy;
+		}
+		return t;
 	}
 }
