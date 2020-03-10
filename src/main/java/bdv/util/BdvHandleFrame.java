@@ -49,11 +49,8 @@ public class BdvHandleFrame extends BdvHandle
 			final ViewerFrame frame = bdv.getViewerFrame();
 			frame.dispatchEvent( new WindowEvent( frame, WindowEvent.WINDOW_CLOSING ) );
 			bdv = null;
-			viewer = null;
-			setupAssignments = null;
-			setups = null;
-			bdvSources.clear();
 		}
+		super.close();
 	}
 
 	@Override

@@ -103,7 +103,22 @@ public abstract class BdvHandle implements Bdv
 	}
 
 	@Override
-	public abstract void close();
+	public void close()
+	{
+		if ( viewer != null )
+		{
+			viewer.stop();
+			bdvSources.clear();
+			cacheControls.clear();
+
+			viewer = null;
+			cards = null;
+			splitPanel = null;
+			setups = null;
+			setupAssignments = null;
+			cacheControls = null;
+		}
+	}
 
 	public abstract ManualTransformationEditor getManualTransformEditor();
 
