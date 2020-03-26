@@ -31,6 +31,6 @@ public class ActionExample
 				final RealPoint pos = new RealPoint( 3 );
 				bdv.getBdvHandle().getViewerPanel().getGlobalMouseCoordinates( pos );
 				System.out.println( "global coordinates: " + Util.printCoordinates(pos) );
-			}, "print global pos", "P" );
+			}, "print global pos", "G" );
 	}
 }

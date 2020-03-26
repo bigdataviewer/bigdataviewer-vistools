@@ -1,5 +1,6 @@
 package bdv.util;
 
+import bdv.viewer.ViewerStateChange;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,6 @@ import bdv.viewer.SourceAndConverter;
 import bdv.viewer.ViewerFrame;
 import bdv.viewer.ViewerOptions;
 import bdv.viewer.ViewerPanel.AlignPlane;
-import bdv.viewer.VisibilityAndGrouping;
-import bdv.viewer.VisibilityAndGrouping.Event;
 
 public class BdvHandleFrame extends BdvHandle
 {
@@ -50,10 +49,8 @@ public class BdvHandleFrame extends BdvHandle
 			final ViewerFrame frame = bdv.getViewerFrame();
 			frame.dispatchEvent( new WindowEvent( frame, WindowEvent.WINDOW_CLOSING ) );
 			bdv = null;
-			viewer = null;
-			setupAssignments = null;
-			bdvSources.clear();
 		}
+		super.close();
 	}
 
 	@Override
@@ -82,6 +79,7 @@ public class BdvHandleFrame extends BdvHandle
 	{
 		final ProgressWriter progressWriter = new ProgressWriterConsole();
 		final ViewerOptions viewerOptions = bdvOptions.values.getViewerOptions();
+		final InputTriggerConfig inputTriggerConfig = BigDataViewer.getInputTriggerConfig( viewerOptions );
 		bdv = new BigDataViewer(
 				new ArrayList<>( converterSetups ),
 				new ArrayList<>( sources ),
@@ -90,13 +88,13 @@ public class BdvHandleFrame extends BdvHandle
 				cacheControls,
 				frameTitle,
 				progressWriter,
-				viewerOptions );
+				viewerOptions.inputTriggerConfig( inputTriggerConfig ) );
 		viewer = bdv.getViewer();
 		setupAssignments = bdv.getSetupAssignments();
+		setups = bdv.getConverterSetups();
 
 		if ( bdvOptions.values.is2D() )
 		{
-			final InputTriggerConfig inputTriggerConfig = BigDataViewer.getInputTriggerConfig( viewerOptions );
 			final InputActionBindings keybindings = bdv.getViewerFrame().getKeybindings();
 			final NavigationActions navactions = new NavigationActions( inputTriggerConfig );
 			navactions.install( keybindings, "navigation" );
@@ -107,16 +105,10 @@ public class BdvHandleFrame extends BdvHandle
 		}
 
 		// this triggers repaint when PlaceHolderSources are toggled
-		viewer.getVisibilityAndGrouping().addUpdateListener(
-				new VisibilityAndGrouping.UpdateListener()
-				{
-					@Override
-					public void visibilityChanged( final Event e )
-					{
-						if ( hasPlaceHolderSources )
-							viewer.getDisplay().repaint();
-					}
-				} );
+		viewer.state().changeListeners().add( change -> {
+			if ( change == ViewerStateChange.VISIBILITY_CHANGED )
+				viewer.getDisplay().repaint();
+		} );
 
 		viewer.setDisplayMode( DisplayMode.FUSED );
 		bdv.getViewerFrame().setVisible( true );

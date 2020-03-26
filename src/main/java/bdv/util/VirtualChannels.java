@@ -1,10 +1,9 @@
 package bdv.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import bdv.viewer.Source;
 import bdv.viewer.SourceAndConverter;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.converter.TypeIdentity;
@@ -31,11 +30,11 @@ import net.imglib2.type.numeric.ARGBType;
  */
 public class VirtualChannels
 {
-	public static interface VirtualChannel
+	public interface VirtualChannel
 	{
-		public void updateVisibility();
+		void updateVisibility();
 
-		public void updateSetupParameters();
+		void updateSetupParameters();
 	}
 
 	static List< BdvVirtualChannelSource > show(
@@ -63,18 +62,18 @@ public class VirtualChannels
 		final ChannelSourceCoordinator coordinator = new ChannelSourceCoordinator();
 		for ( final VirtualChannel vc : virtualChannels )
 		{
-			final Source< ARGBType > source = ( stack.numDimensions() > 3 )
+			final ChannelSource source = ( stack.numDimensions() > 3 )
 					? new ChannelSource4D( stack, coordinator, sourceTransform, name )
-					: new ChannelSource( stack, coordinator, sourceTransform, name );
+					: new DefaultChannelSource( stack, coordinator, sourceTransform, name );
 			final int setupId = handle.getUnusedSetupId();
 			final PlaceHolderConverterSetup setup = new PlaceHolderConverterSetup( setupId, 0, 255, new ARGBType( 0xffffffff ) );
-			final SourceAndConverter< ARGBType > soc = new SourceAndConverter<>( source, new TypeIdentity< >() );
-			handle.add( Arrays.asList( setup ), Arrays.asList( soc ), numTimepoints );
+			final SourceAndConverter< ARGBType > soc = source.getSourceAndConverter();
+			handle.add( Collections.singletonList( setup ), Collections.singletonList( soc ), numTimepoints );
 
-			final PlaceHolderOverlayInfo info = new PlaceHolderOverlayInfo( handle.getViewerPanel(), source, setup );
+			final PlaceHolderOverlayInfo info = new PlaceHolderOverlayInfo( handle.getViewerPanel(), soc, setup );
 			coordinator.sharedInfos.add( info );
-			setup.addSetupChangeListener( () -> vc.updateSetupParameters() );
-			info.addVisibilityChangeListener( () -> vc.updateVisibility() );
+			setup.setupChangeListeners().add( s -> vc.updateSetupParameters() );
+			info.visibilityChangeListeners().add( vc::updateVisibility );
 			final BdvVirtualChannelSource bdvSource = new BdvVirtualChannelSource( handle, numTimepoints, setup, soc, info, coordinator );
 			handle.addBdvSource( bdvSource );
 			bdvSources.add( bdvSource );
@@ -87,20 +86,27 @@ public class VirtualChannels
 	{
 		List< PlaceHolderOverlayInfo > sharedInfos = new ArrayList<>();
 
-		boolean shouldBePresent( final Source< ? > source )
+		boolean shouldBePresent( final ChannelSource source )
 		{
 			for ( final PlaceHolderOverlayInfo info : sharedInfos )
 				if ( info.isVisible() )
-					return info.getSource().equals( source );
+					return info.getSource().equals( source.getSourceAndConverter() );
 			return false;
 		}
 	}
 
-	static class ChannelSource extends RandomAccessibleIntervalSource< ARGBType >
+	interface ChannelSource
+	{
+		SourceAndConverter< ARGBType > getSourceAndConverter();
+	}
+
+	static class DefaultChannelSource extends RandomAccessibleIntervalSource< ARGBType > implements ChannelSource
 	{
 		private final ChannelSourceCoordinator coordinator;
 
-		public ChannelSource(
+		private final SourceAndConverter< ARGBType > soc;
+
+		public DefaultChannelSource(
 				final RandomAccessibleInterval< ARGBType > img,
 				final ChannelSourceCoordinator coordinator,
 				final AffineTransform3D sourceTransform,
@@ -108,6 +114,7 @@ public class VirtualChannels
 		{
 			super( img, new ARGBType(), sourceTransform, name );
 			this.coordinator = coordinator;
+			this.soc = new SourceAndConverter<>( this, new TypeIdentity< >() );
 		}
 
 		@Override
@@ -115,11 +122,19 @@ public class VirtualChannels
 		{
 			return super.isPresent( t ) && coordinator.shouldBePresent( this );
 		}
+
+		@Override
+		public SourceAndConverter< ARGBType > getSourceAndConverter()
+		{
+			return soc;
+		}
 	}
 
-	static class ChannelSource4D extends RandomAccessibleIntervalSource4D< ARGBType >
+	static class ChannelSource4D extends RandomAccessibleIntervalSource4D< ARGBType > implements ChannelSource
 	{
 		private final ChannelSourceCoordinator coordinator;
+
+		private final SourceAndConverter< ARGBType > soc;
 
 		public ChannelSource4D(
 				final RandomAccessibleInterval< ARGBType > img,
@@ -129,12 +144,19 @@ public class VirtualChannels
 		{
 			super( img, new ARGBType(), sourceTransform, name );
 			this.coordinator = coordinator;
+			this.soc = new SourceAndConverter<>( this, new TypeIdentity< >() );
 		}
 
 		@Override
 		public boolean isPresent( final int t )
 		{
 			return super.isPresent( t ) && coordinator.shouldBePresent( this );
+		}
+
+		@Override
+		public SourceAndConverter< ARGBType > getSourceAndConverter()
+		{
+			return soc;
 		}
 	}
 }

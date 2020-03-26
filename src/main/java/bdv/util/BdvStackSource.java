@@ -1,16 +1,15 @@
 package bdv.util;
 
-import java.util.HashSet;
-import java.util.List;
-
 import bdv.tools.brightness.ConverterSetup;
 import bdv.tools.brightness.MinMaxGroup;
 import bdv.tools.brightness.SetupAssignments;
-import bdv.viewer.Source;
+import bdv.viewer.ConverterSetupBounds;
 import bdv.viewer.SourceAndConverter;
-import bdv.viewer.state.SourceState;
-import bdv.viewer.state.ViewerState;
+import java.util.HashSet;
+import java.util.List;
 import net.imglib2.type.numeric.ARGBType;
+
+import static bdv.util.AbstractSource.tryCreateVariable;
 
 public class BdvStackSource< T > extends BdvSource
 {
@@ -28,7 +27,7 @@ public class BdvStackSource< T > extends BdvSource
 			final List< SourceAndConverter< T > > sources )
 	{
 		super( bdv, numTimepoints );
-		this.type = type;
+		this.type = tryCreateVariable( type );
 		this.converterSetups = converterSetups;
 		this.sources = sources;
 	}
@@ -57,20 +56,18 @@ public class BdvStackSource< T > extends BdvSource
 	@Override
 	public void setDisplayRange( final double min, final double max )
 	{
-		final HashSet< MinMaxGroup > groups = new HashSet<>();
-		final SetupAssignments sa = getBdvHandle().getSetupAssignments();
 		for ( final ConverterSetup setup : converterSetups )
-			groups.add( sa.getMinMaxGroup( setup ) );
-		for ( final MinMaxGroup group : groups )
-		{
-			group.getMinBoundedValue().setCurrentValue( min );
-			group.getMaxBoundedValue().setCurrentValue( max );
-		}
+			setup.setDisplayRange( min, max );
 	}
 
 	@Override
 	public void setDisplayRangeBounds( final double min, final double max )
 	{
+		final ConverterSetupBounds bounds = getBdvHandle().getConverterSetups().getBounds();
+		for ( final ConverterSetup setup : converterSetups )
+			bounds.setBounds( setup, new Bounds( min, max ) );
+
+		// TODO: REMOVE
 		final HashSet< MinMaxGroup > groups = new HashSet<>();
 		final SetupAssignments sa = getBdvHandle().getSetupAssignments();
 		for ( final ConverterSetup setup : converterSetups )
@@ -82,30 +79,19 @@ public class BdvStackSource< T > extends BdvSource
 	@Override
 	public void setCurrent()
 	{
-		getBdvHandle().getViewerPanel().getVisibilityAndGrouping().setCurrentSource( sources.get( 0 ).getSpimSource() );
+		getBdvHandle().getViewerPanel().state().setCurrentSource( sources.get( 0 ) );
 	}
 
 	@Override
 	public boolean isCurrent()
 	{
-		final ViewerState state = getBdvHandle().getViewerPanel().getState();
-		final List< SourceState< ? > > ss = state.getSources();
-		final int i = state.getCurrentSource();
-		if ( i >= 0 && i < ss.size() )
-		{
-			final Source< ? > spimSource = ss.get( i ).getSpimSource();
-			for ( final SourceAndConverter< T > source : sources )
-				if ( spimSource.equals( source.getSpimSource() ) )
-					return true;
-		}
-		return false;
+		return sources.contains( getBdvHandle().getViewerPanel().state().getCurrentSource() );
 	}
 
 	@Override
 	public void setActive( final boolean isActive )
 	{
-		for ( final SourceAndConverter< T > source : sources )
-			getBdvHandle().getViewerPanel().getVisibilityAndGrouping().setSourceActive( source.getSpimSource(), isActive );
+		getBdvHandle().getViewerPanel().state().setSourcesActive( sources, isActive );
 	}
 
 //	public T getType()

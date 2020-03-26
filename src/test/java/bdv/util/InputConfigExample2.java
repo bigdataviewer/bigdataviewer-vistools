@@ -25,7 +25,8 @@ public class InputConfigExample2
 		try
 		{
 			/* load input config from file */
-			conf = new InputTriggerConfig( YamlConfigIO.read( "src/test/resources/bdvkeyconfig.yaml" ) );
+			final String config = InputConfigExample2.class.getResource( "/bdvkeyconfig.yaml" ).getFile();
+			conf = new InputTriggerConfig( YamlConfigIO.read( config ) );
 		}
 		catch ( IllegalArgumentException | IOException e )
 		{

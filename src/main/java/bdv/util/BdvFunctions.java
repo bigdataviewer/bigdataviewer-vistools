@@ -260,7 +260,7 @@ public class BdvFunctions
 		final int numTimepoints = 1;
 		handle.add( converterSetups, sources, numTimepoints );
 
-		final PlaceHolderOverlayInfo info = new PlaceHolderOverlayInfo( handle.getViewerPanel(), source, setup );
+		final PlaceHolderOverlayInfo info = new PlaceHolderOverlayInfo( handle.getViewerPanel(), soc, setup );
 		final PointsOverlay overlay = new PointsOverlay();
 		overlay.setOverlayInfo( info );
 		overlay.setPoints( points );
@@ -302,7 +302,7 @@ public class BdvFunctions
 		final int numTimepoints = 1;
 		handle.add( converterSetups, sources, numTimepoints );
 
-		final PlaceHolderOverlayInfo info = new PlaceHolderOverlayInfo( handle.getViewerPanel(), source, setup );
+		final PlaceHolderOverlayInfo info = new PlaceHolderOverlayInfo( handle.getViewerPanel(), soc, setup );
 		overlay.setOverlayInfo( info );
 		overlay.setSourceTransform( sourceTransform );
 		handle.getViewerPanel().getDisplay().addOverlayRenderer( overlay );
@@ -313,12 +313,19 @@ public class BdvFunctions
 	}
 
 	// TODO: move to BdvFunctionUtils
+
+	/**
+	 * @deprecated Ok to use for now, but shouldn't be required in the future.
+	 */
 	public static int getUnusedSetupId( final BigDataViewer bdv )
 	{
 		return getUnusedSetupId( bdv.getSetupAssignments() );
 	}
 
 	// TODO: move to BdvFunctionUtils
+	/**
+	 * @deprecated Ok to use for now, but shouldn't be required in the future.
+	 */
 	public static synchronized int getUnusedSetupId( final SetupAssignments setupAssignments )
 	{
 		return SetupAssignments.getUnusedSetupId( setupAssignments );
@@ -348,7 +355,8 @@ public class BdvFunctions
 
 		return new TransformedRealBoxSelectionDialog(
 				handle.getViewerPanel(),
-				handle.getSetupAssignments(),
+				handle.getConverterSetups(),
+				handle.getUnusedSetupId(),
 				keyConfig,
 				handle.getTriggerbindings(),
 				boxTransform,
@@ -382,7 +390,8 @@ public class BdvFunctions
 
 		return new TransformedBoxSelectionDialog(
 				handle.getViewerPanel(),
-				handle.getSetupAssignments(),
+				handle.getConverterSetups(),
+				handle.getUnusedSetupId(),
 				keyConfig,
 				handle.getTriggerbindings(),
 				boxTransform,
