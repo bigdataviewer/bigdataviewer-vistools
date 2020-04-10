@@ -1,9 +1,12 @@
 package bdv.util.volatiles;
 
+import java.util.function.Predicate;
+
 import bdv.cache.CacheControl;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
+import net.imglib2.cache.Invalidate;
 import net.imglib2.cache.img.CachedCellImg;
 
 /**
@@ -23,7 +26,7 @@ import net.imglib2.cache.img.CachedCellImg;
  *
  * @author Tobias Pietzsch
  */
-public class VolatileViewData< T, V extends Volatile< T > >
+public class VolatileViewData< T, V extends Volatile< T > > implements Invalidate< Long >
 {
 	private final RandomAccessible< V > img;
 
@@ -33,16 +36,20 @@ public class VolatileViewData< T, V extends Volatile< T > >
 
 	private final V volatileType;
 
+	private final Invalidate< Long > invalidate;
+
 	public VolatileViewData(
 			final RandomAccessible< V > img,
 			final CacheControl cacheControl,
 			final T type,
-			final V volatileType )
+			final V volatileType,
+			final Invalidate< Long > invalidate )
 	{
 		this.img = img;
 		this.cacheControl = cacheControl;
 		this.type = type;
 		this.volatileType = volatileType;
+		this.invalidate = invalidate;
 	}
 
 	/**
@@ -85,5 +92,28 @@ public class VolatileViewData< T, V extends Volatile< T > >
 	public V getVolatileType()
 	{
 		return volatileType;
+	}
+
+	public Invalidate< Long > getInvalidate()
+	{
+		return this.invalidate;
+	}
+
+	@Override
+	public void invalidate( Long key )
+	{
+		this.invalidate.invalidate( key );
+	}
+
+	@Override
+	public void invalidateIf( long parallelismThreshold, Predicate< Long > condition )
+	{
+		this.invalidate.invalidateIf( parallelismThreshold, condition );
+	}
+
+	@Override
+	public void invalidateAll( long parallelismThreshold )
+	{
+		this.invalidate.invalidateAll( parallelismThreshold );
 	}
 }

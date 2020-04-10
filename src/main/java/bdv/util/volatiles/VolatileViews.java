@@ -110,7 +110,8 @@ public class VolatileViews
 					new IntervalView<>( sourceData.getImg(), view ),
 					sourceData.getCacheControl(),
 					sourceData.getType(),
-					sourceData.getVolatileType() );
+					sourceData.getVolatileType(),
+					sourceData.getInvalidate() );
 		}
 		else if ( rai instanceof MixedTransformView )
 		{
@@ -120,7 +121,8 @@ public class VolatileViews
 					new MixedTransformView<>( sourceData.getImg(), view.getTransformToSource() ),
 					sourceData.getCacheControl(),
 					sourceData.getType(),
-					sourceData.getVolatileType() );
+					sourceData.getVolatileType(),
+					sourceData.getInvalidate() );
 		}
 		else if ( rai instanceof WrappedImg )
 		{
@@ -151,23 +153,22 @@ public class VolatileViews
 		if ( hints == null )
 			hints = new CacheHints( LoadingStrategy.VOLATILE, 0, false );
 		@SuppressWarnings( "rawtypes" )
-		final VolatileCachedCellImg< V, ? > img = createVolatileCachedCellImg( grid, vtype, dirty, ( Cache ) cache, queue, hints );
+		final VolatileCache< Long, Cell< ? extends VolatileArrayDataAccess< ? > > > volatileCache = createVolatileCache( grid, vtype, dirty, ( Cache ) cache, queue );
 
-		return new VolatileViewData<>( img, queue, type, vtype );
+		final VolatileCachedCellImg< V, ? extends VolatileArrayDataAccess< ? > > volatileImg = new VolatileCachedCellImg<>( grid, vtype, hints, volatileCache.unchecked()::get );
+
+		return new VolatileViewData<>( volatileImg, queue, type, vtype, volatileCache );
 	}
 
-	private static < T extends NativeType< T >, A extends VolatileArrayDataAccess< A > > VolatileCachedCellImg< T, A > createVolatileCachedCellImg(
+	private static < T extends NativeType< T >, A extends VolatileArrayDataAccess< A > > VolatileCache< Long, Cell< A > > createVolatileCache(
 			final CellGrid grid,
 			final T type,
 			final boolean dirty,
 			final Cache< Long, Cell< A > > cache,
-			final SharedQueue queue,
-			final CacheHints hints )
+			final SharedQueue queue )
 	{
 		final CreateInvalid< Long, Cell< A > > createInvalid = CreateInvalidVolatileCell.get( grid, type, dirty );
-		final VolatileCache< Long, Cell< A > > volatileCache = new WeakRefVolatileCache<>( cache, queue, createInvalid );
-		final VolatileCachedCellImg< T, A > volatileImg = new VolatileCachedCellImg<>( grid, type, hints, volatileCache.unchecked()::get );
-		return volatileImg;
+		return new WeakRefVolatileCache<>( cache, queue, createInvalid );
 	}
 }
 
