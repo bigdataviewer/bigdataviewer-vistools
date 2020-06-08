@@ -90,6 +90,7 @@ public class BdvHandleFrame extends BdvHandle
 				progressWriter,
 				viewerOptions.inputTriggerConfig( inputTriggerConfig ) );
 		viewer = bdv.getViewer();
+		cards = bdv.getViewerFrame().getCardPanel();
 		setupAssignments = bdv.getSetupAssignments();
 		setups = bdv.getConverterSetups();
 
