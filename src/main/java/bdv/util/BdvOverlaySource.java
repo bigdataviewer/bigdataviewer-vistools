@@ -31,7 +31,7 @@ package bdv.util;
 import java.util.Collections;
 
 import net.imglib2.type.numeric.ARGBType;
-import net.imglib2.ui.OverlayRenderer;
+import bdv.viewer.OverlayRenderer;
 
 import bdv.tools.brightness.MinMaxGroup;
 import bdv.tools.brightness.SetupAssignments;

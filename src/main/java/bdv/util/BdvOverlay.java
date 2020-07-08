@@ -36,7 +36,7 @@ import bdv.tools.brightness.ConverterSetup;
 import bdv.viewer.Source;
 import net.imglib2.realtransform.AffineTransform2D;
 import net.imglib2.realtransform.AffineTransform3D;
-import net.imglib2.ui.OverlayRenderer;
+import bdv.viewer.OverlayRenderer;
 
 /**
  * An overlay that can be shown with

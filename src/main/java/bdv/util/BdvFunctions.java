@@ -293,7 +293,7 @@ public class BdvFunctions
 		overlay.setOverlayInfo( info );
 		overlay.setPoints( points );
 		overlay.setSourceTransform( sourceTransform );
-		handle.getViewerPanel().getDisplay().addOverlayRenderer( overlay );
+		handle.getViewerPanel().getDisplay().overlays().add( overlay );
 
 		final BdvPointsSource bdvSource = new BdvPointsSource( handle, numTimepoints, setup, soc, info, overlay );
 		handle.addBdvSource( bdvSource );
@@ -333,7 +333,7 @@ public class BdvFunctions
 		final PlaceHolderOverlayInfo info = new PlaceHolderOverlayInfo( handle.getViewerPanel(), soc, setup );
 		overlay.setOverlayInfo( info );
 		overlay.setSourceTransform( sourceTransform );
-		handle.getViewerPanel().getDisplay().addOverlayRenderer( overlay );
+		handle.getViewerPanel().getDisplay().overlays().add( overlay );
 
 		final BdvOverlaySource< O > bdvSource = new BdvOverlaySource<>( handle, numTimepoints, setup, soc, info, overlay );
 		handle.addBdvSource( bdvSource );

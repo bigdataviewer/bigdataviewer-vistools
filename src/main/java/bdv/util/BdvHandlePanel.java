@@ -43,11 +43,10 @@ import javax.swing.SwingUtilities;
 
 import org.scijava.ui.behaviour.MouseAndKeyHandler;
 import org.scijava.ui.behaviour.io.InputTriggerConfig;
+import org.scijava.ui.behaviour.util.Behaviours;
 import org.scijava.ui.behaviour.util.InputActionBindings;
 import org.scijava.ui.behaviour.util.TriggerBehaviourBindings;
 
-import bdv.BehaviourTransformEventHandler;
-import bdv.BehaviourTransformEventHandlerFactory;
 import bdv.BigDataViewer;
 import bdv.BigDataViewerActions;
 import bdv.cache.CacheControl.CacheControls;
@@ -64,9 +63,7 @@ import bdv.viewer.SourceAndConverter;
 import bdv.viewer.ViewerOptions;
 import bdv.viewer.ViewerPanel;
 import bdv.viewer.ViewerPanel.AlignPlane;
-import net.imglib2.realtransform.AffineTransform3D;
-import net.imglib2.ui.TransformEventHandler;
-import net.imglib2.ui.TransformEventHandlerFactory;
+import bdv.TransformEventHandler;
 
 import static bdv.BigDataViewerActions.COLLAPSE_CARDS;
 import static bdv.BigDataViewerActions.COLLAPSE_CARDS_KEYS;
@@ -95,10 +92,6 @@ public class BdvHandlePanel extends BdvHandle
 
 		final ViewerOptions viewerOptions = options.values.getViewerOptions();
 		final InputTriggerConfig inputTriggerConfig = BigDataViewer.getInputTriggerConfig( viewerOptions );
-
-		final TransformEventHandlerFactory< AffineTransform3D > thf = viewerOptions.values.getTransformEventHandlerFactory();
-		if ( thf instanceof BehaviourTransformEventHandlerFactory )
-			( ( BehaviourTransformEventHandlerFactory< ? > ) thf ).setConfig( inputTriggerConfig );
 
 		cacheControls = new CacheControls();
 
@@ -132,9 +125,12 @@ public class BdvHandlePanel extends BdvHandle
 		mouseAndKeyHandler.setBehaviourMap( triggerbindings.getConcatenatedBehaviourMap() );
 		viewer.getDisplay().addHandler( mouseAndKeyHandler );
 
-		final TransformEventHandler< ? > tfHandler = viewer.getDisplay().getTransformEventHandler();
-		if ( tfHandler instanceof BehaviourTransformEventHandler )
-			( ( BehaviourTransformEventHandler< ? > ) tfHandler ).install( triggerbindings );
+		// TODO: should be a field?
+		final Behaviours transformBehaviours = new Behaviours( inputTriggerConfig, "bdv" );
+		transformBehaviours.install( triggerbindings, "transform" );
+
+		final TransformEventHandler tfHandler = viewer.getTransformEventHandler();
+		tfHandler.install( transformBehaviours );
 
 		manualTransformationEditor = new ManualTransformationEditor( viewer, keybindings );
 

@@ -28,18 +28,19 @@
  */
 package bdv.util;
 
+import bdv.TransformEventHandler2D;
+import bdv.TransformEventHandler3D;
+import bdv.TransformEventHandlerFactory;
+import bdv.viewer.render.AccumulateProjectorARGB;
 import org.scijava.ui.behaviour.io.InputTriggerConfig;
 
-import bdv.BehaviourTransformEventHandler3D;
 import bdv.viewer.ViewerOptions;
 import bdv.viewer.ViewerPanel;
 import bdv.viewer.render.AccumulateProjector;
-import bdv.viewer.render.AccumulateProjectorARGB;
 import bdv.viewer.render.AccumulateProjectorFactory;
 import bdv.viewer.render.MultiResolutionRenderer;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.ARGBType;
-import net.imglib2.ui.TransformEventHandlerFactory;
 
 /**
  * Optional parameters for {@link BdvFunctions}.
@@ -102,19 +103,6 @@ public class BdvOptions
 	}
 
 	/**
-	 * Set whether to used double buffered rendering.
-	 *
-	 * @param d
-	 *            Whether to use double buffered rendering.
-	 * @see MultiResolutionRenderer
-	 */
-	public BdvOptions doubleBuffered( final boolean d )
-	{
-		values.doubleBuffered = d;
-		return this;
-	}
-
-	/**
 	 * Set how many threads to use for rendering.
 	 *
 	 * @param n
@@ -139,7 +127,7 @@ public class BdvOptions
 		return this;
 	}
 
-	public BdvOptions transformEventHandlerFactory( final TransformEventHandlerFactory< AffineTransform3D > f )
+	public BdvOptions transformEventHandlerFactory( final TransformEventHandlerFactory f )
 	{
 		values.transformEventHandlerFactory = f;
 		return this;
@@ -223,7 +211,7 @@ public class BdvOptions
 	public BdvOptions is2D()
 	{
 		values.is2D = true;
-		transformEventHandlerFactory( BehaviourTransformEventHandlerPlanar.factory() );
+		transformEventHandlerFactory( TransformEventHandler2D::new );
 		return this;
 	}
 
@@ -268,13 +256,11 @@ public class BdvOptions
 
 		private long targetRenderNanos = 30 * 1000000l;
 
-		private boolean doubleBuffered = true;
-
 		private int numRenderingThreads = 3;
 
 		private int numSourceGroups = 10;
 
-		private TransformEventHandlerFactory< AffineTransform3D > transformEventHandlerFactory = BehaviourTransformEventHandler3D.factory();
+		private TransformEventHandlerFactory transformEventHandlerFactory = TransformEventHandler3D::new;
 
 		private AccumulateProjectorFactory< ARGBType > accumulateProjectorFactory = AccumulateProjectorARGB.factory;
 
@@ -301,7 +287,6 @@ public class BdvOptions
 					.preferredSize( width, height )
 					.screenScales( screenScales )
 					.targetRenderNanos( targetRenderNanos )
-					.doubleBuffered( doubleBuffered )
 					.numRenderingThreads( numRenderingThreads )
 					.numSourceGroups( numSourceGroups )
 					.transformEventHandlerFactory( transformEventHandlerFactory )
@@ -321,7 +306,6 @@ public class BdvOptions
 			final ViewerOptions o = ViewerOptions.options()
 					.screenScales( screenScales )
 					.targetRenderNanos( targetRenderNanos )
-					.doubleBuffered( doubleBuffered )
 					.numRenderingThreads( numRenderingThreads )
 					.numSourceGroups( numSourceGroups )
 					.transformEventHandlerFactory( transformEventHandlerFactory )
