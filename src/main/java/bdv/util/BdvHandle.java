@@ -47,8 +47,8 @@ import bdv.viewer.SourceAndConverter;
 import bdv.viewer.TimePointListener;
 import bdv.viewer.ViewerPanel;
 import net.imglib2.realtransform.AffineTransform3D;
-import net.imglib2.ui.OverlayRenderer;
-import net.imglib2.ui.TransformListener;
+import bdv.viewer.OverlayRenderer;
+import bdv.viewer.TransformListener;
 
 /**
  * Represents a BigDataViewer frame or panel and can be used to get to the bdv
@@ -251,7 +251,7 @@ public abstract class BdvHandle implements Bdv
 
 		if ( overlays != null )
 			for ( final OverlayRenderer o : overlays )
-				viewer.getDisplay().removeOverlayRenderer( o );
+				viewer.getDisplay().overlays().remove( o );
 
 		if ( sources != null )
 			viewer.state().removeSources( sources );

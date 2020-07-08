@@ -37,7 +37,7 @@ import bdv.viewer.TimePointListener;
 import bdv.viewer.ViewerPanel;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.ARGBType;
-import net.imglib2.ui.TransformListener;
+import bdv.viewer.TransformListener;
 import org.scijava.listeners.Listeners;
 
 public final class PlaceHolderOverlayInfo implements TransformListener< AffineTransform3D >, TimePointListener, ViewerStateChangeListener

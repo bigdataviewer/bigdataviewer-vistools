@@ -119,6 +119,9 @@
 		<license.copyrightOwners>BigDataViewer developers.</license.copyrightOwners>
 		<license.projectName>BigDataViewer quick visualization API.</license.projectName>
 
+		<enforcer.skip>true</enforcer.skip>
+		<bigdataviewer-core.version>10.0.0-SNAPSHOT</bigdataviewer-core.version>
+
 		<!-- NB: Deploy releases to the SciJava Maven repository. -->
 		<releaseProfiles>deploy-to-scijava</releaseProfiles>
 	</properties>
@@ -146,10 +149,6 @@
 		<dependency>
 			<groupId>net.imglib2</groupId>
 			<artifactId>imglib2-realtransform</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.imglib2</groupId>
-			<artifactId>imglib2-ui</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.scijava</groupId>
