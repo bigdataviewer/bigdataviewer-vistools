@@ -52,7 +52,7 @@ public class BdvHandlePanelGarbageCollectionTest
 	}
 
 	@Test( expected = OutOfMemoryError.class )
-	public void testMemoryExaustion()
+	public void testMemoryExhaustion()
 	{
 		assumeFalse( GraphicsEnvironment.isHeadless() );
 
