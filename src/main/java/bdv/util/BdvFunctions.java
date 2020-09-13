@@ -40,6 +40,7 @@ import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.converter.Converter;
+import net.imglib2.display.ColorConverter;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.realtransform.RealViews;
 import net.imglib2.type.Type;
@@ -212,6 +213,19 @@ public class BdvFunctions
 	}
 
 	public static < T > BdvStackSource< T > show(
+			final SourceAndConverter< T > sourceAndConverter )
+	{
+		return show( sourceAndConverter, 1, Bdv.options() );
+	}
+
+	public static < T > BdvStackSource< T > show(
+			final SourceAndConverter< T > sourceAndConverter,
+			final int numTimePoints )
+	{
+		return show( sourceAndConverter, numTimePoints, Bdv.options() );
+	}
+
+	public static < T > BdvStackSource< T > show(
 			final Source< T > source,
 			final int numTimePoints,
 			final BdvOptions options )
@@ -222,6 +236,23 @@ public class BdvFunctions
 				: bdv.getBdvHandle();
 		@SuppressWarnings( { "unchecked", "rawtypes" } )
 		final BdvStackSource< T > stackSource = addSource( handle, ( Source ) source, numTimePoints );
+		return stackSource;
+	}
+
+	public static < T > BdvStackSource< T > show(
+			final SourceAndConverter< T > sourceAndConverter,
+			final int numTimePoints,
+			final BdvOptions options )
+	{
+		if ( ! ( sourceAndConverter.getConverter() instanceof ColorConverter ) )
+			throw new AssertionError( "The Converter in the SourceAndConverter must be a ColorConverter" );
+
+		final Bdv bdv = options.values.addTo();
+		final BdvHandle handle = ( bdv == null )
+				? new BdvHandleFrame( options )
+				: bdv.getBdvHandle();
+		@SuppressWarnings( { "unchecked", "rawtypes" } )
+		final BdvStackSource< T > stackSource = addSourceAndConverter( handle, sourceAndConverter, numTimePoints );
 		return stackSource;
 	}
 
@@ -610,6 +641,36 @@ public class BdvFunctions
 		final List< ConverterSetup > converterSetups = new ArrayList<>();
 		final List< SourceAndConverter< T > > sources = new ArrayList<>();
 		addSourceToListsGenericType( source, handle.getUnusedSetupId(), converterSetups, sources );
+		handle.add( converterSetups, sources, numTimepoints );
+		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, numTimepoints, type, converterSetups, sources );
+		handle.addBdvSource( bdvSource );
+		return bdvSource;
+	}
+
+	/**
+	 * Add the given {@link SourceAndConverter} to the given {@link BdvHandle} as a new
+	 * {@link BdvStackSource}.
+	 *
+	 * @param handle
+	 *            handle to add the {@code source} to.
+	 * @param soc
+	 *            sourceAndConverter to add.
+	 * @param numTimepoints
+	 *            the number of timepoints of the source.
+	 * @return a new {@link BdvStackSource} handle for the newly added
+	 *         {@code source}.
+	 */
+	@SuppressWarnings( "rawtypes" )
+	private static < T > BdvStackSource< T > addSourceAndConverter(
+			final BdvHandle handle,
+			final SourceAndConverter< T > soc,
+			final int numTimepoints )
+	{
+		final T type = soc.getSpimSource().getType();
+		final List< ConverterSetup > converterSetups = new ArrayList<>();
+		final List< SourceAndConverter< T > > sources = new ArrayList<>();
+		converterSetups.add( BigDataViewer.createConverterSetup( soc, handle.getUnusedSetupId() ) );
+		sources.add( soc );
 		handle.add( converterSetups, sources, numTimepoints );
 		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, numTimepoints, type, converterSetups, sources );
 		handle.addBdvSource( bdvSource );
