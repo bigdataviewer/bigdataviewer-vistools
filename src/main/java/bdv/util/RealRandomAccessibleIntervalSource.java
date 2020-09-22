@@ -55,7 +55,18 @@ public class RealRandomAccessibleIntervalSource< T extends Type< T > > extends R
 			final AffineTransform3D sourceTransform,
 			final String name )
 	{
-		super( accessible, type, name );
+		this( accessible, interval, type, sourceTransform, name, false );
+	}
+
+	public RealRandomAccessibleIntervalSource(
+			final RealRandomAccessible< T > accessible,
+			final Interval interval,
+			final T type,
+			final AffineTransform3D sourceTransform,
+			final String name,
+			final boolean doBoundingBoxIntersectionCheck )
+	{
+		super( accessible, type, name, null, doBoundingBoxIntersectionCheck );
 		this.interval = interval;
 		this.sourceTransform = sourceTransform;
 	}

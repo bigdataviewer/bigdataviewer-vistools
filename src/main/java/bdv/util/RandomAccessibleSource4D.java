@@ -56,13 +56,24 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > extends Abst
 
 	private final AffineTransform3D sourceTransform;
 
+	private final boolean doBoundingBoxIntersectionCheck;
+
 	public RandomAccessibleSource4D(
 			final RandomAccessible< T > img,
 			final Interval interval,
 			final T type,
 			final String name )
 	{
-		this( img, interval, type, new AffineTransform3D(), name );
+		this( img, interval, type, new AffineTransform3D(), name, false );
+	}
+	public RandomAccessibleSource4D(
+			final RandomAccessible< T > img,
+			final Interval interval,
+			final T type,
+			final AffineTransform3D sourceTransform,
+			final String name )
+	{
+		this( img, interval, type, sourceTransform, name, false );
 	}
 
 	public RandomAccessibleSource4D(
@@ -70,7 +81,8 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > extends Abst
 			final Interval interval,
 			final T type,
 			final AffineTransform3D sourceTransform,
-			final String name )
+			final String name,
+			final boolean doBoundingBoxIntersectionCheck )
 	{
 		super( type, name );
 		this.source = img;
@@ -79,8 +91,15 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > extends Abst
 				interval.min( 0 ), interval.min( 1 ), interval.min( 2 ),
 				interval.max( 0 ), interval.max( 1 ), interval.max( 2 ) );
 		this.sourceTransform = sourceTransform;
+		this.doBoundingBoxIntersectionCheck = doBoundingBoxIntersectionCheck;
 		currentInterpolatedSources = new RealRandomAccessible[ Interpolation.values().length ];
 		loadTimepoint( 0 );
+	}
+
+	@Override
+	public boolean doBoundingBoxIntersectionCheck()
+	{
+		return doBoundingBoxIntersectionCheck;
 	}
 
 	private void loadTimepoint( final int timepointIndex )
