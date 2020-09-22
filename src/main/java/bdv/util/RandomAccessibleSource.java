@@ -74,6 +74,12 @@ public class RandomAccessibleSource< T extends NumericType< T > > extends Abstra
 	}
 
 	@Override
+	public boolean doBoundingBoxIntersectionCheck()
+	{
+		return false;
+	}
+
+	@Override
 	public RandomAccessibleInterval< T > getSource( final int t, final int level )
 	{
 		return Views.interval( source, interval );
