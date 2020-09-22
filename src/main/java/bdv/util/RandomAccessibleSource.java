@@ -47,6 +47,8 @@ public class RandomAccessibleSource< T extends NumericType< T > > extends Abstra
 
 	private final AffineTransform3D sourceTransform;
 
+	private final boolean doBoundingBoxIntersectionCheck;
+
 	public RandomAccessibleSource(
 			final RandomAccessible< T > img,
 			final Interval interval,
@@ -63,10 +65,22 @@ public class RandomAccessibleSource< T extends NumericType< T > > extends Abstra
 			final AffineTransform3D sourceTransform,
 			final String name )
 	{
+		this( img, interval, type, sourceTransform, name, true );
+	}
+
+	public RandomAccessibleSource(
+			final RandomAccessible< T > img,
+			final Interval interval,
+			final T type,
+			final AffineTransform3D sourceTransform,
+			final String name,
+			final boolean doBoundingBoxIntersectionCheck )
+	{
 		super( type, name );
 		this.source = img;
 		this.interval = interval;
 		this.sourceTransform = sourceTransform;
+		this.doBoundingBoxIntersectionCheck = doBoundingBoxIntersectionCheck;
 		interpolatedSources = new RealRandomAccessible[ Interpolation.values().length ];
 		for ( final Interpolation method : Interpolation.values() )
 			interpolatedSources[ method.ordinal() ] = Views.interpolate( source, interpolators.get( method ) );
@@ -76,7 +90,7 @@ public class RandomAccessibleSource< T extends NumericType< T > > extends Abstra
 	@Override
 	public boolean doBoundingBoxIntersectionCheck()
 	{
-		return false;
+		return doBoundingBoxIntersectionCheck;
 	}
 
 	@Override
