@@ -50,12 +50,23 @@ public abstract class AbstractSource< T extends NumericType< T > > implements So
 
 	protected final DefaultInterpolators< T > interpolators;
 
-	public AbstractSource( final T type, final String name, final VoxelDimensions voxelDimensions )
+	private final boolean doBoundingBoxCulling;
+
+	public AbstractSource( final T type, final String name, final VoxelDimensions voxelDimensions, final boolean doBoundingBoxCulling )
 	{
 		this.type = tryCreateVariable( type );
 		this.name = name;
 		this.voxelDimensions = voxelDimensions;
 		interpolators = new DefaultInterpolators<>();
+		this.doBoundingBoxCulling = doBoundingBoxCulling;
+	}
+
+	public AbstractSource( final T type, final String name, final VoxelDimensions voxelDimensions )
+	{
+		/**
+		 * Do bounding box culling by default
+		 */
+		this( type, name, voxelDimensions, true );
 	}
 
 	public AbstractSource( final T type, final String name )
@@ -65,7 +76,12 @@ public abstract class AbstractSource< T extends NumericType< T > > implements So
 		 * DefaultVoxelDimensionsimplementation will return the same result 
 		 * for spacing and units regardless of the number of dimensions passed. 
 		 */
-		this( type, name, new DefaultVoxelDimensions( -1 ));
+		this( type, name, new DefaultVoxelDimensions( -1 ), true );
+	}
+
+	public AbstractSource( final T type, final String name, final boolean doBoundingBoxCulling )
+	{
+		this( type, name, new DefaultVoxelDimensions( -1 ), doBoundingBoxCulling );
 	}
 
 	public AbstractSource( final Supplier< T > typeSupplier, final String name )
@@ -107,6 +123,12 @@ public abstract class AbstractSource< T extends NumericType< T > > implements So
 	public int getNumMipmapLevels()
 	{
 		return 1;
+	}
+
+	@Override
+	public boolean doBoundingBoxCulling()
+	{
+		return doBoundingBoxCulling;
 	}
 
 	static < T > T tryCreateVariable( final T t )

@@ -47,8 +47,6 @@ public class RandomAccessibleSource< T extends NumericType< T > > extends Abstra
 
 	private final AffineTransform3D sourceTransform;
 
-	private final boolean doBoundingBoxCulling;
-
 	public RandomAccessibleSource(
 			final RandomAccessible< T > img,
 			final Interval interval,
@@ -76,21 +74,14 @@ public class RandomAccessibleSource< T extends NumericType< T > > extends Abstra
 			final String name,
 			final boolean doBoundingBoxCulling )
 	{
-		super( type, name );
+		super( type, name, doBoundingBoxCulling );
 		this.source = img;
 		this.interval = interval;
 		this.sourceTransform = sourceTransform;
-		this.doBoundingBoxCulling = doBoundingBoxCulling;
 		interpolatedSources = new RealRandomAccessible[ Interpolation.values().length ];
 		for ( final Interpolation method : Interpolation.values() )
 			interpolatedSources[ method.ordinal() ] = Views.interpolate( source, interpolators.get( method ) );
 
-	}
-
-	@Override
-	public boolean doBoundingBoxCulling()
-	{
-		return doBoundingBoxCulling;
 	}
 
 	@Override

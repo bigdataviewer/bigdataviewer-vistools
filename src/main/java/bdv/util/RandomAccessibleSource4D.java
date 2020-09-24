@@ -56,8 +56,6 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > extends Abst
 
 	private final AffineTransform3D sourceTransform;
 
-	private final boolean doBoundingBoxCulling;
-
 	public RandomAccessibleSource4D(
 			final RandomAccessible< T > img,
 			final Interval interval,
@@ -84,22 +82,15 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > extends Abst
 			final String name,
 			final boolean doBoundingBoxCulling )
 	{
-		super( type, name );
+		super( type, name, doBoundingBoxCulling );
 		this.source = img;
 		this.interval = interval;
 		this.timeSliceInterval = Intervals.createMinMax(
 				interval.min( 0 ), interval.min( 1 ), interval.min( 2 ),
 				interval.max( 0 ), interval.max( 1 ), interval.max( 2 ) );
 		this.sourceTransform = sourceTransform;
-		this.doBoundingBoxCulling = doBoundingBoxCulling;
 		currentInterpolatedSources = new RealRandomAccessible[ Interpolation.values().length ];
 		loadTimepoint( 0 );
-	}
-
-	@Override
-	public boolean doBoundingBoxCulling()
-	{
-		return doBoundingBoxCulling;
 	}
 
 	private void loadTimepoint( final int timepointIndex )

@@ -28,6 +28,7 @@
  */
 package bdv.util;
 
+import mpicbg.spim.data.sequence.DefaultVoxelDimensions;
 import net.imglib2.Interval;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.realtransform.AffineTransform3D;
@@ -66,7 +67,7 @@ public class RealRandomAccessibleIntervalSource< T extends Type< T > > extends R
 			final String name,
 			final boolean doBoundingBoxIntersectionCheck )
 	{
-		super( accessible, type, name, null, doBoundingBoxIntersectionCheck );
+		super( accessible, type, name, new DefaultVoxelDimensions( -1 ), doBoundingBoxIntersectionCheck );
 		this.interval = interval;
 		this.sourceTransform = sourceTransform;
 	}
