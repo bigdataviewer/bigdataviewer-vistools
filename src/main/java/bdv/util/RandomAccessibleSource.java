@@ -55,7 +55,7 @@ public class RandomAccessibleSource< T extends NumericType< T > > extends Abstra
 			final T type,
 			final String name )
 	{
-		this( img, interval, type, new AffineTransform3D(), name );
+		this( img, interval, type, new AffineTransform3D(), name, false );
 	}
 
 	public RandomAccessibleSource(
@@ -65,7 +65,7 @@ public class RandomAccessibleSource< T extends NumericType< T > > extends Abstra
 			final AffineTransform3D sourceTransform,
 			final String name )
 	{
-		this( img, interval, type, sourceTransform, name, true );
+		this( img, interval, type, sourceTransform, name, false );
 	}
 
 	public RandomAccessibleSource(

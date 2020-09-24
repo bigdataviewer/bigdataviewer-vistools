@@ -45,7 +45,7 @@ public class RealRandomAccessibleIntervalSource< T extends Type< T > > extends R
 			final T type,
 			final String name )
 	{
-		this( accessible, interval, type, new AffineTransform3D(), name );
+		this( accessible, interval, type, new AffineTransform3D(), name, false );
 	}
 
 	public RealRandomAccessibleIntervalSource(
