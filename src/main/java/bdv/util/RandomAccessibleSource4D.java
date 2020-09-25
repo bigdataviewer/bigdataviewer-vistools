@@ -62,9 +62,8 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > extends Abst
 			final T type,
 			final String name )
 	{
-		this( img, interval, type, new AffineTransform3D(), name );
+		this( img, interval, type, new AffineTransform3D(), name, false );
 	}
-
 	public RandomAccessibleSource4D(
 			final RandomAccessible< T > img,
 			final Interval interval,
@@ -72,7 +71,18 @@ public class RandomAccessibleSource4D< T extends NumericType< T > > extends Abst
 			final AffineTransform3D sourceTransform,
 			final String name )
 	{
-		super( type, name );
+		this( img, interval, type, sourceTransform, name, false );
+	}
+
+	public RandomAccessibleSource4D(
+			final RandomAccessible< T > img,
+			final Interval interval,
+			final T type,
+			final AffineTransform3D sourceTransform,
+			final String name,
+			final boolean doBoundingBoxCulling )
+	{
+		super( type, name, doBoundingBoxCulling );
 		this.source = img;
 		this.interval = interval;
 		this.timeSliceInterval = Intervals.createMinMax(
