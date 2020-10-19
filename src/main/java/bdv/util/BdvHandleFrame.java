@@ -119,6 +119,7 @@ public class BdvHandleFrame extends BdvHandle
 				viewerOptions.inputTriggerConfig( inputTriggerConfig ) );
 		viewer = bdv.getViewer();
 		cards = bdv.getViewerFrame().getCardPanel();
+		splitPanel = bdv.getViewerFrame().getSplitPanel();
 		setupAssignments = bdv.getSetupAssignments();
 		setups = bdv.getConverterSetups();
 
