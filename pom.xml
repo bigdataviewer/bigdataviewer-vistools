@@ -11,7 +11,7 @@
 
 	<groupId>sc.fiji</groupId>
 	<artifactId>bigdataviewer-vistools</artifactId>
-	<version>1.0.0-beta-24-SNAPSHOT</version>
+	<version>1.0.0-beta-25-SNAPSHOT</version>
 
 	<name>BigDataViewer Visualization Tools</name>
 	<description>Helpers to use BigDataViewer as quick visualization in other projects</description>
