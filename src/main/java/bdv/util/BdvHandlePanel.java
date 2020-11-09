@@ -43,6 +43,7 @@ import javax.swing.SwingUtilities;
 
 import org.scijava.ui.behaviour.MouseAndKeyHandler;
 import org.scijava.ui.behaviour.io.InputTriggerConfig;
+import org.scijava.ui.behaviour.util.Actions;
 import org.scijava.ui.behaviour.util.Behaviours;
 import org.scijava.ui.behaviour.util.InputActionBindings;
 import org.scijava.ui.behaviour.util.TriggerBehaviourBindings;
@@ -62,7 +63,6 @@ import bdv.viewer.NavigationActions;
 import bdv.viewer.SourceAndConverter;
 import bdv.viewer.ViewerOptions;
 import bdv.viewer.ViewerPanel;
-import bdv.viewer.ViewerPanel.AlignPlane;
 import bdv.TransformEventHandler;
 
 import static bdv.BigDataViewerActions.COLLAPSE_CARDS;
@@ -138,26 +138,20 @@ public class BdvHandlePanel extends BdvHandle
 		bookmarksEditor = new BookmarksEditor( viewer, keybindings, bookmarks );
 
 		brightnessDialog = new BrightnessDialog( dialogOwner, setupAssignments );
-		activeSourcesDialog = new VisibilityAndGroupingDialog( dialogOwner, viewer.getVisibilityAndGrouping() );
+		activeSourcesDialog = new VisibilityAndGroupingDialog( dialogOwner, viewer.state() );
 
-		final NavigationActions navactions = new NavigationActions( inputTriggerConfig );
-		navactions.install( keybindings, "navigation" );
-		navactions.modes( viewer );
-		navactions.sources( viewer );
-		navactions.time( viewer );
-		if ( options.values.is2D() )
-			navactions.alignPlaneAction( viewer, AlignPlane.XY, "shift Z" );
-		else
-			navactions.alignPlanes( viewer );
+		final Actions navigationActions = new Actions( inputTriggerConfig, "bdv", "navigation" );
+		navigationActions.install( keybindings, "navigation" );
+		NavigationActions.install( navigationActions, viewer, options.values.is2D() );
 
-		final BigDataViewerActions bdvactions = new BigDataViewerActions( inputTriggerConfig );
-		bdvactions.install( keybindings, "bdv" );
-		bdvactions.dialog( brightnessDialog );
-		bdvactions.dialog( activeSourcesDialog );
-		bdvactions.bookmarks( bookmarksEditor );
-		bdvactions.manualTransform( manualTransformationEditor );
-		bdvactions.runnableAction( this::expandAndFocusCardPanel, EXPAND_CARDS, EXPAND_CARDS_KEYS );
-		bdvactions.runnableAction( this::collapseCardPanel, COLLAPSE_CARDS, COLLAPSE_CARDS_KEYS );
+		final Actions bdvActions = new Actions( inputTriggerConfig, "bdv" );
+		bdvActions.install( keybindings, "bdv" );
+		BigDataViewerActions.dialog( bdvActions, brightnessDialog );
+		BigDataViewerActions.dialog( bdvActions, activeSourcesDialog );
+		BigDataViewerActions.bookmarks( bdvActions, bookmarksEditor );
+		BigDataViewerActions.manualTransform( bdvActions, manualTransformationEditor );
+		bdvActions.runnableAction( this::expandAndFocusCardPanel, EXPAND_CARDS, EXPAND_CARDS_KEYS );
+		bdvActions.runnableAction( this::collapseCardPanel, COLLAPSE_CARDS, COLLAPSE_CARDS_KEYS );
 
 		viewer.setDisplayMode( DisplayMode.FUSED );
 	}

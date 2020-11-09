@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.scijava.ui.behaviour.io.InputTriggerConfig;
+import org.scijava.ui.behaviour.util.Actions;
 import org.scijava.ui.behaviour.util.InputActionBindings;
 import org.scijava.ui.behaviour.util.TriggerBehaviourBindings;
 
@@ -48,7 +49,6 @@ import bdv.viewer.NavigationActions;
 import bdv.viewer.SourceAndConverter;
 import bdv.viewer.ViewerFrame;
 import bdv.viewer.ViewerOptions;
-import bdv.viewer.ViewerPanel.AlignPlane;
 
 public class BdvHandleFrame extends BdvHandle
 {
@@ -125,13 +125,10 @@ public class BdvHandleFrame extends BdvHandle
 
 		if ( bdvOptions.values.is2D() )
 		{
+			final Actions navigationActions = new Actions( inputTriggerConfig, "bdv", "navigation" );
 			final InputActionBindings keybindings = bdv.getViewerFrame().getKeybindings();
-			final NavigationActions navactions = new NavigationActions( inputTriggerConfig );
-			navactions.install( keybindings, "navigation" );
-			navactions.modes( viewer );
-			navactions.sources( viewer );
-			navactions.time( viewer );
-			navactions.alignPlaneAction( viewer, AlignPlane.XY, "shift Z" );
+			navigationActions.install( keybindings, "navigation" );
+			NavigationActions.install( navigationActions, viewer, true );
 		}
 
 		// this triggers repaint when PlaceHolderSources are toggled
