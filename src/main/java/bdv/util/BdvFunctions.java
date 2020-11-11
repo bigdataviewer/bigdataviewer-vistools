@@ -225,6 +225,45 @@ public class BdvFunctions
 		return stackSource;
 	}
 
+	public static < T > BdvStackSource< T > show(
+			final SourceAndConverter< T > source )
+	{
+		return show( source, Bdv.options() );
+	}
+
+	public static < T > BdvStackSource< T > show(
+			final SourceAndConverter< T > source,
+			final BdvOptions options )
+	{
+		return show( source, 1, options );
+	}
+
+	public static < T > BdvStackSource< T > show(
+			final SourceAndConverter< T > source,
+			final int numTimePoints )
+	{
+		return show( source, numTimePoints, Bdv.options() );
+	}
+
+	public static < T > BdvStackSource< T > show(
+			final SourceAndConverter< T > soc,
+			final int numTimepoints,
+			final BdvOptions options )
+	{
+		final Bdv bdv = options.values.addTo();
+		final BdvHandle handle = ( bdv == null )
+				? new BdvHandleFrame( options )
+				: bdv.getBdvHandle();
+		final T type = soc.getSpimSource().getType();
+		final int setupId = handle.getUnusedSetupId();
+		final List< ConverterSetup > converterSetups = Collections.singletonList( BigDataViewer.createConverterSetup( soc, setupId ) );
+		final List< SourceAndConverter< T > > sources = Collections.singletonList( soc );
+		handle.add( converterSetups, sources, numTimepoints );
+		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, numTimepoints, type, converterSetups, sources );
+		handle.addBdvSource( bdvSource );
+		return bdvSource;
+	}
+
 	public static List< BdvStackSource< ? > > show(
 			final AbstractSpimData< ? > spimData )
 	{
