@@ -119,7 +119,7 @@ public abstract class BdvHandle implements Bdv
 		return setupAssignments;
 	}
 
-	CacheControls getCacheControls()
+	public CacheControls getCacheControls()
 	{
 		return cacheControls;
 	}
