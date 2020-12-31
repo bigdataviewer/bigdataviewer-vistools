@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.LongStream;
 
+import net.imglib2.Dimensions;
 import net.imglib2.EuclideanSpace;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
@@ -44,23 +45,25 @@ import net.imglib2.view.Views;
 
 public enum AxisOrder
 {
-	XYZ   ( 3, -1, false, false ), // --> XYZ
-	XYZC  ( 4,  3, false, false ), // --> XYZ
-	XYZT  ( 4, -1, false, false ), // --> XYZT
-	XYZCT ( 5,  3, false, false ), // --> XYZT
-	XYZTC ( 5,  4, false, false ), // --> XYZT
-	XYCZT ( 5,  2, false, false ), // --> XYCZT
-	XY    ( 2, -1, true,  false ), // --> XY   --> XYZ
-	XYC   ( 3,  2, true,  false ), // --> XY   --> XYZ
-	XYT   ( 3, -1, true,  true ),  // --> XYT  --> XYTZ --> XYZT
-	XYCT  ( 4,  2, true,  true ),  // --> XYT  --> XYTZ --> XYZT
-	XYTC  ( 4,  3, true,  true ),  // --> XYT  --> XYTZ --> XYZT
-	XYCZ  ( 4,  2, false, false ), // --> XYCZ
-	DEFAULT ( 0, 0, true, true );
+	XYZ   ( 3, -1, -1, false, false ), // --> XYZ
+	XYZC  ( 4,  3, -1, false, false ), // --> XYZ
+	XYZT  ( 4, -1,  3, false, false ), // --> XYZT
+	XYZCT ( 5,  3,  4, false, false ), // --> XYZT
+	XYZTC ( 5,  4,  3, false, false ), // --> XYZT
+	XYCZT ( 5,  2,  4, false, false ), // --> XYCZT
+	XY    ( 2, -1, -1, true,  false ), // --> XY   --> XYZ
+	XYC   ( 3,  2, -1, true,  false ), // --> XY   --> XYZ
+	XYT   ( 3, -1,  2, true,  true ),  // --> XYT  --> XYTZ --> XYZT
+	XYCT  ( 4,  2,  3, true,  true ),  // --> XYT  --> XYTZ --> XYZT
+	XYTC  ( 4,  3,  2, true,  true ),  // --> XYT  --> XYTZ --> XYZT
+	XYCZ  ( 4,  2, -1, false, false ), // --> XYCZ
+	DEFAULT( 0, 0,  0, true,  true );
 
 	final int numDimensions;
 
 	final int channelDimension;
+
+	final int timeDimension;
 
 	final boolean addZ;
 
@@ -69,11 +72,13 @@ public enum AxisOrder
 	private AxisOrder(
 			final int numDimensions,
 			final int channelDimension,
+			final int timeDimension,
 			final boolean addZ,
 			final boolean flipZ )
 	{
 		this.numDimensions = numDimensions;
 		this.channelDimension = channelDimension;
+		this.timeDimension = timeDimension;
 		this.addZ = addZ;
 		this.flipZ = flipZ;
 	}
@@ -217,5 +222,35 @@ public enum AxisOrder
 		}
 
 		return new ValuePair<>( sourceStacks, interval );
+	}
+
+	public int channelDimension()
+	{
+		return channelDimension;
+	}
+
+	public boolean hasChannels()
+	{
+		return channelDimension >= 0;
+	}
+
+	public long numChannels( Dimensions dimensions )
+	{
+		return hasChannels() ? dimensions.dimension( channelDimension ) : 1;
+	}
+
+	public int timeDimension()
+	{
+		return timeDimension;
+	}
+
+	public boolean hasTimepoints()
+	{
+		return timeDimension >= 0;
+	}
+
+	public long numTimepoints( Dimensions dimensions )
+	{
+		return hasTimepoints() ? dimensions.dimension( timeDimension ) : 1;
 	}
 }
