@@ -308,6 +308,7 @@ public class BdvOptions
 					.targetRenderNanos( targetRenderNanos )
 					.numRenderingThreads( numRenderingThreads )
 					.numSourceGroups( numSourceGroups )
+					.is2D( is2D )
 					.transformEventHandlerFactory( transformEventHandlerFactory )
 					.accumulateProjectorFactory( accumulateProjectorFactory )
 					.inputTriggerConfig( inputTriggerConfig );

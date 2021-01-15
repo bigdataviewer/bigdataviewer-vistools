@@ -123,14 +123,6 @@ public class BdvHandleFrame extends BdvHandle
 		setupAssignments = bdv.getSetupAssignments();
 		setups = bdv.getConverterSetups();
 
-		if ( bdvOptions.values.is2D() )
-		{
-			final Actions navigationActions = new Actions( inputTriggerConfig, "bdv", "navigation" );
-			final InputActionBindings keybindings = bdv.getViewerFrame().getKeybindings();
-			navigationActions.install( keybindings, "navigation" );
-			NavigationActions.install( navigationActions, viewer, true );
-		}
-
 		// this triggers repaint when PlaceHolderSources are toggled
 		viewer.state().changeListeners().add( change -> {
 			if ( change == ViewerStateChange.VISIBILITY_CHANGED )
