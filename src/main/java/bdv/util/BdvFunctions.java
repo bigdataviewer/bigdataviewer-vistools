@@ -264,6 +264,31 @@ public class BdvFunctions
 		return bdvSource;
 	}
 
+	public static < T > BdvStackSource< T > show(
+			final List< SourceAndConverter< T > > sources,
+			final int numTimepoints,
+			final BdvOptions options )
+	{
+		if ( sources.isEmpty() )
+			throw new IllegalArgumentException();
+		final Bdv bdv = options.values.addTo();
+		final BdvHandle handle = ( bdv == null )
+				? new BdvHandleFrame( options )
+				: bdv.getBdvHandle();
+		final T type = sources.get( 0 ).getSpimSource().getType();
+		final List< ConverterSetup > converterSetups = new ArrayList<>( sources.size() );
+		for ( final SourceAndConverter< T > source : sources )
+		{
+			final int setupId = handle.getUnusedSetupId();
+			ConverterSetup converterSetup = BigDataViewer.createConverterSetup( source, setupId );
+			handle.add(  Collections.singletonList( converterSetup ), Collections.singletonList( source ), numTimepoints );
+			converterSetups.add( converterSetup );
+		}
+		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, numTimepoints, type, converterSetups, sources );
+		handle.addBdvSource( bdvSource );
+		return bdvSource;
+	}
+
 	public static List< BdvStackSource< ? > > show(
 			final AbstractSpimData< ? > spimData )
 	{
