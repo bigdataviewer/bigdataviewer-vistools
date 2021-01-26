@@ -43,44 +43,40 @@ import net.imglib2.util.Pair;
 import net.imglib2.util.ValuePair;
 import net.imglib2.view.Views;
 
-public enum AxisOrder
+public enum AxisOrder implements EuclideanSpace
 {
-	XYZ   ( 3, -1, -1, false, false ), // --> XYZ
-	XYZC  ( 4,  3, -1, false, false ), // --> XYZ
-	XYZT  ( 4, -1,  3, false, false ), // --> XYZT
-	XYZCT ( 5,  3,  4, false, false ), // --> XYZT
-	XYZTC ( 5,  4,  3, false, false ), // --> XYZT
-	XYCZT ( 5,  2,  4, false, false ), // --> XYCZT
-	XY    ( 2, -1, -1, true,  false ), // --> XY   --> XYZ
-	XYC   ( 3,  2, -1, true,  false ), // --> XY   --> XYZ
-	XYT   ( 3, -1,  2, true,  true ),  // --> XYT  --> XYTZ --> XYZT
-	XYCT  ( 4,  2,  3, true,  true ),  // --> XYT  --> XYTZ --> XYZT
-	XYTC  ( 4,  3,  2, true,  true ),  // --> XYT  --> XYTZ --> XYZT
-	XYCZ  ( 4,  2, -1, false, false ), // --> XYCZ
-	DEFAULT( 0, 0,  0, true,  true );
+	XYZ   ( 3,  2, -1, -1 ), // --> XYZ
+	XYZC  ( 4,  2,  3, -1 ), // --> XYZ
+	XYZT  ( 4,  2, -1,  3 ), // --> XYZT
+	XYZCT ( 5,  2,  3,  4 ), // --> XYZT
+	XYZTC ( 5,  2,  4,  3 ), // --> XYZT
+	XYCZT ( 5,  3,  2,  4 ), // --> XYZT
+	XY    ( 2, -1, -1, -1 ), // --> XY   --> XYZ
+	XYC   ( 3, -1,  2, -1 ), // --> XY   --> XYZ
+	XYT   ( 3, -1, -1,  2 ), // --> XYT  --> XYTZ --> XYZT
+	XYCT  ( 4, -1,  2,  3 ), // --> XYT  --> XYTZ --> XYZT
+	XYTC  ( 4, -1,  3,  2 ), // --> XYT  --> XYTZ --> XYZT
+	XYCZ  ( 4,  3,  2, -1 ), // --> XYZ
+	DEFAULT( 0, 0, 0, 0 );
 
 	final int numDimensions;
+
+	final int zDimension;
 
 	final int channelDimension;
 
 	final int timeDimension;
 
-	final boolean addZ;
-
-	final boolean flipZ;
-
-	private AxisOrder(
+	AxisOrder(
 			final int numDimensions,
+			final int zDimension,
 			final int channelDimension,
-			final int timeDimension,
-			final boolean addZ,
-			final boolean flipZ )
+			final int timeDimension )
 	{
 		this.numDimensions = numDimensions;
+		this.zDimension = zDimension;
 		this.channelDimension = channelDimension;
 		this.timeDimension = timeDimension;
-		this.addZ = addZ;
-		this.flipZ = flipZ;
 	}
 
 	public static AxisOrder getAxisOrder( final AxisOrder axisOrder, final EuclideanSpace space, final boolean viewerIs2D )
@@ -146,14 +142,16 @@ public enum AxisOrder
 		 * If AxisOrder is a 2D variant (has no Z dimension), augment the
 		 * sourceStacks by a Z dimension.
 		 */
-		if ( axisOrder.addZ )
+		final boolean addZ = !axisOrder.hasZ();
+		if ( addZ )
 			for ( int i = 0; i < sourceStacks.size(); ++i )
 				sourceStacks.set( i, Views.addDimension( sourceStacks.get( i ), 0, 0 ) );
 
 		/*
 		 * If at this point the dim order is XYTZ, permute to XYZT
 		 */
-		if ( axisOrder.flipZ )
+		final boolean flipZ = !axisOrder.hasZ() && axisOrder.hasTimepoints();
+		if ( flipZ )
 			for ( int i = 0; i < sourceStacks.size(); ++i )
 				sourceStacks.set( i, Views.permute( sourceStacks.get( i ), 2, 3 ) );
 
@@ -195,7 +193,9 @@ public enum AxisOrder
 		 * If AxisOrder is a 2D variant (has no Z dimension), augment the
 		 * sourceStacks by a Z dimension.
 		 */
-		if ( axisOrder.addZ ) {
+		final boolean addZ = !axisOrder.hasZ();
+		if ( addZ )
+		{
 			final long[] min = LongStream.concat( Arrays.stream( Intervals.minAsLongArray( interval ) ), LongStream.of( 0 ) ).toArray();
 			final long[] max = LongStream.concat( Arrays.stream( Intervals.maxAsLongArray( interval ) ), LongStream.of( 0 ) ).toArray();
 			interval = new FinalInterval( min, max );
@@ -206,7 +206,8 @@ public enum AxisOrder
 		/*
 		 * If at this point the dim order is XYTZ, permute to XYZT
 		 */
-		if ( axisOrder.flipZ )
+		final boolean flipZ = !axisOrder.hasZ() && axisOrder.hasTimepoints();
+		if ( flipZ )
 		{
 			final long[] min = Intervals.minAsLongArray( interval );
 			final long[] max = Intervals.maxAsLongArray( interval );
@@ -222,6 +223,16 @@ public enum AxisOrder
 		}
 
 		return new ValuePair<>( sourceStacks, interval );
+	}
+
+	public int zDimension()
+	{
+		return zDimension;
+	}
+
+	public boolean hasZ()
+	{
+		return zDimension >= 0;
 	}
 
 	public int channelDimension()
@@ -252,5 +263,11 @@ public enum AxisOrder
 	public long numTimepoints( Dimensions dimensions )
 	{
 		return hasTimepoints() ? dimensions.dimension( timeDimension ) : 1;
+	}
+
+	@Override
+	public int numDimensions()
+	{
+		return numDimensions;
 	}
 }

@@ -639,7 +639,7 @@ public class BdvFunctions
 		 * If AxisOrder is a 2D variant (has no Z dimension), augment the
 		 * sourceStacks by a Z dimension.
 		 */
-		if ( axisOrder.addZ )
+		if ( !axisOrder.hasZ() )
 		{
 			img = RealViews.addDimension( img );
 			interval = new FinalInterval(
