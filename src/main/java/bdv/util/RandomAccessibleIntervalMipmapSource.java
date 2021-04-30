@@ -53,9 +53,10 @@ public class RandomAccessibleIntervalMipmapSource< T extends NumericType< T > > 
 			final double[][] mipmapScales,
 			final VoxelDimensions voxelDimensions,
 			final AffineTransform3D sourceTransform,
-			final String name )
+			final String name,
+			final boolean doBoundingBoxCulling )
 	{
-		super( type, name );
+		super( type, name, doBoundingBoxCulling );
 		assert imgs.length == mipmapScales.length : "Number of mipmaps and scale factors do not match.";
 
 		this.mipmapSources = imgs;
@@ -72,6 +73,17 @@ public class RandomAccessibleIntervalMipmapSource< T extends NumericType< T > > 
 		}
 
 		this.voxelDimensions = voxelDimensions;
+	}
+
+	public RandomAccessibleIntervalMipmapSource(
+			final RandomAccessibleInterval< T >[] imgs,
+			final T type,
+			final double[][] mipmapScales,
+			final VoxelDimensions voxelDimensions,
+			final AffineTransform3D sourceTransform,
+			final String name )
+	{
+		this( imgs, type, mipmapScales, voxelDimensions, sourceTransform, name, true );
 	}
 
 	public RandomAccessibleIntervalMipmapSource(
