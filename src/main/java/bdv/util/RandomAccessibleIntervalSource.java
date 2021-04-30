@@ -49,7 +49,7 @@ public class RandomAccessibleIntervalSource< T extends NumericType< T > > extend
 			final T type,
 			final String name )
 	{
-		this( img, type, new AffineTransform3D(), name );
+		this( img, type, new AffineTransform3D(), name, true );
 	}
 
 	public RandomAccessibleIntervalSource(
@@ -58,7 +58,17 @@ public class RandomAccessibleIntervalSource< T extends NumericType< T > > extend
 			final AffineTransform3D sourceTransform,
 			final String name )
 	{
-		super( type, name, new DefaultVoxelDimensions( img.numDimensions() ));
+		this( img, type, sourceTransform, name, true );
+	}
+
+	public RandomAccessibleIntervalSource(
+			final RandomAccessibleInterval< T > img,
+			final T type,
+			final AffineTransform3D sourceTransform,
+			final String name,
+			final boolean doBoundingBoxCulling )
+	{
+		super( type, name, new DefaultVoxelDimensions( img.numDimensions() ), doBoundingBoxCulling );
 		this.source = img;
 		this.sourceTransform = sourceTransform;
 		interpolatedSources = new RealRandomAccessible[ Interpolation.values().length ];
