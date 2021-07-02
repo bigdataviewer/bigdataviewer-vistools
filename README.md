@@ -1,3 +1,5 @@
+[![](https://github.com/bigdataviewer/bigdataviewer-vistools/actions/workflows/build-main.yml/badge.svg)](https://github.com/bigdataviewer/bigdataviewer-vistools/actions/workflows/build-main.yml)
+
 # bigdataviewer-vistools
 Helpers to use BigDataViewer as a quick visualization tool in other projects.
 This is intented to replace/augment `ImageJFunction.show()` from [imglib2-ij](https://github.com/imglib/imglib2-ij).
