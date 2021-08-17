@@ -55,6 +55,7 @@ import org.scijava.ui.behaviour.io.InputTriggerConfig;
 
 import bdv.BigDataViewer;
 import bdv.ViewerImgLoader;
+import bdv.cache.CacheControl;
 import bdv.img.cache.VolatileGlobalCellCache;
 import bdv.spimdata.WrapBasicImgLoader;
 import bdv.tools.boundingbox.BoxSelectionOptions;
@@ -286,6 +287,44 @@ public class BdvFunctions
 		}
 		final BdvStackSource< T > bdvSource = new BdvStackSource<>( handle, numTimepoints, type, converterSetups, sources );
 		handle.addBdvSource( bdvSource );
+		return bdvSource;
+	}
+
+	public static < T > BdvStackSource< T > show( final ChannelSources< T > channels )
+	{
+		return show( channels, Bdv.options() );
+	}
+
+	public static < T > BdvStackSource< T > show(
+			final ChannelSources< T > channels,
+			final BdvOptions options )
+	{
+		final List< SourceAndConverter< T > > sources = channels.getSources();
+		if ( sources.isEmpty() )
+			throw new IllegalArgumentException();
+		final int numTimepoints = channels.numTimepoints();
+
+		final Bdv bdv = options.values.addTo();
+		final BdvHandle handle = ( bdv == null )
+				? new BdvHandleFrame( options )
+				: bdv.getBdvHandle();
+
+		final List< ConverterSetup > converterSetups = new ArrayList<>( sources.size() );
+		for ( final SourceAndConverter< T > source : sources )
+		{
+			final int setupId = handle.getUnusedSetupId();
+			ConverterSetup converterSetup = BigDataViewer.createConverterSetup( source, setupId );
+			handle.add(  Collections.singletonList( converterSetup ), Collections.singletonList( source ), numTimepoints );
+			converterSetups.add( converterSetup );
+		}
+		final T type = channels.getType();
+		final BdvStackSource< T > bdvSource = new BdvStackSource( handle, numTimepoints, type, converterSetups, sources );
+		handle.addBdvSource( bdvSource );
+
+		final CacheControl cacheControl = channels.getCacheControl();
+		if ( cacheControl != null )
+			handle.getCacheControls().addCacheControl( cacheControl );
+
 		return bdvSource;
 	}
 
