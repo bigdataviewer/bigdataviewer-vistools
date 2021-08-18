@@ -96,10 +96,7 @@ public class BdvFunctions
 			final String name,
 			final BdvOptions options )
 	{
-		final Bdv bdv = options.values.addTo();
-		final BdvHandle handle = ( bdv == null )
-				? new BdvHandleFrame( options )
-				: bdv.getBdvHandle();
+		final BdvHandle handle = getHandle( options );
 		final AxisOrder axisOrder = AxisOrder.getAxisOrder( options.values.axisOrder(), img, handle.is2D() );
 		final AffineTransform3D sourceTransform = options.values.getSourceTransform();
 		final T type;
@@ -131,10 +128,7 @@ public class BdvFunctions
 			final String name,
 			final BdvOptions options )
 	{
-		final Bdv bdv = options.values.addTo();
-		final BdvHandle handle = ( bdv == null )
-				? new BdvHandleFrame( options )
-				: bdv.getBdvHandle();
+		final BdvHandle handle = getHandle( options );
 		final int numTimepoints = 1;
 		final AxisOrder axisOrder = AxisOrder.getAxisOrder( options.values.axisOrder(), img, handle.is2D() );
 		final AffineTransform3D sourceTransform = options.values.getSourceTransform();
@@ -165,10 +159,7 @@ public class BdvFunctions
 			final String name,
 			final BdvOptions options )
 	{
-		final Bdv bdv = options.values.addTo();
-		final BdvHandle handle = ( bdv == null )
-				? new BdvHandleFrame( options )
-				: bdv.getBdvHandle();
+		final BdvHandle handle = getHandle( options );
 		final AxisOrder axisOrder = AxisOrder.getAxisOrder( options.values.axisOrder(), img, handle.is2D() );
 		final AffineTransform3D sourceTransform = options.values.getSourceTransform();
 		final T type = img.realRandomAccess().get();
@@ -217,10 +208,7 @@ public class BdvFunctions
 			final int numTimePoints,
 			final BdvOptions options )
 	{
-		final Bdv bdv = options.values.addTo();
-		final BdvHandle handle = ( bdv == null )
-				? new BdvHandleFrame( options )
-				: bdv.getBdvHandle();
+		final BdvHandle handle = getHandle( options );
 		@SuppressWarnings( { "unchecked", "rawtypes" } )
 		final BdvStackSource< T > stackSource = addSource( handle, ( Source ) source, numTimePoints );
 		return stackSource;
@@ -251,10 +239,7 @@ public class BdvFunctions
 			final int numTimepoints,
 			final BdvOptions options )
 	{
-		final Bdv bdv = options.values.addTo();
-		final BdvHandle handle = ( bdv == null )
-				? new BdvHandleFrame( options )
-				: bdv.getBdvHandle();
+		final BdvHandle handle = getHandle( options );
 		final T type = soc.getSpimSource().getType();
 		final int setupId = handle.getUnusedSetupId();
 		final List< ConverterSetup > converterSetups = Collections.singletonList( BigDataViewer.createConverterSetup( soc, setupId ) );
@@ -272,10 +257,7 @@ public class BdvFunctions
 	{
 		if ( sources.isEmpty() )
 			throw new IllegalArgumentException();
-		final Bdv bdv = options.values.addTo();
-		final BdvHandle handle = ( bdv == null )
-				? new BdvHandleFrame( options )
-				: bdv.getBdvHandle();
+		final BdvHandle handle = getHandle( options );
 		final T type = sources.get( 0 ).getSpimSource().getType();
 		final List< ConverterSetup > converterSetups = new ArrayList<>( sources.size() );
 		for ( final SourceAndConverter< T > source : sources )
@@ -304,11 +286,7 @@ public class BdvFunctions
 			throw new IllegalArgumentException();
 		final int numTimepoints = channels.numTimepoints();
 
-		final Bdv bdv = options.values.addTo();
-		final BdvHandle handle = ( bdv == null )
-				? new BdvHandleFrame( options )
-				: bdv.getBdvHandle();
-
+		final BdvHandle handle = getHandle( options );
 		final List< ConverterSetup > converterSetups = new ArrayList<>( sources.size() );
 		for ( final SourceAndConverter< T > source : sources )
 		{
@@ -338,11 +316,7 @@ public class BdvFunctions
 			final AbstractSpimData< ? > spimData,
 			final BdvOptions options )
 	{
-		final Bdv bdv = options.values.addTo();
-		final BdvHandle handle = ( bdv == null )
-				? new BdvHandleFrame( options )
-				: bdv.getBdvHandle();
-
+		final BdvHandle handle = getHandle( options );
 		final AbstractSequenceDescription< ?, ?, ? > seq = spimData.getSequenceDescription();
 		final int numTimepoints = seq.getTimePoints().size();
 		final VolatileGlobalCellCache cache = ( VolatileGlobalCellCache ) ( ( ViewerImgLoader ) seq.getImgLoader() ).getCacheControl();
@@ -373,10 +347,7 @@ public class BdvFunctions
 			final String name,
 			final BdvOptions options )
 	{
-		final Bdv bdv = options.values.addTo();
-		final BdvHandle handle = ( bdv == null )
-				? new BdvHandleFrame( options )
-				: bdv.getBdvHandle();
+		final BdvHandle handle = getHandle( options );
 		final AffineTransform3D sourceTransform = options.values.getSourceTransform();
 
 		final int setupId = handle.getUnusedSetupId();
@@ -415,10 +386,7 @@ public class BdvFunctions
 			final String name,
 			final BdvOptions options )
 	{
-		final Bdv bdv = options.values.addTo();
-		final BdvHandle handle = ( bdv == null )
-				? new BdvHandleFrame( options )
-				: bdv.getBdvHandle();
+		final BdvHandle handle = getHandle( options );
 		final AffineTransform3D sourceTransform = options.values.getSourceTransform();
 
 		final int setupId = handle.getUnusedSetupId();
@@ -530,6 +498,18 @@ public class BdvFunctions
 				rangeInterval,
 				options
 		).getResult();
+	}
+
+	/**
+	 * Get existing {@code BdvHandle} from {@code options} or create a new
+	 * {@code BdvHandleFrame}.
+	 */
+	private static BdvHandle getHandle( final BdvOptions options )
+	{
+		final Bdv bdv = options.values.addTo();
+		return ( bdv == null )
+				? new BdvHandleFrame( options )
+				: bdv.getBdvHandle();
 	}
 
 	/**
