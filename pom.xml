@@ -119,7 +119,7 @@
 		<license.copyrightOwners>BigDataViewer developers.</license.copyrightOwners>
 		<license.projectName>BigDataViewer quick visualization API.</license.projectName>
 
-		<bigdataviewer-core.version>10.2.1</bigdataviewer-core.version>
+		<bigdataviewer-core.version>10.3.2-SNAPSHOT</bigdataviewer-core.version>
 
 		<!-- NB: Deploy releases to the SciJava Maven repository. -->
 		<releaseProfiles>sign,deploy-to-scijava</releaseProfiles>
