@@ -1,6 +1,7 @@
 package bdv.util.mask;
 
 import net.imglib2.converter.Converter;
+import net.imglib2.type.mask.AbstractMaskedRealType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.util.Pair;
 

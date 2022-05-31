@@ -2,7 +2,6 @@ package bdv.util.mask;
 
 import bdv.BigDataViewer;
 import bdv.tools.brightness.ConverterSetup;
-import bdv.util.Bdv;
 import bdv.util.BdvFunctions;
 import bdv.util.RandomAccessibleIntervalSource;
 import bdv.viewer.Source;
@@ -14,6 +13,7 @@ import net.imglib2.converter.Converters;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.realtransform.AffineTransform3D;
+import net.imglib2.type.mask.FloatMaskedRealType;
 import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.real.FloatType;
@@ -27,10 +27,10 @@ public class MaskedSourceExample
 	{
 		final Random random = new Random( 1l );
 		final SourceAndConverter< UnsignedByteType > soc = createSourceAndConverter( random );
-		final Bdv bdv = BdvFunctions.show( soc );
+//		final Bdv bdv = BdvFunctions.show( soc );
 
 		final SourceAndConverter< FloatType > msoc = createMaskSourceAndConverter( random );
-		BdvFunctions.show( msoc, Bdv.options().addTo( bdv ) );
+//		BdvFunctions.show( msoc, Bdv.options().addTo( bdv ) );
 
 
 		final RandomAccessibleInterval< UnsignedByteType > img = soc.getSpimSource().getSource( 0, 0 );
@@ -58,7 +58,8 @@ public class MaskedSourceExample
 		converterSetup.setColor( color );
 		converterSetup.setDisplayRange( 0, 255 );
 
-		BdvFunctions.show( maskedSoc, Bdv.options().addTo( bdv ) );
+//		BdvFunctions.show( maskedSoc, Bdv.options().addTo( bdv ) );
+		BdvFunctions.show( maskedSoc );
 	}
 
 	private static Img< FloatType > createMask()

@@ -31,8 +31,8 @@ package bdv.util.mask;
 import net.imglib2.converter.Converter;
 import net.imglib2.display.ColorConverter;
 import net.imglib2.loops.ClassCopyProvider;
+import net.imglib2.type.mask.AbstractMaskedRealType;
 import net.imglib2.type.numeric.ARGBType;
-import net.imglib2.type.numeric.RealType;
 
 public interface MaskedRealARGBColorConverter< T extends AbstractMaskedRealType< ?, ?, T > > extends ColorConverter, Converter< T, ARGBType >
 {
