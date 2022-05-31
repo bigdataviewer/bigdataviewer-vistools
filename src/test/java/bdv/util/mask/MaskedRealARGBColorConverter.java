@@ -34,9 +34,9 @@ import net.imglib2.loops.ClassCopyProvider;
 import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.RealType;
 
-public interface MaskedRealARGBColorConverter< R extends RealType< R >, T extends AbstractMaskedRealType< R, ?, T > > extends ColorConverter, Converter< T, ARGBType >
+public interface MaskedRealARGBColorConverter< T extends AbstractMaskedRealType< ?, ?, T > > extends ColorConverter, Converter< T, ARGBType >
 {
-	static < R extends RealType< R >, T extends AbstractMaskedRealType< R, ?, T > > MaskedRealARGBColorConverter< R, T > create( final T type, final double min, final double max )
+	static < T extends AbstractMaskedRealType< ?, ?, T > > MaskedRealARGBColorConverter< T > create( final T type, final double min, final double max )
 	{
 		return Instances.create( type, min, max );
 	}
@@ -48,7 +48,7 @@ class Instances
 	private static ClassCopyProvider< MaskedRealARGBColorConverter > provider;
 
 	@SuppressWarnings( "unchecked" )
-	public static < R extends RealType< R >, T extends AbstractMaskedRealType< R, ?, T > > MaskedRealARGBColorConverter< R, T > create( final T type, final double min, final double max )
+	public static < T extends AbstractMaskedRealType< ?, ?, T > > MaskedRealARGBColorConverter< T > create( final T type, final double min, final double max )
 	{
 		if ( provider == null )
 		{
@@ -61,7 +61,7 @@ class Instances
 		return provider.newInstanceForKey( type.getClass(), min, max );
 	}
 
-	public static class Imp< R extends RealType< R >, T extends AbstractMaskedRealType< R, ?, T > > implements MaskedRealARGBColorConverter< R, T >
+	public static class Imp< T extends AbstractMaskedRealType< ?, ?, T > > implements MaskedRealARGBColorConverter< T >
 	{
 		private double min = 0;
 
