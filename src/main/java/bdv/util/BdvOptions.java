@@ -32,6 +32,7 @@ import bdv.TransformEventHandler2D;
 import bdv.TransformEventHandler3D;
 import bdv.TransformEventHandlerFactory;
 import bdv.viewer.render.AccumulateProjectorARGB;
+import bdv.viewer.render.AlphaWeightedAccumulateProjectorARGB;
 import org.scijava.ui.behaviour.io.InputTriggerConfig;
 
 import bdv.viewer.ViewerOptions;
@@ -262,7 +263,7 @@ public class BdvOptions
 
 		private TransformEventHandlerFactory transformEventHandlerFactory = TransformEventHandler3D::new;
 
-		private AccumulateProjectorFactory< ARGBType > accumulateProjectorFactory = AccumulateProjectorARGB.factory;
+		private AccumulateProjectorFactory< ARGBType > accumulateProjectorFactory = AlphaWeightedAccumulateProjectorARGB.factory;
 
 		private InputTriggerConfig inputTriggerConfig = null;
 

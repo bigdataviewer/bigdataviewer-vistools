@@ -150,14 +150,15 @@ class Instances
 			}
 			else
 			{
-				final int r0 = ( int ) ( alpha * 255 + 0.5 );
-//				final int r0 = ( int ) ( scaleR * v + 0.5 );
+				final int r0 = ( int ) ( scaleR * v + 0.5 );
 				final int g0 = ( int ) ( scaleG * v + 0.5 );
 				final int b0 = ( int ) ( scaleB * v + 0.5 );
+				final int a0 = ( int ) ( alpha * 255 + 0.5 );
 				final int r = Math.min( 255, r0 );
 				final int g = Math.min( 255, g0 );
 				final int b = Math.min( 255, b0 );
-				output.set( ARGBType.rgba( r, g, b, 255 ) );
+				final int a = Math.min( 255, a0 );
+				output.set( ARGBType.rgba( r, g, b, a ) );
 			}
 		}
 	}

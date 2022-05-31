@@ -2,6 +2,7 @@ package bdv.util.mask;
 
 import bdv.BigDataViewer;
 import bdv.tools.brightness.ConverterSetup;
+import bdv.util.Bdv;
 import bdv.util.BdvFunctions;
 import bdv.util.RandomAccessibleIntervalSource;
 import bdv.viewer.Source;
@@ -58,8 +59,8 @@ public class MaskedSourceExample
 		converterSetup.setColor( color );
 		converterSetup.setDisplayRange( 0, 255 );
 
-//		BdvFunctions.show( maskedSoc, Bdv.options().addTo( bdv ) );
-		BdvFunctions.show( maskedSoc );
+		final Bdv bdv = BdvFunctions.show( createMiniSourceAndConverter( random ) );
+		BdvFunctions.show( maskedSoc, Bdv.options().addTo( bdv ) );
 	}
 
 	private static Img< FloatType > createMask()
@@ -118,6 +119,28 @@ public class MaskedSourceExample
 				new SourceAndConverter<>( source, BigDataViewer.createConverterToARGB( source.getType() ) ) );
 		final ConverterSetup converterSetup = BigDataViewer.createConverterSetup( soc, 0 );
 		final ARGBType color = new ARGBType( random.nextInt() & 0xFFFFFF );
+		converterSetup.setColor( color );
+		return soc;
+	}
+
+
+
+	private static Source< UnsignedByteType > createMiniIntensitySource( final Random random )
+	{
+		final AffineTransform3D sourceTransform = new AffineTransform3D();
+		final String name = "img";
+		final Img< UnsignedByteType > img = createImg( random, 10, 10, 10 );
+		final Source< UnsignedByteType > source = new RandomAccessibleIntervalSource<>( img, new UnsignedByteType(), sourceTransform, name );
+		return source;
+	}
+
+	public static SourceAndConverter< UnsignedByteType > createMiniSourceAndConverter( final Random random )
+	{
+		final Source< UnsignedByteType > source = createMiniIntensitySource( random );
+		final SourceAndConverter< UnsignedByteType > soc = BigDataViewer.wrapWithTransformedSource(
+				new SourceAndConverter<>( source, BigDataViewer.createConverterToARGB( source.getType() ) ) );
+		final ConverterSetup converterSetup = BigDataViewer.createConverterSetup( soc, 0 );
+		final ARGBType color = new ARGBType( 0x00FFFFFF );
 		converterSetup.setColor( color );
 		return soc;
 	}
