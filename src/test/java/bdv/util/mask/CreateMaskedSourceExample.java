@@ -68,6 +68,8 @@ public class CreateMaskedSourceExample
 						img );
 
 		final Source< DoubleMaskedRealType< T > > source = new RandomAccessibleIntervalSource<>( maskedImg, maskedType, sourceTransform, name );
+
+		// TODO: add as new case to BigDataViewer.createConverterToARGB(...)
 		final Converter< DoubleMaskedRealType< T >, ARGBType > converter = MaskedRealARGBColorConverter.create( maskedType, 0, 255 );
 		final SourceAndConverter< DoubleMaskedRealType< T > > soc = BigDataViewer.wrapWithTransformedSource( new SourceAndConverter<>( source, converter ) );
 
