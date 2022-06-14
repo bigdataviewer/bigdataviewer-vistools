@@ -1,6 +1,7 @@
 package bdv.util.mask;
 
 import bdv.BigDataViewer;
+import bdv.mask.MaskedRealARGBColorConverter;
 import bdv.tools.brightness.ConverterSetup;
 import bdv.util.Bdv;
 import bdv.util.BdvFunctions;

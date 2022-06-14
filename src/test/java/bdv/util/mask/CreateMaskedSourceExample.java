@@ -1,6 +1,8 @@
 package bdv.util.mask;
 
 import bdv.BigDataViewer;
+import bdv.mask.MaskedRealARGBColorConverter;
+import bdv.mask.RealToMaskedRealTypeConverter;
 import bdv.util.Bdv;
 import bdv.util.BdvFunctions;
 import bdv.util.RandomAccessibleIntervalSource;
