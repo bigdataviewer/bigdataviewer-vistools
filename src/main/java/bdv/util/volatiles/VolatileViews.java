@@ -52,6 +52,7 @@ import net.imglib2.type.NativeType;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.MixedTransformView;
 
+import bdv.cache.SharedQueue;
 import bdv.img.cache.CreateInvalidVolatileCell;
 import bdv.img.cache.VolatileCachedCellImg;
 
