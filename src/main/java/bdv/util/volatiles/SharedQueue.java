@@ -28,41 +28,21 @@
  */
 package bdv.util.volatiles;
 
-import java.util.concurrent.Callable;
-
-import bdv.cache.CacheControl;
-import net.imglib2.cache.queue.BlockingFetchQueues;
-import net.imglib2.cache.queue.FetcherThreads;
-
 /**
- * Queue and threads for asynchronously loading data into a cache
- *
- * @author Tobias Pietzsch
+ * @deprecated This class lives now in bigdataviewer-core. Use {@code bdv.cache.SharedQueue} instead.
  */
-public class SharedQueue extends BlockingFetchQueues< Callable< ? > > implements CacheControl
+@Deprecated
+public class SharedQueue extends bdv.cache.SharedQueue
 {
-	private final FetcherThreads fetcherThreads;
-
+	@Deprecated
 	public SharedQueue( final int numFetcherThreads, final int numPriorities )
 	{
-		super( numPriorities, numFetcherThreads );
-		fetcherThreads = new FetcherThreads( this, numFetcherThreads );
+		super( numFetcherThreads, numPriorities );
 	}
 
+	@Deprecated
 	public SharedQueue( final int numFetcherThreads )
 	{
-		this( numFetcherThreads, 1 );
-	}
-
-	public void shutdown()
-	{
-		fetcherThreads.shutdown();
-		clear();
-	}
-
-	@Override
-	public void prepareNextFrame()
-	{
-		clearToPrefetch();
+		super( numFetcherThreads, 1 );
 	}
 }
