@@ -31,6 +31,8 @@ package bdv.util;
 import bdv.TransformEventHandler2D;
 import bdv.TransformEventHandler3D;
 import bdv.TransformEventHandlerFactory;
+import bdv.ui.appearance.AppearanceManager;
+import bdv.ui.keymap.KeymapManager;
 import bdv.viewer.render.AccumulateProjectorARGB;
 import org.scijava.ui.behaviour.io.InputTriggerConfig;
 
@@ -149,12 +151,44 @@ public class BdvOptions
 
 	/**
 	 * Set the {@link InputTriggerConfig} from which keyboard and mouse action mapping is loaded.
+	 * <p>
+	 * Note that this will override the managed {@code InputTriggerConfig}, that is,
+	 * modifying the keymap through the preferences dialog will have no effect.
 	 *
 	 * @param c the {@link InputTriggerConfig} from which keyboard and mouse action mapping is loaded
 	 */
 	public BdvOptions inputTriggerConfig( final InputTriggerConfig c )
 	{
 		values.inputTriggerConfig = c;
+		return this;
+	}
+
+	/**
+	 * Set the {@link KeymapManager} to share keymap settings with other
+	 * BigDataViewer windows.
+	 * <p>
+	 * This can be used to link multiple BigDataViewer windows such that they
+	 * use (and modify) the same {@code Keymap}, shortcuts and mouse gestures.
+	 * </p>
+	 */
+	public BdvOptions keymapManager( final KeymapManager keymapManager )
+	{
+		values.keymapManager = keymapManager;
+		return this;
+	}
+
+	/**
+	 * Set the {@link AppearanceManager} to share appearance settings with other
+	 * BigDataViewer windows.
+	 * <p>
+	 * This can be used to link multiple BigDataViewer windows such that they
+	 * use (and modify) the same {@code Appearance} settings, e.g., LookAndFeel,
+	 * scalebar overlay settings, etc.
+	 * </p>
+	 */
+	public BdvOptions appearanceManager( final AppearanceManager appearanceManager )
+	{
+		values.appearanceManager = appearanceManager;
 		return this;
 	}
 
@@ -266,6 +300,10 @@ public class BdvOptions
 
 		private InputTriggerConfig inputTriggerConfig = null;
 
+		private KeymapManager keymapManager = null;
+
+		private AppearanceManager appearanceManager = null;
+
 		private final AffineTransform3D sourceTransform = new AffineTransform3D();
 
 		private String frameTitle = "BigDataViewer";
@@ -292,6 +330,8 @@ public class BdvOptions
 					.transformEventHandlerFactory( transformEventHandlerFactory )
 					.accumulateProjectorFactory( accumulateProjectorFactory )
 					.inputTriggerConfig( inputTriggerConfig )
+					.keymapManager( keymapManager )
+					.appearanceManager( appearanceManager )
 					.sourceTransform( sourceTransform )
 					.frameTitle( frameTitle )
 					.axisOrder( axisOrder )
@@ -311,7 +351,9 @@ public class BdvOptions
 					.is2D( is2D )
 					.transformEventHandlerFactory( transformEventHandlerFactory )
 					.accumulateProjectorFactory( accumulateProjectorFactory )
-					.inputTriggerConfig( inputTriggerConfig );
+					.inputTriggerConfig( inputTriggerConfig )
+					.keymapManager( keymapManager )
+					.appearanceManager( appearanceManager );
 			if ( hasPreferredSize() )
 				o.width( width ).height( height );
 			return o;
@@ -345,6 +387,16 @@ public class BdvOptions
 		public InputTriggerConfig getInputTriggerConfig()
 		{
 			return inputTriggerConfig;
+		}
+
+		public KeymapManager getKeymapManager()
+		{
+			return keymapManager;
+		}
+
+		public AppearanceManager getAppearanceManager()
+		{
+			return appearanceManager;
 		}
 
 		public Bdv addTo()

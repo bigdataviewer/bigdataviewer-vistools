@@ -30,6 +30,8 @@ package bdv.util;
 
 import bdv.ui.BdvDefaultCards;
 import bdv.ui.CardPanel;
+import bdv.ui.appearance.AppearanceManager;
+import bdv.ui.keymap.KeymapManager;
 import bdv.ui.splitpanel.SplitPanel;
 import bdv.viewer.ConverterSetups;
 import java.awt.Frame;
@@ -61,7 +63,6 @@ import bdv.tools.transformation.ManualTransformationEditor;
 import bdv.viewer.DisplayMode;
 import bdv.viewer.NavigationActions;
 import bdv.viewer.SourceAndConverter;
-import bdv.viewer.ViewerOptions;
 import bdv.viewer.ViewerPanel;
 import bdv.TransformEventHandler;
 
@@ -86,16 +87,22 @@ public class BdvHandlePanel extends BdvHandle
 
 	private final TriggerBehaviourBindings triggerbindings;
 
+	private final KeymapManager keymapManager;
+
+	private final AppearanceManager appearanceManager;
+
 	public BdvHandlePanel( final Frame dialogOwner, final BdvOptions options )
 	{
 		super( options );
 
-		final ViewerOptions viewerOptions = options.values.getViewerOptions();
-		final InputTriggerConfig inputTriggerConfig = BigDataViewer.getInputTriggerConfig( viewerOptions );
+		final KeymapManager optionsKeymapManager = options.values.getKeymapManager();
+		final AppearanceManager optionsAppearanceManager = options.values.getAppearanceManager();
+		keymapManager = optionsKeymapManager != null ? optionsKeymapManager : new KeymapManager( BigDataViewer.configDir );
+		appearanceManager = optionsAppearanceManager != null ? optionsAppearanceManager : new AppearanceManager( BigDataViewer.configDir );
 
 		cacheControls = new CacheControls();
 
-		viewer = new ViewerPanel( new ArrayList<>(), 1, cacheControls, viewerOptions.inputTriggerConfig( inputTriggerConfig ) );
+		viewer = new ViewerPanel( new ArrayList<>(), 1, cacheControls, options.values.getViewerOptions() );
 		if ( !options.values.hasPreferredSize() )
 			viewer.getDisplay().setPreferredSize( null );
 		viewer.getDisplay().addComponentListener( new ComponentAdapter()
@@ -125,6 +132,8 @@ public class BdvHandlePanel extends BdvHandle
 		mouseAndKeyHandler.setBehaviourMap( triggerbindings.getConcatenatedBehaviourMap() );
 		viewer.getDisplay().addHandler( mouseAndKeyHandler );
 
+		final InputTriggerConfig inputTriggerConfig = viewer.getInputTriggerConfig();
+
 		// TODO: should be a field?
 		final Behaviours transformBehaviours = new Behaviours( inputTriggerConfig, "bdv" );
 		transformBehaviours.install( triggerbindings, "transform" );
@@ -139,6 +148,9 @@ public class BdvHandlePanel extends BdvHandle
 
 		brightnessDialog = new BrightnessDialog( dialogOwner, setupAssignments );
 		activeSourcesDialog = new VisibilityAndGroupingDialog( dialogOwner, viewer.state() );
+
+		appearanceManager.appearance().updateListeners().add( () -> SwingUtilities.getWindowAncestor( viewer ).repaint() );
+		SwingUtilities.invokeLater(() -> appearanceManager.updateLookAndFeel());
 
 		final Actions navigationActions = new Actions( inputTriggerConfig, "bdv", "navigation" );
 		navigationActions.install( keybindings, "navigation" );
@@ -160,6 +172,18 @@ public class BdvHandlePanel extends BdvHandle
 	public ManualTransformationEditor getManualTransformEditor()
 	{
 		return manualTransformationEditor;
+	}
+
+	@Override
+	public KeymapManager getKeymapManager()
+	{
+		return keymapManager;
+	}
+
+	@Override
+	public AppearanceManager getAppearanceManager()
+	{
+		return appearanceManager;
 	}
 
 	@Override
