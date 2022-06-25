@@ -30,6 +30,7 @@ package bdv.util;
 
 import bdv.ui.BdvDefaultCards;
 import bdv.ui.CardPanel;
+import bdv.ui.UIUtils;
 import bdv.ui.appearance.AppearanceManager;
 import bdv.ui.keymap.KeymapManager;
 import bdv.ui.splitpanel.SplitPanel;
@@ -94,6 +95,7 @@ public class BdvHandlePanel extends BdvHandle
 	public BdvHandlePanel( final Frame dialogOwner, final BdvOptions options )
 	{
 		super( options );
+		UIUtils.installFlatLafInfos();
 
 		final KeymapManager optionsKeymapManager = options.values.getKeymapManager();
 		final AppearanceManager optionsAppearanceManager = options.values.getAppearanceManager();

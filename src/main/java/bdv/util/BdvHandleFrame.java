@@ -28,6 +28,7 @@
  */
 package bdv.util;
 
+import bdv.ui.UIUtils;
 import bdv.ui.appearance.AppearanceManager;
 import bdv.ui.keymap.KeymapManager;
 import bdv.viewer.ViewerStateChange;
@@ -62,6 +63,7 @@ public class BdvHandleFrame extends BdvHandle
 		frameTitle = options.values.getFrameTitle();
 		bdv = null;
 		cacheControls = new CacheControls();
+		UIUtils.installFlatLafInfos();
 	}
 
 	public BigDataViewer getBigDataViewer()
