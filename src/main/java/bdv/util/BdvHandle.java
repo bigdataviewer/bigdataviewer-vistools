@@ -29,6 +29,8 @@
 package bdv.util;
 
 import bdv.ui.CardPanel;
+import bdv.ui.appearance.AppearanceManager;
+import bdv.ui.keymap.KeymapManager;
 import bdv.ui.splitpanel.SplitPanel;
 import bdv.viewer.ConverterSetups;
 import bdv.viewer.ViewerStateChangeListener;
@@ -123,6 +125,10 @@ public abstract class BdvHandle implements Bdv
 	{
 		return cacheControls;
 	}
+
+	public abstract KeymapManager getKeymapManager();
+
+	public abstract AppearanceManager getAppearanceManager();
 
 	@Deprecated
 	int getUnusedSetupId()

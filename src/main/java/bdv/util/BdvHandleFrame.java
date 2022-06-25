@@ -28,13 +28,14 @@
  */
 package bdv.util;
 
+import bdv.ui.appearance.AppearanceManager;
+import bdv.ui.keymap.KeymapManager;
 import bdv.viewer.ViewerStateChange;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.scijava.ui.behaviour.io.InputTriggerConfig;
-import org.scijava.ui.behaviour.util.Actions;
 import org.scijava.ui.behaviour.util.InputActionBindings;
 import org.scijava.ui.behaviour.util.TriggerBehaviourBindings;
 
@@ -45,7 +46,6 @@ import bdv.export.ProgressWriterConsole;
 import bdv.tools.brightness.ConverterSetup;
 import bdv.tools.transformation.ManualTransformationEditor;
 import bdv.viewer.DisplayMode;
-import bdv.viewer.NavigationActions;
 import bdv.viewer.SourceAndConverter;
 import bdv.viewer.ViewerFrame;
 import bdv.viewer.ViewerOptions;
@@ -85,6 +85,18 @@ public class BdvHandleFrame extends BdvHandle
 	public ManualTransformationEditor getManualTransformEditor()
 	{
 		return bdv.getManualTransformEditor();
+	}
+
+	@Override
+	public KeymapManager getKeymapManager()
+	{
+		return bdv.getKeymapManager();
+	}
+
+	@Override
+	public AppearanceManager getAppearanceManager()
+	{
+		return bdv.getAppearanceManager();
 	}
 
 	@Override
