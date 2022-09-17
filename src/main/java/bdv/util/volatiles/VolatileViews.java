@@ -198,5 +198,51 @@ public class VolatileViews
 		final VolatileCachedCellImg< T, A > volatileImg = new VolatileCachedCellImg<>( grid, type, hints, volatileCache );
 		return volatileImg;
 	}
+
+
+	// == DEPRECATED API ==
+
+	/**
+	 * @deprecated Use {@code bdv.cache.SharedQueue} instead of {@code bdv.util.volatiles.SharedQueue}
+	 */
+	@Deprecated
+	public static < T, V extends Volatile< T > > RandomAccessibleInterval< V > wrapAsVolatile(
+			final RandomAccessibleInterval< T > rai,
+			final bdv.util.volatiles.SharedQueue queue )
+	{
+		return wrapAsVolatile( rai, ( SharedQueue ) queue );
+	}
+
+	/**
+	 * @deprecated Use {@code bdv.cache.SharedQueue} instead of {@code bdv.util.volatiles.SharedQueue}
+	 */
+	@Deprecated
+	public static < T, V extends Volatile< T > > RandomAccessibleInterval< V > wrapAsVolatile(
+			final RandomAccessibleInterval< T > rai,
+			final bdv.util.volatiles.SharedQueue queue,
+			final CacheHints hints )
+	{
+		return wrapAsVolatile( rai, ( SharedQueue ) queue, hints );
+	}
+
+	/**
+	 * @deprecated Use {@code bdv.cache.SharedQueue} instead of {@code bdv.util.volatiles.SharedQueue}
+	 */
+	@Deprecated
+	public static < T, V extends Volatile< T > > RandomAccessible< V > wrapAsVolatile(
+			final RandomAccessible< T > rai,
+			final bdv.util.volatiles.SharedQueue queue )
+	{
+		return wrapAsVolatile( rai, ( SharedQueue ) queue );
+	}
+
+	/**
+	 * @deprecated Use {@code bdv.cache.SharedQueue} instead of {@code bdv.util.volatiles.SharedQueue}
+	 */
+	@Deprecated
+	public static < T, V extends Volatile< T > > RandomAccessible< V > wrapAsVolatile( final RandomAccessible< T > rai, final bdv.util.volatiles.SharedQueue queue, final CacheHints hints )
+	{
+		return wrapAsVolatile( rai, ( SharedQueue ) queue, hints );
+	}
 }
 
