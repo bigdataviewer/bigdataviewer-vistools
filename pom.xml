@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>32.0.0-beta-4</version>
+		<version>33.2.0</version>
 		<relativePath />
 	</parent>
 
@@ -118,9 +118,6 @@
 		<license.licenseName>bsd_2</license.licenseName>
 		<license.copyrightOwners>BigDataViewer developers.</license.copyrightOwners>
 		<license.projectName>BigDataViewer quick visualization API.</license.projectName>
-
-		<ui-behaviour.version>2.0.6</ui-behaviour.version>
-		<bigdataviewer-core.version>10.4.1</bigdataviewer-core.version>
 
 		<!-- NB: Deploy releases to the SciJava Maven repository. -->
 		<releaseProfiles>sign,deploy-to-scijava</releaseProfiles>
