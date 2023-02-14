@@ -45,6 +45,7 @@ import net.imglib2.cache.volatiles.LoadingStrategy;
 import net.imglib2.cache.volatiles.VolatileCache;
 import net.imglib2.img.WrappedImg;
 import net.imglib2.img.basictypeaccess.AccessFlags;
+import net.imglib2.img.basictypeaccess.DataAccess;
 import net.imglib2.img.basictypeaccess.volatiles.VolatileArrayDataAccess;
 import net.imglib2.img.cell.Cell;
 import net.imglib2.img.cell.CellGrid;
@@ -160,7 +161,7 @@ public class VolatileViews
 	}
 
 	@SuppressWarnings( "unchecked" )
-	private static < T extends NativeType< T >, V extends Volatile< T > & NativeType< V >, A > VolatileViewData< T, V > wrapCachedCellImg(
+	private static < T extends NativeType< T >, V extends Volatile< T > & NativeType< V >, A extends DataAccess > VolatileViewData< T, V > wrapCachedCellImg(
 			final CachedCellImg< T, A > cachedCellImg,
 			SharedQueue queue,
 			CacheHints hints )
