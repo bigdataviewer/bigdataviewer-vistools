@@ -83,6 +83,20 @@ import mpicbg.spim.data.generic.sequence.AbstractSequenceDescription;
  */
 public class BdvFunctions
 {
+	public static BdvHandle show()
+	{
+		return show( Bdv.options() );
+	}
+
+	public static BdvHandle show(
+			final BdvOptions options )
+	{
+		final BdvHandle handle = getHandle( options );
+		if ( handle instanceof BdvHandleFrame && ( ( BdvHandleFrame ) handle ).getBigDataViewer() == null )
+			handle.createViewer( Collections.emptyList(), Collections.emptyList(), 1 );
+		return handle;
+	}
+
 	public static < T > BdvStackSource< T > show(
 			final RandomAccessibleInterval< T > img,
 			final String name )
