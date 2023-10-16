@@ -77,7 +77,6 @@ public class BdvVirtualChannelSource extends BdvSource
 				Collections.singletonList( info ),
 				null );
 		getBdvHandle().removeBdvSource( this );
-		setBdvHandle( null );
 	}
 
 	@Override
