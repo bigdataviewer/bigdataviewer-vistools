@@ -65,7 +65,6 @@ public class BdvStackSource< T > extends BdvSource
 	{
 		getBdvHandle().remove( converterSetups, sources, null, null, null, null );
 		getBdvHandle().removeBdvSource( this );
-		setBdvHandle( null );
 	}
 
 	@Override

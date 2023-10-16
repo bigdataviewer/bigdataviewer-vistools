@@ -78,7 +78,6 @@ public class BdvOverlaySource< O extends OverlayRenderer > extends BdvSource
 				Collections.singletonList( info ),
 				Collections.singletonList( overlay ) );
 		getBdvHandle().removeBdvSource( this );
-		setBdvHandle( null );
 	}
 
 	@Override
