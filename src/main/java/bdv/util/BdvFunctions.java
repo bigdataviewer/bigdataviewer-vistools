@@ -331,13 +331,15 @@ public class BdvFunctions
 			final BdvOptions options )
 	{
 		final BdvHandle handle = getHandle( options );
+		WrapBasicImgLoader.wrapImgLoaderIfNecessary( spimData );
+
 		final AbstractSequenceDescription< ?, ?, ? > seq = spimData.getSequenceDescription();
 		final int numTimepoints = seq.getTimePoints().size();
-		final VolatileGlobalCellCache cache = ( VolatileGlobalCellCache ) ( ( ViewerImgLoader ) seq.getImgLoader() ).getCacheControl();
+		final CacheControl cache = ( ( ViewerImgLoader ) seq.getImgLoader() ).getCacheControl();
 		handle.getBdvHandle().getCacheControls().addCacheControl( cache );
-		cache.clearCache();
+		if ( cache instanceof VolatileGlobalCellCache )
+			( ( VolatileGlobalCellCache ) cache ).clearCache();
 
-		WrapBasicImgLoader.wrapImgLoaderIfNecessary( spimData );
 		final ArrayList< SourceAndConverter< ? > > sources = new ArrayList<>();
 		BigDataViewer.initSetups( spimData, new ArrayList<>(), sources );
 
