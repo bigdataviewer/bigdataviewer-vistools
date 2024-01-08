@@ -83,7 +83,7 @@ public class RandomAccessibleIntervalMipmapSource4D< T extends NumericType< T > 
 		assert assertAllTDimensionsEqual(imgs) : "Mipmaps have different numbers of timepoints.";
 
 		this.mipmapSources = imgs;
-		currentMipmaps = new RandomAccessibleInterval[imgs.length];
+		currentMipmaps = new RandomAccessibleInterval[ imgs.length ];
 		this.mipmapTransforms = mipmapTransforms;
 
 		minT = mipmapSources[0].min(3);
@@ -107,7 +107,7 @@ public class RandomAccessibleIntervalMipmapSource4D< T extends NumericType< T > 
 		assert assertAllTDimensionsEqual(imgs) : "Mipmaps have different numbers of timepoints.";
 
 		this.mipmapSources = imgs;
-		currentMipmaps = new RandomAccessibleInterval[imgs.length];
+		currentMipmaps = new RandomAccessibleInterval[ imgs.length ];
 		this.mipmapTransforms = new AffineTransform3D[ mipmapScales.length ];
 		for ( int s = 0; s < mipmapScales.length; ++s )
 		{

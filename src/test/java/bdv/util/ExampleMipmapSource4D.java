@@ -48,19 +48,19 @@ public class ExampleMipmapSource4D
 {
 	public static void main( String[] args )
 	{
-		final BiConsumer<Localizable, DoubleType> f = (p, v) -> {
+		final BiConsumer< Localizable, DoubleType > f = ( p, v ) -> {
 
-			final double xc = p.getDoublePosition(0) - 100;
-			final double yc = p.getDoublePosition(1) - 100;
-			final double zc = p.getDoublePosition(2) - 100;
-			final double t  = p.getDoublePosition(3);
-			final double s = 20 + (20*t);
-			v.set( Math.sqrt(xc * xc / 2 + yc * yc / 16 + zc * zc / 64) / s );
+			final double xc = p.getDoublePosition( 0 ) - 100;
+			final double yc = p.getDoublePosition( 1 ) - 100;
+			final double zc = p.getDoublePosition( 2 ) - 100;
+			final double t = p.getDoublePosition( 3 );
+			final double s = 20 + ( 20 * t );
+			v.set( Math.sqrt( xc * xc / 2 + yc * yc / 16 + zc * zc / 64 ) / s );
 		};
 
-		final IntervalView<DoubleType> img = Views.interval(
-				new FunctionRandomAccessible<DoubleType>( 4, f, () -> new DoubleType() ),
-				new FinalInterval( 200, 200, 200, 20 ));
+		final IntervalView< DoubleType > img = Views.interval(
+				new FunctionRandomAccessible<>( 4, f, DoubleType::new ),
+				new FinalInterval( 200, 200, 200, 20 ) );
 
 
 		// set to true to make the scale transforms not match the downsampling factors
@@ -68,31 +68,31 @@ public class ExampleMipmapSource4D
 		final boolean scalesTooBig = false;
 
 		final int N = 3;
-		@SuppressWarnings("unchecked")
-		final RandomAccessibleInterval<DoubleType>[] imgs = new RandomAccessibleInterval[N];
-		final AffineTransform3D[] transforms =  new AffineTransform3D[N];
-		for( int i = 0; i < N; i++ )
+		@SuppressWarnings( "unchecked" )
+		final RandomAccessibleInterval< DoubleType >[] imgs = new RandomAccessibleInterval[ N ];
+		final AffineTransform3D[] transforms = new AffineTransform3D[ N ];
+		for ( int i = 0; i < N; i++ )
 		{
-			transforms[i] = new AffineTransform3D();
-			if(scalesTooBig)
-				transforms[i].scale(Math.pow(4, i));
+			transforms[ i ] = new AffineTransform3D();
+			if ( scalesTooBig )
+				transforms[ i ].scale( Math.pow( 4, i ) );
 			else
-				transforms[i].scale(Math.pow(2, i));
+				transforms[ i ].scale( Math.pow( 2, i ) );
 
-			if( i == 0 )
-				imgs[i] = img;
+			if ( i == 0 )
+				imgs[ i ] = img;
 			else
-				imgs[i] = Views.subsample(img, 2*i, 2*i, 2*i, 1);
+				imgs[ i ] = Views.subsample( img, 2 * i, 2 * i, 2 * i, 1 );
 		}
 
-		final RandomAccessibleIntervalMipmapSource4D<DoubleType> raiSource4D = new RandomAccessibleIntervalMipmapSource4D<	>(
+		final RandomAccessibleIntervalMipmapSource4D< DoubleType > raiSource4D = new RandomAccessibleIntervalMipmapSource4D<>(
 				imgs,
-				Util.getTypeFromInterval(img),
+				Util.getTypeFromInterval( img ),
 				transforms,
-				new FinalVoxelDimensions("um", 1, 1, 1 ),
+				new FinalVoxelDimensions( "um", 1, 1, 1 ),
 				"4d rai source", true );
 
-		final BdvStackSource<DoubleType> bdv = BdvFunctions.show( raiSource4D, 5 );
-		bdv.setDisplayRange(0, 3);
+		final BdvStackSource< DoubleType > bdv = BdvFunctions.show( raiSource4D, 5 );
+		bdv.setDisplayRange( 0, 3 );
 	}
 }
