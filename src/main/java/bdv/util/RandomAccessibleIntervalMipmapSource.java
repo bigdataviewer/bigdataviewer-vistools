@@ -120,12 +120,6 @@ public class RandomAccessibleIntervalMipmapSource< T extends NumericType< T > > 
 	}
 
 	@Override
-	public VoxelDimensions getVoxelDimensions()
-	{
-		return voxelDimensions;
-	}
-
-	@Override
 	public int getNumMipmapLevels()
 	{
 		return mipmapSources.length;
