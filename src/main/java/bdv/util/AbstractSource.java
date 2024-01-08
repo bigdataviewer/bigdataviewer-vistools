@@ -63,7 +63,7 @@ public abstract class AbstractSource< T extends NumericType< T > > implements So
 
 	public AbstractSource( final T type, final String name, final VoxelDimensions voxelDimensions )
 	{
-		/**
+		/*
 		 * Do bounding box culling by default
 		 */
 		this( type, name, voxelDimensions, true );
@@ -73,8 +73,8 @@ public abstract class AbstractSource< T extends NumericType< T > > implements So
 	{
 		/*
 		 * We don't know the dimensionality of the source here, but the
-		 * DefaultVoxelDimensionsimplementation will return the same result 
-		 * for spacing and units regardless of the number of dimensions passed. 
+		 * DefaultVoxelDimensionsimplementation will return the same result
+		 * for spacing and units regardless of the number of dimensions passed.
 		 */
 		this( type, name, new DefaultVoxelDimensions( -1 ), true );
 	}
