@@ -32,6 +32,7 @@ import bdv.cache.CacheControl;
 import net.imglib2.RandomAccessible;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.Volatile;
+import net.imglib2.cache.Cache;
 import net.imglib2.cache.img.CachedCellImg;
 
 /**
@@ -50,12 +51,15 @@ import net.imglib2.cache.img.CachedCellImg;
  *            corresponding volatile pixel type
  *
  * @author Tobias Pietzsch
+ * @author Philipp Hanslovsky
  */
 public class VolatileViewData< T, V extends Volatile< T > >
 {
 	private final RandomAccessible< V > img;
 
 	private final CacheControl cacheControl;
+
+	private final CacheControlUnsafe cacheControlUsnafe;
 
 	private final T type;
 
@@ -64,11 +68,13 @@ public class VolatileViewData< T, V extends Volatile< T > >
 	public VolatileViewData(
 			final RandomAccessible< V > img,
 			final CacheControl cacheControl,
+			final CacheControlUnsafe cacheControlUsnafe,
 			final T type,
 			final V volatileType )
 	{
 		this.img = img;
 		this.cacheControl = cacheControl;
+		this.cacheControlUsnafe = cacheControlUsnafe;
 		this.type = type;
 		this.volatileType = volatileType;
 	}
@@ -93,6 +99,18 @@ public class VolatileViewData< T, V extends Volatile< T > >
 	public CacheControl getCacheControl()
 	{
 		return cacheControl;
+	}
+
+	/**
+	 * Get the {@link CacheControlUnsafe} for the {@link CachedCellImg}(s) at the
+	 * bottom of the view cascade.
+	 *
+	 * @return the {@link CacheControlUnsafe} for the {@link CachedCellImg}(s) at the
+	 *         bottom of the view cascade
+	 */
+	public CacheControlUnsafe getCacheControlUnsafe()
+	{
+		return this.cacheControlUsnafe;
 	}
 
 	/**
