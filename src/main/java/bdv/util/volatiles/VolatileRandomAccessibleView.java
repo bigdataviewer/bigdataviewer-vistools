@@ -68,4 +68,10 @@ public class VolatileRandomAccessibleView< T, V extends Volatile< T > >
 		return viewData.getImg().numDimensions();
 
 	}
+
+	@Override
+	public V getType()
+	{
+		return viewData.getVolatileType();
+	}
 }
