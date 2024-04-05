@@ -122,7 +122,10 @@
 		<!-- NB: Deploy releases to the SciJava Maven repository. -->
 		<releaseProfiles>sign,deploy-to-scijava</releaseProfiles>
 
-		<bigdataviewer-core.version>10.4.11</bigdataviewer-core.version>
+		<bigdataviewer-core.version>10.4.15</bigdataviewer-core.version>
+		<imglib2.version>7.0.2</imglib2.version>
+		<imglib2-cache.version>1.0.0-beta-18</imglib2-cache.version>
+		<imglib2-realtransform.version>4.0.3</imglib2-realtransform.version>
 	</properties>
 
 	<repositories>
