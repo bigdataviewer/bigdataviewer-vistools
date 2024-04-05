@@ -64,4 +64,10 @@ public class VolatileRandomAccessibleIntervalView< T, V extends Volatile< T > >
 	{
 		return sourceInterval.randomAccess( interval );
 	}
+
+	@Override
+	public V getType()
+	{
+		return viewData.getVolatileType();
+	}
 }
